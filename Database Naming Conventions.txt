@@ -1,0 +1,230 @@
+Database Standard Operating Procedures
+- Use lowercase naming
+
+- Use singular naming for tables: Account NOT Accounts
+[http://stackoverflow.com/a/5841297/665387]
+
+** Use plural naming for Lookup Tables Only: Roles Not Role
+
+- Use underscore for many-to-many relationship tables
+User (no 's') and Roles (with 's' lookup) it would be User_Role
+with the "dominant" table taking place on the left.
+[http://stackoverflow.com/a/631859/665387]
+
+- Do not use the word 'date' : created Not createdDate
+
+Both id and guid in tables
+id = internal use for queries
+guid = exteral use for querystrings, api calls
+[id] [int] identity(1,1) primary key not null,
+[guid] [uniqueidentifier] not null default ((newid())),
+
+** Dont use MONEY ***
+[FaceValue] DECIMAL(19,4) NOT NULL DEFAULT ((0)),
+
+
+DateTime:   (getdate())
+GUID:  (newid())
+
+CREATE TABLE [dbo].[account](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[lastName] [nvarchar](50) NOT NULL default ('0'),
+	[firstName] [nvarchar](50) NOT NULL default ('0'),
+	[email] [nvarchar](200) NOT NULL,
+	[password] [nvarchar](max) NOT NULL,
+	[passwordSalt] [nvarchar](max) NOT NULL,
+	[administrator] [bit] not null default ((0))	
+	[lastLogin] [datetime] NULL,
+	[created] [datetime] not null default (getdate()),
+	[modified] [datetime] not null default (getdate()),
+	[active] [bit] not null default ((1))	
+)
+
+
+create table [dbo].[hr_app_employment](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[title] [nvarchar](150) not null default ('0'),
+	[email] [nvarchar](200) not null default ('0'),
+	[password] [nvarchar](max) not null default ('0'),
+	[passwordsalt] [nvarchar](max) not null default ('0'),
+	[ismoderator] [bit] not null default ((0)),
+	[isadministrator] [bit] not null default ((0)),
+	[lastlogin] [datetime] null,
+	[created] [datetime] not null default (getdate()),
+	[modified] [datetime] not null default (getdate()),
+	[sort] [int] not null default ((0)),
+	[active] [bit] not null default ((1))	
+	)
+ok
+CREATE TABLE [dbo].[exceptionLog](
+	[id] [int] identity(1,1) not null primary key,
+	[exceptionStack] [nvarchar](max) not null default ('0'),
+	[errorState] [nvarchar](50) not null default ('0'),
+	[customInfo] [nvarchar](max) null,
+	[created] [datetime] not null default (getdate()),
+	[exceptionMessage] [nvarchar](max) not null default ('0'),
+	[exceptionSource] [nvarchar](max) not null default ('0'),
+	[exceptionTargetsite] [nvarchar](max) not null default ('0'),
+	[exceptionData] [nvarchar](max) null
+	)
+
+
+
+
+CREATE TABLE [dbo].[product](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[categoryId] [int] not null default (0),
+	[title] [nvarchar](50) NOT NULL default ('0'),
+	[sku] [nvarchar](50) NOT NULL default ('0'),
+	[description] [nvarchar](max) NOT NULL default ('0'),
+	[descriptionShort] [nvarchar](200) NOT NULL default ('0'),
+	[features] [nvarchar](max) NOT NULL default ('0'),
+	[quickstart] [nvarchar](max) NOT NULL default ('0'),
+	[usermanual] [nvarchar](max) NOT NULL default ('0'),
+	[specsheet] [nvarchar](max) NOT NULL default ('0'),
+	[highlights] [nvarchar](max) NOT NULL default ('0'),
+	[imageFilename] [nvarchar](max) NOT NULL default ('0'),
+	[imageFilenameZoom] [nvarchar](max) NOT NULL default ('0'),
+	[imageFileNameCategory] [nvarchar](max) NOT NULL default ('0'),
+	[created] [datetime] not null default (getdate()),
+	[modified] [datetime] not null default (getdate()),
+	[sort] [int] not null default ((0)),
+	[active] [bit] not null default ((1))	
+)
+
+
+create table [dbo].[image](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[title] [nvarchar](150) not null default ('0'),
+	[sku] [nvarchar](50) NOT NULL default ('0'),
+	[filename] [nvarchar](200) not null default ('0'),
+	[filenameThumbnail] [nvarchar](200) not null default ('0'),
+	[filenameZoom] [nvarchar](max) NOT NULL default ('0'),
+	[isYouTube] [bit] not null default ((0)),
+	[youtubeUrl] [nvarchar](200) not null default ('0'),
+	[created] [datetime] not null default (getdate()),
+	[modified] [datetime] not null default (getdate()),
+	[sort] [int] not null default ((0)),
+	[active] [bit] not null default ((1))	
+	)
+
+
+
+	create table [dbo].[exceptionLog](
+		[id] [int] identity(1,1) primary key not null,
+		[exceptionStack] [nvarchar](max) NOT NULL default ('0'),
+		[errorState] [nvarchar](50) NOT NULL default ('0'),
+		[customInfo] [nvarchar](max) NULL default ('0'),
+		[created] [datetime] NOT NULL default (getdate()),
+		[exceptionMessage] [nvarchar](max) NOT NULL default ('0'),
+		[exceptionSource] [nvarchar](max) NOT NULL default ('0'),
+		[exceptionTargetsite] [nvarchar](max) NOT NULL default ('0'),
+		[exceptionData] [nvarchar](max) NULL default ('0'),
+	)
+
+	create table [dbo].[trackingLog](
+		[id] [int] identity(1,1) primary key not null,
+		[created] [datetime] NOT NULL default (getdate()),
+		[clientId] [int] NOT NULL default (0),
+		[memberId] [int] NOT NULL default (0),
+		[recordId] [int] NOT NULL default (0),
+		[recordTable] [varchar](150) not null default ('0'),
+		[memo] [nvarchar](max) NOT NULL default ('0'),
+		[ipAddress] [nvarchar](50) NOT NULL default ('0'),
+		[trackingState] [int] NOT NULL default (0),
+	)
+
+	create table [dbo].[roles](
+		[id] [int] identity(1,1) primary key not null,
+		[title] [nvarchar](150) NOT NULL default ('0'),
+		[description] [nvarchar](max) NOT NULL default ('0'),
+		[active] [bit] NOT NULL ((1)),
+		[alert] [bit] NOT NULL ((0)),
+	)
+	create table [dbo].[account](
+		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
+		[lastName] [nvarchar](50) NOT NULL default ('0'),
+		[firstName] [nvarchar](50) NOT NULL default ('0'),
+		[email] [varchar](200) not null default ('0'),
+		[password] [varchar](max) not null default ('0'),
+		[passwordSalt] [varchar](max) not null default ('0'),
+		[clientID] [int] NOT NULL default (0),
+		[administrator] [bit] NOT NULL default ((1)),
+		[lastLogin] [datetime] NULL,
+		[created] [datetime] NOT NULL default (getdate()),
+		[modified] [datetime] NOT NULL,
+		[active] [bit] NOT NULL default ((1)),
+	)
+
+	create table [dbo].[account_role](
+		[id] [int] identity(1,1) primary key not null,
+		[clientId] [int] NOT NULL default (0),
+		[accountId] [int] NOT NULL default (0),
+		[roleId] [int] NOT NULL default (0),
+		[created] [datetime] NOT NULL default (getdate()),
+		[modified] [datetime] NOT NULL default (getdate()),
+		[active] [bit] NOT NULL default ((1)),
+	)
+
+	//------------------------------------------------------------//
+
+	create table [dbo].[block](
+		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
+		[title] [nvarchar](150) not null default ('0'),
+		[description] [nvarchar](max) not null default ('0'),
+		[cemeteryId] [int] not null default (0),
+		[crypts] [int] not null default (0),
+		[image] [nvarchar](150) not null default ('0'),
+		[created] [datetime] not null default (getdate()),
+		[modified] [datetime] not null default (getdate()),
+		[active] [bit] not null default ((1)),
+		[sort] [int] not null default ((0))	
+	)
+
+	create table [dbo].[block](
+		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
+		[title] [nvarchar](150) not null default ('0'),
+		[description] [nvarchar](max) not null default ('0'),
+		[cemeteryId] [int] not null default (0),
+		[crypts] [int] not null default (0),
+		[image] [nvarchar](150) not null default ('0'),
+		[created] [datetime] not null default (getdate()),
+		[modified] [datetime] not null default (getdate()),
+		[active] [bit] not null default ((1)),
+		[sort] [int] not null default ((0))	
+	)
+
+	create table [dbo].[crypt](
+		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
+		[title] [nvarchar](150) not null default ('0'),
+		[description] [nvarchar](max) not null default ('0'),
+		[blockId] [int] not null default (0),
+		[niches] [int] not null default (0),
+		[image] [nvarchar](150) not null default ('0'),
+		[created] [datetime] not null default (getdate()),
+		[modified] [datetime] not null default (getdate()),
+		[active] [bit] not null default ((1)),
+		[sort] [int] not null default ((0))	
+	)
+
+	create table [dbo].[niche](
+		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
+		[title] [nvarchar](150) not null default ('0'),
+		[description] [nvarchar](max) not null default ('0'),
+		[cryptId] [int] not null default (0),
+		[image] [nvarchar](150) not null default ('0'),
+		[created] [datetime] not null default (getdate()),
+		[modified] [datetime] not null default (getdate()),
+		[active] [bit] not null default ((1)),
+		[group] [int] not null default ((0)),
+		[sortB] [int] not null default ((0))	
+	)
