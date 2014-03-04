@@ -8,8 +8,10 @@
 // Change Log v2.2
 // 
 //
-//
+// 
 // 03/04/2014 : Removed HTML code into bew file
+//            : Added JsonMessageView
+
 // 03/01/2014 : Update all areas (crazy rain in socal)
 
 
@@ -73,10 +75,37 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
     WriteHeader(namspaceNames);
     BeginNamespace(namespaceNameViews, code);
 #>
+
 public class ValidationView {
+
     public string ValidationField { get; set; }
     public string ValidationMessage { get; set; }
+
 }
+
+public class JsonMessageView
+    {
+        private bool _success;
+        public bool success {
+            get
+            {
+                return _success;
+            }
+            set { _success = value; }
+        }
+
+        private string _message;
+        public string message {
+            get
+            {
+                return string.IsNullOrEmpty(_message) ? "base error" : _message;
+            }
+            set { _message = value; }
+        }
+
+        public List<ValidationView> validation { get; set; }
+    }
+
 <# 
     EndNamespace(namespaceNameViews);
     WriteFile("Views", "ValidationView.cs", overwrite);
