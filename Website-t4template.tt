@@ -6,11 +6,12 @@
 <#
 
 // Website TT 
-// Change Log v1.0
-//
+// Change Log v1.2
 //
 //
 // 03/04/2014 : Separated all HTML page code from BLL.TT
+//            : Update forms to Bootstrap 3
+//            : Added _nav.htm (navagation all models)
 
 
 
@@ -21,7 +22,7 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-     
+
 // Please set the options here 
 
 bool overwrite = true;
@@ -31,7 +32,7 @@ var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-    
+
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
@@ -39,114 +40,145 @@ EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDe
 CheckFolder("HTML");
 
 
+
+WriteHtmlMenuHeader();
 foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
 {
-    // string realEntityName = entity.Name.Replace(tablePrefix, string.Empty);  //<-- remove leading table name
-    string realEntityName = entity.Name;
-    int index = 0;
-    while(index <= realEntityName.Length){
-        int p = realEntityName.IndexOf("_", index);
-        if( p!=-1 ){
-            realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
-            index = p++;
-        }
-        else
-            break;
-    }
-    realEntityName = FixName(realEntityName);
+// string realEntityName = entity.Name.Replace(tablePrefix, string.Empty);  //<-- remove leading table name
+string realEntityName = entity.Name;
+int index = 0;
+while(index <= realEntityName.Length){
+int p = realEntityName.IndexOf("_", index);
+if( p!=-1 ){
+realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
+index = p++;
+}
+else
+break;
+}
+realEntityName = FixName(realEntityName);
+
+// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+// WriteHtmlMenuHeader(realEntityName);
+#>
+<li><a href="/<#=realEntityName#>"><#=realEntityName#></a></li>
+<# 
+// WriteHtmlMenuFooter();
+
+// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+}
+WriteHtmlMenuFooter();
+WriteFile("HTML", "Menu.htm", overwrite);
+
+
+
+foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
+{
+// string realEntityName = entity.Name.Replace(tablePrefix, string.Empty);  //<-- remove leading table name
+string realEntityName = entity.Name;
+int index = 0;
+while(index <= realEntityName.Length){
+int p = realEntityName.IndexOf("_", index);
+if( p!=-1 ){
+realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
+index = p++;
+}
+else
+break;
+}
+realEntityName = FixName(realEntityName);
 
 // ------------------------------------------------------------------------
 // ------------------------------------------------------------------------
 
 
 // Creating HTML List ------------------------------------------------------------------------
-    WriteHtmlFormListHeader(realEntityName);
+WriteHtmlFormListHeader(realEntityName);
 #>
 
 <a href="/<#=realEntityName#>/Edit" class="btn btn-success">New <#=realEntityName#></a>
 
 
 <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>trash</th>
-            <th>link</th>
+        <thead>
+            <tr>
+                <th>trash</th>
+                <th>link</th>
 <#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
-    {
-        string realPropertyName = code.Escape(edmProperty);
-        realPropertyName = FixName(realPropertyName);
-        string realPropertyField = FixName(realPropertyName).ToLower();
+{
+string realPropertyName = code.Escape(edmProperty);
+realPropertyName = FixName(realPropertyName);
+string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-            <th><#=realPropertyName#></th>  
+                <th><#=realPropertyName#></th>  
 <# } #>
-            <th>active</th>
-        </tr>
-    </thead>
-    <tbody>
-                @foreach (var item in Model)
+                <th>active</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
         {
-            <tr data-id="@item.Guid">
-                <td><a href="#" class="tr-delete"><i class="fa fa-trash-o"></i></a></td>
-                <td><a href="/<#=realEntityName#>/@item.Guid">Link to detail</a></td>    
+        <tr data-id="@item.Guid">
+            <td><a href="#" class="tr-delete"><i class="fa fa-trash-o"></i></a></td>
+            <td><a href="/<#=realEntityName#>/@item.Guid">Link to detail</a></td>    
 
 <#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
-    {
-        string realPropertyName = code.Escape(edmProperty);
-        realPropertyName = FixName(realPropertyName);
-        string realPropertyField = FixName(realPropertyName).ToLower();
+{
+string realPropertyName = code.Escape(edmProperty);
+realPropertyName = FixName(realPropertyName);
+string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-                <td>@item.<#=realPropertyName#></tdh>  
+<td>@item.<#=realPropertyName#></tdh>  
 <# } #>
-                <td>
-                    <i class="fa @(item.Active ? "fa-check" : "")">
-                        <span style="display: none">@item.ActiveYesNo</span>
-                    </i>
-                </td>
-            </tr>
+            <td>
+                <i class="fa @(item.Active ? "fa-check" : "")">
+                <span style="display: none">@item.ActiveYesNo</span>
+                </i>
+            </td>
+        </tr>
         }
-    </tbody>
+        </tbody>
 </table>
 
 
 <# 
-    WriteHtmlFormListFooter();
-    WriteFile("HTML", realEntityName + "List.htm", overwrite);
+WriteHtmlFormListFooter();
+WriteFile("HTML", realEntityName + "List.htm", overwrite);
 // ------------------------------------------------------------------------
 // ------------------------------------------------------------------------
 
 
- // Creating HTML Detail------------------------------------------------------------------------
-    WriteHtmlFormHeader(realEntityName);
+// Creating HTML Detail------------------------------------------------------------------------
+WriteHtmlFormHeader(realEntityName);
 #>
 <#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
-    {
-        string realPropertyName = code.Escape(edmProperty);
-        realPropertyName = FixName(realPropertyName);
-        string realPropertyField = FixName(realPropertyName).ToLower();
+{
+string realPropertyName = code.Escape(edmProperty);
+realPropertyName = FixName(realPropertyName);
+string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-        <div class="control-group clearfix">
-            <div class="span4">
-                <label><#=realPropertyName#></label>
-                <input type="text" name="<#=realPropertyField#>" id="<#=realPropertyField#>" value="@Model.<#=realPropertyName#>" class="required" />
-            </div>
-        </div>
+    <div class="form-group">
+        <label for="<#=realPropertyField#>"><#=realPropertyName#></label>
+        <input type="text" class="form-control" name="<#=realPropertyField#>" id="<#=realPropertyField#>" value="@Model.<#=realPropertyName#>" class="required" />
+    </div>
 
 <# } #>
 
-        <div class="control-group clearfix">
-            <div class="span4">
-                <label>active</label>
-                <input type="checkbox" id="active" name="active" checked="@Model.Active"/>
-            </div>
-        </div>
+    <div class="form-group">
+        <label>Active</label>
+        <input type="checkbox" class="form-control" id="active" name="active" checked="@Model.Active"/>
+    </div>
 
-        <div class="control-group clearfix">
-            <button class="btnSubmit btn btn-success"> Submit </button>
-            <input type="hidden" id="hdGuid" name="hdGuid" value="@Model.Guid" />
-        </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary">Primary</button>
+        <input type="hidden" id="hdGuid" name="hdGuid" value="@Model.Guid" />
+    </div>
+
 <# 
-    WriteHtmlFormFooter();
-   WriteFile("HTML", realEntityName + "Detail.htm", overwrite);  
+WriteHtmlFormFooter();
+WriteFile("HTML", realEntityName + "Detail.htm", overwrite);  
 }
 #>
 
@@ -155,23 +187,23 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 <#+
 
 string FixName(string name){
-    return name.Substring(0,1).ToUpper() + name.Substring(1);
+return name.Substring(0,1).ToUpper() + name.Substring(1);
 }
 
 void CheckFolder(string folder){
-    string directory = Path.GetDirectoryName(Host.TemplateFile);
-    directory = Path.Combine(directory, folder);
-    if(!System.IO.Directory.Exists(directory))
-        System.IO.Directory.CreateDirectory(directory);
+string directory = Path.GetDirectoryName(Host.TemplateFile);
+directory = Path.Combine(directory, folder);
+if(!System.IO.Directory.Exists(directory))
+System.IO.Directory.CreateDirectory(directory);
 }
 
 void WriteFile(string folder, string file, bool overwrite){
-    string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
-    string outputFilePath = Path.Combine(templateDirectory,folder, file);
+string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
-    if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
-    this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
+File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
 
@@ -180,8 +212,8 @@ void WriteHtmlFormHeader(string realEntityName)
 {
 #>
 <script type="text/javascript">
-    $(document).ready(function () {
-        
+$(document).ready(function () {
+
         var formMain = $("#form-main");
         $(formMain).validate();
 
@@ -191,18 +223,21 @@ void WriteHtmlFormHeader(string realEntityName)
 
             // Process Form
             $.post('/<#=realEntityName#>/Post', $(this).serialize(), function (data) {
-                  if (data.success) {
-                      window.location = "/<#=realEntityName#>?st=success";
-                  } else {
-                      alert(data.message);
-                      ProcessServerValidation(data);
-                  }
-              });
+                if (data.success) 
+                    {
+                        window.location = "/<#=realEntityName#>?st=success";
+                    }
+                    else
+                    {
+                        alert(data.message);
+                        ProcessServerValidation(data);
+                    }
+            });
             return false;
         });
 
 
-    });
+});
 </script>
 
 <h1> <#=realEntityName#> </h1>
@@ -220,45 +255,43 @@ void WriteHtmlFormFooter()
 }
 
 
-    void WriteHtmlFormListHeader(string realEntityName)
+void WriteHtmlFormListHeader(string realEntityName)
 {
 #>
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('.table').dataTable({
-            "aaSorting": [[1, "asc"]],
-            "iDisplayLength": 200,
-        });
-
-        // -------------------------------------------
-        $(".tr-delete").on("click", function() {
-            var result = confirm("Delete this record?");
-            if (result == true) {
-                var trDel = $(this).closest('tr');
-                var guid = $(trDel).data('id');
-
-                $.post(
-                    '/Client/Delete/' + guid,
-                    $(this).serialize(),
-                    function(data) {
-                        console.log(data);
-                        if (data.success) {
-                            console.log(data);
-                            $(trDel).find("td").addClass('alert alert-error');
-                            $(trDel).fadeOut(1300, function() { $(trDel).remove(); });
-                        } else {
-                            alert(data.message);
-                        }
-                    });
-            };
-
-        });
-
-
-        // -------------------------------------------
-
+    $('.table').dataTable({
+    "aaSorting": [[1, "asc"]],
+    "iDisplayLength": 200,
     });
+
+
+    $(".tr-delete").on("click", function() {
+        var result = confirm("Delete this record?");
+        if (result == true) 
+        {
+            var trDel = $(this).closest('tr');
+            var guid = $(trDel).data('id');
+
+            $.post('/Client/Delete/' + guid, $(this).serialize(), function(data) {
+                console.log(data);
+                if (data.success) 
+                {
+                    console.log(data);
+                    $(trDel).find("td").addClass('alert alert-error');
+                    $(trDel).fadeOut(1300, function() { $(trDel).remove(); });
+                }
+                else {
+                    alert(data.message);
+                }
+
+            });
+        };
+    });
+
+
+});
 
 </script>
 
@@ -276,5 +309,20 @@ void WriteHtmlFormListFooter()
 
 <#+
 }
+
+void WriteHtmlMenuHeader()
+{
+#>
+<ul class="nav nav-pills">
+<#+
+}
+
+void WriteHtmlMenuFooter()
+{
+#>
+</ul>
+<#+
+}
+
 #>
 
