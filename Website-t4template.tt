@@ -126,7 +126,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
         realPropertyName = FixName(realPropertyName);
         string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-                <td>@item.<#=realPropertyName#></tdh>  
+                <td>@item.<#=realPropertyName#></td>  
 <# } #>
                 <td>
                     <i class="fa @(item.Active ? "fa-check" : "")">
