@@ -8,7 +8,7 @@
 // Change Log v2.2
 // 
 //
-//
+// 03/05/2014 : Pluralized EF Name !
 // 03/04/2014 : Removed HTML code into bew file
 // 03/01/2014 : Update all areas (crazy rain in socal)
 
@@ -56,6 +56,11 @@ CheckFolder("Validations");
 foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
 {
     // string realEntityName = entity.Name.Replace(tablePrefix, string.Empty);  //<-- remove leading table name
+        
+        // Get pluralized name
+        EntitySetBase entity1 = container.BaseEntitySets.FirstOrDefault(set => set.ElementType == entity);
+        string pluralizedName = entity1.Name;
+
     string realEntityName = entity.Name;
     int index = 0;
     while(index <= realEntityName.Length){
@@ -118,7 +123,7 @@ public class <#= realEntityName #> {
 
     public class Extend : DbModel
     {
-        //
+        public string ActiveYesNo { get; set; }
     }
 
     public class DbModel
@@ -149,7 +154,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=entity.Name#>.OrderBy(h => h.sort).ToList();
+            var data = ctx.<#=pluralizedName#>.OrderBy(h => h.sort).ToList();
             return data.Select(Mappers.<#=realEntityName#>.Basic).ToList();
         }
     }
@@ -158,7 +163,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=entity.Name#>.Where(h =>h.active).OrderBy(h => h.sort).ToList();
+            var data = ctx.<#=pluralizedName#>.Where(h =>h.active).OrderBy(h => h.sort).ToList();
             return data.Select(Mappers.<#=realEntityName#>.Basic).ToList();
         }
     }
@@ -167,7 +172,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=entity.Name#>.FirstOrDefault(h => h.id == id);
+            var data = ctx.<#=pluralizedName#>.FirstOrDefault(h => h.id == id);
             return data != null ? Mappers.<#=realEntityName#>.Basic(data) : null;
         }
     }
@@ -176,7 +181,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=entity.Name#>.FirstOrDefault(h => h.guid == guid);
+            var data = ctx.<#=pluralizedName#>.FirstOrDefault(h => h.guid == guid);
             return data != null ? Mappers.<#=realEntityName#>.Basic(data) : null;
         }
     }
@@ -240,7 +245,7 @@ public class <#= realEntityName #> {
                     data.<#= edmProperty #> = view.<#= realPropertyName #>;
 <# } #>
 
-                    ctx.<#=entity.Name#>s.Add(data);
+                    ctx.<#=pluralizedName#>.Add(data);
                     ctx.SaveChanges();
                     
                     Tracker.Track(TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
@@ -264,7 +269,7 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    data = ctx.<#=entity.Name#>s.FirstOrDefault(c => c.guid == view.Guid);
+                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == view.Guid);
 
                     if (data != null)
                     {
@@ -298,10 +303,10 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    var data = ctx.<#=entity.Name#>s.FirstOrDefault(c => c.id == id);
+                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == id);
                     if (data != null)
                     {
-                        ctx.<#=entity.Name#>s.Remove(data);
+                        ctx.<#=pluralizedName#>.Remove(data);
                         ctx.SaveChanges();
                         Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
                     }
@@ -322,10 +327,10 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    var data = ctx.<#=entity.Name#>s.FirstOrDefault(c => c.guid == guid);
+                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == guid);
                     if (data != null)
                     {
-                        ctx.<#=entity.Name#>s.Remove(data);
+                        ctx.<#=pluralizedName#>.Remove(data);
                         ctx.SaveChanges();
                         Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
                     }
