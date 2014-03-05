@@ -40,6 +40,11 @@ CheckFolder("Tools");
 WriteTablesHeader();
   foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
     {
+
+        // Get pluralized name
+        EntitySetBase entity1 = container.BaseEntitySets.FirstOrDefault(set => set.ElementType == entity);
+        string pluralizedName = entity1.Name;
+
     string realEntityName = entity.Name;
     int index = 0;
     while(index <= realEntityName.Length){
