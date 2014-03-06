@@ -5,9 +5,10 @@
 <#@ output extension=".cs"#>
 <#
 
-// Change Log v2.2
+// Change Log v2.3
 // 
 //
+// 03/06/2014 : Removed Del by Guid, updated Ids
 // 03/05/2014 : Pluralized EF Name !
 // 03/04/2014 : Removed HTML code into bew file
 // 03/01/2014 : Update all areas (crazy rain in socal)
@@ -154,7 +155,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=pluralizedName#>.OrderBy(h => h.sort).ToList();
+            var data = ctx.<#=pluralizedName#>.OrderBy(h => h.id).ToList();
             return data.Select(Mappers.<#=realEntityName#>.Basic).ToList();
         }
     }
@@ -163,7 +164,7 @@ public static class <#= realEntityName #> {
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
-            var data = ctx.<#=pluralizedName#>.Where(h =>h.active).OrderBy(h => h.sort).ToList();
+            var data = ctx.<#=pluralizedName#>.Where(h =>h.active).OrderBy(h => h.id).ToList();
             return data.Select(Mappers.<#=realEntityName#>.Basic).ToList();
         }
     }
@@ -248,14 +249,14 @@ public class <#= realEntityName #> {
                     ctx.<#=pluralizedName#>.Add(data);
                     ctx.SaveChanges();
                     
-                    Tracker.Track(TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
+                    // Tracker.Track(TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
                 }
             }
         }
         catch (Exception ex)
         {
             data = new DAL.<#=entity.Name#>();
-            ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Create");
+            // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Create");
         }
 
         return Mappers.<#= realEntityName #>.Basic(data);
@@ -269,7 +270,7 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == view.Guid);
+                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == view.Id);
 
                     if (data != null)
                     {
@@ -284,14 +285,14 @@ public class <#= realEntityName #> {
 
                     ctx.SaveChanges();
                     
-                    Tracker.Track(TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.id);
+                    // Tracker.Track(TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.id);
                 }
             }
         }
         catch (Exception ex)
         {
             data = new DAL.<#=entity.Name#>();
-            ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Update");
+            // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Update");
         }
 
         return Mappers.<#= realEntityName #>.Basic(data);
@@ -308,43 +309,18 @@ public class <#= realEntityName #> {
                     {
                         ctx.<#=pluralizedName#>.Remove(data);
                         ctx.SaveChanges();
-                        Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
+                        // Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
                     }
                 }
             }
             catch (Exception ex)
             {
-                ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Id");
+                // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Id");
                 return false;
             }
 
             return true;
         }
-
-        public static bool Delete(Guid guid)
-        {
-            try
-            {
-                using (var ctx = new <#=code.Escape(container)#>())
-                {
-                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == guid);
-                    if (data != null)
-                    {
-                        ctx.<#=pluralizedName#>.Remove(data);
-                        ctx.SaveChanges();
-                        Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Guid");
-                return false;
-            }
-
-            return true;
-        }
-
 
 }
 <# 
@@ -451,4 +427,3 @@ void EndNamespace(string namespaceName)
 
 
 #>
-
