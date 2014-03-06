@@ -6,11 +6,12 @@
 <#
 
 // MVC Controller TT 
-// Change Log v1.0
+// Change Log v1.1
 //
 //
 //
 // 03/06/2014 : Create - build MVC Controller for Views
+// 03/06/2014 : Updted Methods with details of Model Names
 
 
 
@@ -62,36 +63,45 @@ WriteCNTRLHeader();
 
         public ActionResult Index()
         {
-            return View();
+            var data = BLL.Presenters.<#=realEntityName#>.GetAll();
+            return View(data);
         }
 
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid guid)
         {
-            return View();
+            var data = BLL.Presenters.<#=realEntityName#>.GetByGuid(guid);
+            return View(data);
         }
 
-        [HttpPost]
-        public JsonResult Create(BLL.Views.<#=realEntityName#>.Extend collection)
+         [HttpPost]
+        public string Create(BLL.Views.Client.Extend collection)
         {
-            var results = new JsonResult();
+            var results = new JsonMessageView();
 
-            return results;
-        }
-
-        [HttpPost]
-        public JsonResult Edit(int id, BLL.Views.<#=realEntityName#>.Extend collection)
-        {
-            var results = new JsonResult();
-
-            return results;
+            return JsonConvert.SerializeObject(results);
         }
 
         [HttpPost]
-        public JsonResult Delete(int id, BLL.Views.<#=realEntityName#>.Extend collection)
+        public string Edit(int id, BLL.Views.Client.Extend collection)
         {
-            var results = new JsonResult();
+            var results = new JsonMessageView();
 
-            return results;
+            return JsonConvert.SerializeObject(results);
+        }
+
+        [HttpPost]
+        public string Delete(Guid guid)
+        {
+            var results = new BLL.Views.JsonMessageView();
+
+            var data = BLL.Presenters.<#=realEntityName#>.GetByGuid(guid);
+            if (data != null)
+            {
+                results.message = "Deleted <#=realEntityName#> : " + data.Title;
+                results.success = BLL.Controllers.<#=realEntityName#>.Delete(data.Id);
+            }
+
+            return JsonConvert.SerializeObject(results);
         }
     }
 <# 
@@ -127,10 +137,9 @@ void WriteFile(string folder, string file, bool overwrite){
 void WriteCNTRLHeader()
 { #>
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using BLL.Views;
+using Newtonsoft.Json;
 
 namespace Web.Controllers
 {
