@@ -1,0 +1,146 @@
+<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ output extension=".cs"#>
+<#
+
+// MVC Controller TT 
+// Change Log v1.0
+//
+//
+//
+// 03/06/2014 : Create - build MVC Controller for Views
+
+
+
+
+// Initialization
+string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+CodeRegion region = new CodeRegion(this, 1);
+MetadataTools ef = new MetadataTools(this);
+     
+// Please set the options here 
+
+bool overwrite = true;
+string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
+// string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
+
+// var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
+var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
+    
+EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
+EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+// Checking folders
+CheckFolder("CNTRL");
+
+
+  foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
+    {
+string realEntityName = entity.Name;
+int index = 0;
+while(index <= realEntityName.Length){
+int p = realEntityName.IndexOf("_", index);
+if( p!=-1 ){
+realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
+index = p++;
+}
+else
+break;
+}
+realEntityName = FixName(realEntityName);
+// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+WriteCNTRLHeader();
+#>
+    public class <#=realEntityName#>Controller : Controller
+    {
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Create(BLL.Views.<#=realEntityName#>.Extend collection)
+        {
+            var results = new JsonResult();
+
+            return results;
+        }
+
+        [HttpPost]
+        public JsonResult Edit(int id, BLL.Views.<#=realEntityName#>.Extend collection)
+        {
+            var results = new JsonResult();
+
+            return results;
+        }
+
+        [HttpPost]
+        public JsonResult Delete(int id, BLL.Views.<#=realEntityName#>.Extend collection)
+        {
+            var results = new JsonResult();
+
+            return results;
+        }
+    }
+<# 
+WriteCNTRLFooter();
+WriteFile("CNTRL", realEntityName + "Controller.cs", overwrite);
+}
+#>
+
+
+<#+
+
+string FixName(string name){
+    return name.Substring(0,1).ToUpper() + name.Substring(1);
+}
+
+void CheckFolder(string folder){
+    string directory = Path.GetDirectoryName(Host.TemplateFile);
+    directory = Path.Combine(directory, folder);
+    if(!System.IO.Directory.Exists(directory))
+        System.IO.Directory.CreateDirectory(directory);
+}
+
+void WriteFile(string folder, string file, bool overwrite){
+    string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+    string outputFilePath = Path.Combine(templateDirectory,folder, file);
+
+    if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+    this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+}
+
+
+void WriteCNTRLHeader()
+{ #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace Web.Controllers
+{
+<#+ }
+
+
+void WriteCNTRLFooter()
+{ #>
+}
+<#+ }
+
+
+#>
