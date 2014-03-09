@@ -9,7 +9,7 @@
 // Change Log v1.2
 //
 //
-//
+// 03/09/2014 : Cleaned JS Delete (created app.js) to handle
 // 03/06/2014 : Added MVC Model header
 // 03/04/2014 : Separated all HTML page code from BLL.TT
 
@@ -275,29 +275,11 @@ void WriteHtmlFormListHeader(string realEntityName)
 
         // -------------------------------------------
         $(".tr-delete").on("click", function() {
-            var result = confirm("Delete this record?");
-            if (result == true) {
-                var trDel = $(this).closest('tr');
-                var guid = $(trDel).data('id');
-
-                $.post(
-                    '/<#=realEntityName#>/Delete/' + guid,
-                    $(this).serialize(),
-                    function(data) {
-                        console.log(data);
-                        if (data.success) {
-                            console.log(data);
-                            $(trDel).find("td").addClass('alert alert-error');
-                            $(trDel).fadeOut(1300, function() { $(trDel).remove(); });
-                        } else {
-                            alert(data.message);
-                        }
-                    });
-            };
-
+            DeleteRecordRemoveTr(this, '<#=realEntityName#>');
         });
 
         // -------------------------------------------
+        
 
     });
 </script>
