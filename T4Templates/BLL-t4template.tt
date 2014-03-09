@@ -321,6 +321,21 @@ public class <#= realEntityName #> {
 
             return true;
         }
+        
+        public static bool Delete(Guid guid)
+            {
+                bool isDeleted = false;
+                using (var ctx = new TraditionEntities())
+                {
+                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == guid);
+                    if (data != null)
+                    {
+                        isDeleted = Delete(data.id);
+                    }
+                }
+
+                return isDeleted;
+            }
 
 }
 <# 
