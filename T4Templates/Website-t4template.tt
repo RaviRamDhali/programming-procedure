@@ -9,7 +9,7 @@
 // Change Log v1.2
 //
 //
-//
+// 03/13/2014 : Replaced JS code /app.js has core code now
 // 03/13/2014 : Bug fix required fields, submit button
 // 03/09/2014 : Cleaned JS Delete (created app.js) to handle
 // 03/06/2014 : Added MVC Model header
@@ -171,7 +171,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
      </div>
  
      <div class="form-group">
-         <button type="submit" class="btn btn-primary">Primary</button>
+         <button id="btn-submit" type="submit" class="btn btn-primary">Submit</button>
          <input type="hidden" id="hdGuid" name="hdGuid" value="@Model.Guid" />
      </div>
 <# 
@@ -216,6 +216,7 @@ void WriteHtmlFormHeader(string realEntityName)
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script type="text/javascript" src="/Scripts/app.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         
@@ -227,14 +228,11 @@ void WriteHtmlFormHeader(string realEntityName)
             if (!$(formMain).valid()) { return false; }
 
             // Process Form
-            $.post('/<#=realEntityName#>/Post', $(this).serialize(), function (data) {
-                  if (data.success) {
-                      window.location = "/<#=realEntityName#>?st=success";
-                  } else {
-                      alert(data.message);
-                      ProcessServerValidation(data);
-                  }
-              });
+            var formData = $(this).serialize();
+            var formButton = $("#btn-submit");
+
+            UpdateRecord(formData, formButton, '<#=realEntityName#>');
+
             return false;
         });
 
