@@ -9,11 +9,11 @@
 // Change Log v1.2
 //
 //
+//
+// 03/13/2014 : Bug fix required fields, submit button
 // 03/09/2014 : Cleaned JS Delete (created app.js) to handle
 // 03/06/2014 : Added MVC Model header
 // 03/04/2014 : Separated all HTML page code from BLL.TT
-
-
 
 
 // Initialization
@@ -158,7 +158,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 #>
         <div class="form-group">
             <label for="<#=realPropertyField#>"><#=realPropertyName#></label>
-            <input type="text" class="form-control" name="<#=realPropertyField#>" id="<#=realPropertyField#>" value="@Model.<#=realPropertyName#>" class="required" />
+            <input type="text" name="<#=realPropertyField#>" id="<#=realPropertyField#>" value="@Model.<#=realPropertyName#>" class="form-control required" />
         </div>
 
 <# } #>
@@ -169,7 +169,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
      </div>
  
      <div class="form-group">
-         <button type="button" class="btn btn-primary">Primary</button>
+         <button type="submit" class="btn btn-primary">Primary</button>
          <input type="hidden" id="hdGuid" name="hdGuid" value="@Model.Guid" />
      </div>
 <# 
@@ -314,4 +314,3 @@ void WriteHtmlMenuFooter()
 <#+
 }
 
-#>
