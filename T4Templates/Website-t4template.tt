@@ -16,6 +16,8 @@
 // 03/04/2014 : Separated all HTML page code from BLL.TT
 
 
+
+
 // Initialization
 string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
 CodeGenerationTools code = new CodeGenerationTools(this);
@@ -314,3 +316,4 @@ void WriteHtmlMenuFooter()
 <#+
 }
 
+#>
