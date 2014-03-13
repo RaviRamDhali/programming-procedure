@@ -73,6 +73,15 @@ WriteCNTRLHeader();
             return View(data);
         }
 
+        [HttpPost]
+        public string Post(BLL.Views.Client.Extend collection)
+        {
+            var results = new JsonMessageView();
+
+            return JsonConvert.SerializeObject(results);
+        }
+         
+         
          [HttpPost]
         public string Create(BLL.Views.Client.Extend collection)
         {
