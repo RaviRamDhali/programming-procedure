@@ -1,5 +1,9 @@
 //---------------------------------------
 //---------------------------------------
+toastr.options = {
+    "positionClass": "toast-top-center"
+};
+
 function UpdateRecord(formData,formButton,controller) {
     var postUrl = '/' + controller + '/Post';
 
@@ -8,9 +12,11 @@ function UpdateRecord(formData,formButton,controller) {
     $.post(postUrl, formData, function (data) {
         var objJson = jQuery.parseJSON(data);
         if (objJson.success) {
-            window.location = "/" + controller +"?st=";
+            toastr.success(controller + ' record updated successfully!');
+            WaitAndRedirect("/" + controller + "?st=");
         } else {
             SpinningIconOffForButton(formButton);
+            toastr.error('There was an error updating ' + controller + ' record. Please try again!');
             // ProcessServerValidation(data);
         };
     });
@@ -37,10 +43,11 @@ function DeleteRecordRemoveTr(element, controller) {
             var objJson = jQuery.parseJSON(data);
 
             if (objJson.success) {
+                toastr.success(controller + ' record deleted successfully!');
                 RemoveTr(trDelete);
             } else {
                 SpinningIconOffForRemoveTr(trIcon, trDelete);
-                alert(objJson.message);
+                toastr.error('There was an error deleting ' + controller + ' record. Please try again!');
             };
 
         });
@@ -87,4 +94,10 @@ function CreateSpinningIcon() {
     var strHtml = "<i class='fa fa-spinner fa-spin'></i> Processing ... ";
     return strHtml;
 
+}
+
+function WaitAndRedirect(url) {
+    setTimeout(function () {
+        window.location = url;
+    }, 3000);
 }
