@@ -4,8 +4,9 @@ toastr.options = {
     "positionClass": "toast-top-center"
 };
 
-function UpdateRecord(formData,formButton,controller) {
+function UpdateRecord(objForm,formButton,controller) {
     var postUrl = '/' + controller + '/Post';
+    var formData = $(objForm).serialize();
 
     SpinningIconOnForButton(formButton);
 
@@ -16,15 +17,23 @@ function UpdateRecord(formData,formButton,controller) {
             WaitAndRedirect("/" + controller + "?st=");
         } else {
             SpinningIconOffForButton(formButton);
-            toastr.error('There was an error updating ' + controller + ' record. Please try again!');
-            // ProcessServerValidation(data);
+            toastr.error(objJson.message + '. There was an error updating ' + controller + ' record. Please try again!');
+            ProcessServerValidation(objForm, objJson.validation);
+            return false;
         };
     });
 };
 
+function ProcessServerValidation(objForm, data) {
+    var validator = $(objForm).validate();
+    $.each(data, function (i, vObj) {
+        var obj = {};
+        obj[vObj.ValidationField] = vObj.ValidationMessage;
 
-//---------------------------------------
-//---------------------------------------
+        validator.showErrors(obj);
+    });
+}
+
 function DeleteRecordRemoveTr(element, controller) {
     var trDelete = $(element).closest('tr');
     
@@ -55,9 +64,6 @@ function DeleteRecordRemoveTr(element, controller) {
         SpinningIconOffForRemoveTr(trIcon, trDelete);
     };
 }
-
-//---------------------------------------
-//---------------------------------------
 
 function RemoveTr(trDelete) {
     $(trDelete).removeClass().addClass('deleteTr');
