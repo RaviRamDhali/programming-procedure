@@ -5,7 +5,7 @@
 <#@ output extension=".cs"#>
 <#
 
-// Website TT
+// Website TT 
 // Change Log v1.2
 //
 //
@@ -26,17 +26,17 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-
-// Please set the options here
+     
+// Please set the options here 
 
 bool overwrite = true;
 string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
-var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
 // string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-
+    
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
@@ -65,7 +65,7 @@ realEntityName = FixName(realEntityName);
 // WriteHtmlMenuHeader(realEntityName);
 #>
 <li><a href="/<#=realEntityName#>"><#=realEntityName#></a></li>
-<#
+<# 
 
     }
 WriteHtmlMenuFooter();
@@ -113,7 +113,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
         realPropertyName = FixName(realPropertyName);
         string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-            <th><#=realPropertyName#></th>
+            <th><#=realPropertyName#></th>  
 <# } #>
             <th>active</th>
         </tr>
@@ -123,7 +123,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
         {
             <tr data-id="@item.Guid">
                 <td><a href="#" class="tr-delete"><i class="fa fa-trash-o"></i></a></td>
-                <td><a href="/<#=realEntityName#>/@item.Guid">Link to detail</a></td>
+                <td><a href="/<#=realEntityName#>/@item.Guid">Link to detail</a></td>    
 
 <#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
     {
@@ -131,7 +131,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
         realPropertyName = FixName(realPropertyName);
         string realPropertyField = FixName(realPropertyName).ToLower();
 #>
-                <td>@item.<#=realPropertyName#></td>
+                <td>@item.<#=realPropertyName#></td>  
 <# } #>
                 <td>
                     <i class="fa @(item.Active ? "fa-check" : "")">
@@ -144,7 +144,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 </table>
 
 
-<#
+<# 
     WriteHtmlFormListFooter();
     WriteFile("HTML", realEntityName + "List.htm", overwrite);
 // ------------------------------------------------------------------------
@@ -171,14 +171,14 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
          <label>Active</label>
          @Html.EditorFor(model => Model.Active)
      </div>
-
+ 
      <div class="form-group">
          <button id="btn-submit" type="submit" class="btn btn-primary">Submit</button>
          <input type="hidden" id="guid" name="guid" value="@Model.Guid" />
      </div>
-<#
+<# 
     WriteHtmlFormFooter();
-   WriteFile("HTML", realEntityName + "Detail.htm", overwrite);
+   WriteFile("HTML", realEntityName + "Detail.htm", overwrite);  
 }
 #>
 
@@ -202,7 +202,7 @@ void WriteFile(string folder, string file, bool overwrite){
     string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
     if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString());
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
     this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
@@ -221,7 +221,7 @@ void WriteHtmlFormHeader(string realEntityName)
 <script type="text/javascript" src="/Scripts/app.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
+        
         var formMain = $("#form-main");
         $(formMain).validate();
 
@@ -231,7 +231,7 @@ void WriteHtmlFormHeader(string realEntityName)
 
             // Process Form
             var formButton = $("#btn-submit");
-            UpdateRecord(formMain, formButton, '<#=realEntityName#>');
+            UpdateRecord(formMain, formButton, '<#=realEntityName#>');    
             return false;
         });
 
@@ -264,8 +264,8 @@ void WriteHtmlFormListHeader(string realEntityName)
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script type="text/javascript" src="/Scripts/app.js"></script>
 <script type="text/javascript">
-
     $(document).ready(function() {
         $('.table').dataTable({
             "aaSorting": [[1, "asc"]],
@@ -278,7 +278,7 @@ void WriteHtmlFormListHeader(string realEntityName)
         });
 
         // -------------------------------------------
-
+        
 
     });
 </script>
