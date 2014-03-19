@@ -5,12 +5,12 @@
 <#@ output extension=".cs"#>
 <#
 
-// Constants TT 
+// Constants TT
 // Change Log v1.0
 //
 //
 //
-// 03/05/2014 : Created 
+// 03/05/2014 : Created
 
 
 // Initialization
@@ -19,17 +19,17 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-     
-// Please set the options here 
+
+// Please set the options here
 
 bool overwrite = true;
 string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
-var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
 // string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-    
+
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
@@ -63,10 +63,9 @@ WriteTablesHeader();
 // WriteTablesHeader(realEntityName);
 #>
     public const string <#=realEntityName#> = "<#=realEntityName#>";
-<# 
+<#
     }
 WriteClassCloseFooter();
-//WriteFile("Tools", "Constants-Tables.cs", overwrite);
 #>
 
 
@@ -131,13 +130,16 @@ void WriteFile(string folder, string file, bool overwrite){
     string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
     if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString());
     this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
 
 void WriteTablesHeader()
 { #>
+    using System;
+    using System.ComponentModel;
+
     //for tablenames as in DB for Tracking
     public static class Tables
     {
