@@ -6,9 +6,10 @@
 <#
 
 // Change Log v2.3
-// 
 //
-// 03/06/2014 : Removed Del by Guid, updated Ids
+//
+// 03/19/2014 : Removed Del by Ids, updated Guid
+// 03/06/2014 : Removed Del by Ids, updated Guid
 // 03/05/2014 : Pluralized EF Name !
 // 03/04/2014 : Removed HTML code into bew file
 // 03/01/2014 : Update all areas (crazy rain in socal)
@@ -22,20 +23,20 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-     
-// Please set the options here 
+
+// Please set the options here
 
 bool overwrite = true;
 string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
-var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
 // string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-    
+
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
-    
+
 // Defining namespaces
 // string namespaceName = code.VsNamespaceSuggestion();  //** DEFAULT NameSpace **
 string namespaceName = "BLL";  //** CHANGE NameSpace to BLL**
@@ -57,7 +58,7 @@ CheckFolder("Validations");
 foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => modelNames.Count() == 0 || modelNames.Contains(u.Name)).OrderBy(e => e.Name))
 {
     // string realEntityName = entity.Name.Replace(tablePrefix, string.Empty);  //<-- remove leading table name
-        
+
         // Get pluralized name
         EntitySetBase entity1 = container.BaseEntitySets.FirstOrDefault(set => set.ElementType == entity);
         string pluralizedName = entity1.Name;
@@ -110,7 +111,7 @@ public class JsonMessageView
         public List<ValidationView> validation { get; set; }
     }
 
-<# 
+<#
     EndNamespace(namespaceNameViews);
     WriteFile("Views", "ValidationView.cs", overwrite);
 
@@ -140,7 +141,7 @@ public class <#= realEntityName #> {
 
 }
 
-<# 
+<#
     EndNamespace(namespaceNameViews);
     WriteFile("Views", realEntityName + "View.cs", overwrite);
 
@@ -188,7 +189,7 @@ public static class <#= realEntityName #> {
     }
 
 }
-<# 
+<#
     EndNamespace(namespaceNamePresenters);
     WriteFile("Presenters", realEntityName + "Presenter.cs", overwrite);
 
@@ -216,7 +217,7 @@ public static class <#= realEntityName #> {
         return view;
     }
 }
-<# 
+<#
     EndNamespace(namespaceNameMappers);
     WriteFile("Mappers", realEntityName + "Mapper.cs", overwrite);
 
@@ -248,7 +249,7 @@ public class <#= realEntityName #> {
 
                     ctx.<#=pluralizedName#>.Add(data);
                     ctx.SaveChanges();
-                    
+
                     // Tracker.Track(TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
                 }
             }
@@ -270,7 +271,7 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == view.Id);
+                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == view.Guid);
 
                     if (data != null)
                     {
@@ -284,8 +285,8 @@ public class <#= realEntityName #> {
 <# } #>
 
                     ctx.SaveChanges();
-                    
-                    // Tracker.Track(TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.id);
+
+                    // Tracker.Track(TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.guid);
                 }
             }
         }
@@ -298,31 +299,31 @@ public class <#= realEntityName #> {
         return Mappers.<#= realEntityName #>.Basic(data);
     }
 
-        public static bool Delete(int id)
+        public static bool Delete(Guid guid)
         {
             try
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == id);
+                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == guid);
                     if (data != null)
                     {
                         ctx.<#=pluralizedName#>.Remove(data);
                         ctx.SaveChanges();
-                        // Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
+                        // Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.guid);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Id");
+                // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Guid");
                 return false;
             }
 
             return true;
         }
-        
-        public static bool Delete(Guid guid)
+
+            public static bool Delete(Guid guid)
             {
                 bool isDeleted = false;
                 using (var ctx = new TraditionEntities())
@@ -337,8 +338,9 @@ public class <#= realEntityName #> {
                 return isDeleted;
             }
 
+
 }
-<# 
+<#
     EndNamespace(namespaceNameControllers);
     WriteFile("Controllers", realEntityName + "Controller.cs", overwrite);
     // Creating Validations------------------------------------------------------------------------
@@ -368,7 +370,7 @@ public class <#= realEntityName #> {
         return error;
     }
 }
-<# 
+<#
     EndNamespace(namespaceNameControllers);
     WriteFile("Validations", realEntityName + "Validator.cs", overwrite);
 }
@@ -391,7 +393,7 @@ void WriteFile(string folder, string file, bool overwrite){
     string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
     if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString());
     this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
@@ -399,8 +401,8 @@ void WriteHeader(params string[] extraUsings)
 {
 #>
 //------------------------------------------------------------------------------
-// <auto-generated>	This code was generated from a T4 template on:
-//		<#= DateTime.Now.ToString() #> 
+// <auto-generated> This code was generated from a T4 template on:
+//      <#= DateTime.Now.ToString() #>
 // </auto-generated>
 //------------------------------------------------------------------------------
 
@@ -413,7 +415,7 @@ using System.Text;
 
 <#+
 }
-   
+
 void BeginNamespace(string namespaceName, CodeGenerationTools code)
 {
     CodeRegion region = new CodeRegion(this);
