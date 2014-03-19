@@ -13,11 +13,11 @@ function UpdateRecord(objForm,formButton,controller) {
     $.post(postUrl, formData, function (data) {
         var objJson = jQuery.parseJSON(data);
         if (objJson.success) {
-            toastr.success(controller + ' record updated successfully!');
+            toastr.success(objJson.message);
             WaitAndRedirect("/" + controller + "?st=");
         } else {
             SpinningIconOffForButton(formButton);
-            toastr.error(objJson.message + '. There was an error updating ' + controller + ' record. Please try again!');
+            toastr.error(objJson.message + '. Please try again!');
             ProcessServerValidation(objForm, objJson.validation);
             return false;
         };
