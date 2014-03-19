@@ -5,13 +5,14 @@
 <#@ output extension=".cs"#>
 <#
 
-// MVC Controller TT 
-// Change Log v1.1
+// MVC Controller TT
+// Change Log v1.0
 //
 //
 //
+// 03/19/2014 : Added Update to replace Create/Update
 // 03/06/2014 : Create - build MVC Controller for Views
-// 03/06/2014 : Updted Methods with details of Model Names
+// 03/06/2014 : Create - build MVC Controller for Views
 
 
 
@@ -22,17 +23,17 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-     
-// Please set the options here 
+
+// Please set the options here
 
 bool overwrite = true;
 string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
-var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
 // string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-    
+
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
@@ -73,47 +74,95 @@ WriteCNTRLHeader();
             return View(data);
         }
 
-        [HttpPost]
-        public string Post(BLL.Views.Client.Extend collection)
+        public ActionResult Create()
         {
-            var results = new JsonMessageView();
-
-            return JsonConvert.SerializeObject(results);
-        }
-         
-         
-         [HttpPost]
-        public string Create(BLL.Views.Client.Extend collection)
-        {
-            var results = new JsonMessageView();
-
-            return JsonConvert.SerializeObject(results);
+            var data = new BLL.Views.<#=realEntityName#>.Extend();
+            return View("Details", data);
         }
 
         [HttpPost]
-        public string Edit(int id, BLL.Views.Client.Extend collection)
+        public string Post(BLL.Views.<#=realEntityName#>.Extend collection)
         {
             var results = new JsonMessageView();
 
+            var error = BLL.Validations.<#=realEntityName#>.Validate(collection);
+            if (error.Count > 0)
+            {
+                results.success = false;
+                results.message = "Validation Failed";
+                results.validation = error;
+                return JsonConvert.SerializeObject(results);
+            }
+
+
+            if (collection.Guid == Guid.Empty)
+            {
+                // Create record
+                var data = BLL.Controllers.<#=realEntityName#>.Create(collection);
+                if (data.Guid  != Guid.Empty)
+                {
+                    results.success = true;
+                    results.message = "Success creating " + collection.Title;
+                }
+                else
+                {
+                    results.success = false;
+                    results.message = "There was an error creating " + collection.Title;
+                }
+
+            }
+            else
+            {
+                // Update record
+                var data = BLL.Controllers.<#=realEntityName#>.Update(collection);
+                if (data != null)
+                {
+                    results.success = true;
+                    results.message = "Success updating " + collection.Title;
+                }
+                else
+                {
+                    results.success = false;
+                    results.message = "There was an error updating " + collection.Title;
+                }
+            }
+
+
             return JsonConvert.SerializeObject(results);
         }
+
+         //[HttpPost]
+        //public string Create(BLL.Views.Client.Extend collection)
+        //{
+            //var results = new JsonMessageView();
+            //
+            //return JsonConvert.SerializeObject(results);
+        //}
+        //
+        //[HttpPost]
+        //public string Edit(int id, BLL.Views.Client.Extend collection)
+        //{
+            //var results = new JsonMessageView();
+            //
+            //return JsonConvert.SerializeObject(results);
+        //}
 
         [HttpPost]
         public string Delete(Guid guid)
         {
             var results = new BLL.Views.JsonMessageView();
 
-            var data = BLL.Presenters.<#=realEntityName#>.GetByGuid(guid);
-            if (data != null)
+            var isDeleted = BLL.Controllers.Client.Delete(guid);
+            if (isDeleted)
             {
-                results.message = "Deleted <#=realEntityName#> : " + data.Title;
-                results.success = BLL.Controllers.<#=realEntityName#>.Delete(data.Id);
+                results.success = true;
+                results.message = "'Delete";
             }
 
             return JsonConvert.SerializeObject(results);
         }
     }
-<# 
+<#
 WriteCNTRLFooter();
 WriteFile("CNTRL", realEntityName + "Controller.cs", overwrite);
 }
@@ -138,7 +187,7 @@ void WriteFile(string folder, string file, bool overwrite){
     string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
     if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString());
     this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
