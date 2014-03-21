@@ -9,7 +9,7 @@
 // Change Log v1.2
 //
 //
-//
+// 03/20/2014 : Update Details to Detail page name
 // 03/19/2014 : Update JS code
 // 03/13/2014 : Replaced JS code /app.js has core code now
 // 03/13/2014 : Bug fix required fields, submit button
@@ -102,7 +102,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 <a href="/<#=realEntityName#>/Create" class="btn btn-success">New <#=realEntityName#></a>
 
 
-<table class="table table-striped">
+<table class="table table-striped dataTable">
     <thead>
         <tr>
             <th>trash</th>
@@ -117,6 +117,25 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 <# } #>
             <th>active</th>
         </tr>
+
+
+        <tr class="dataTable-input">
+            <th><input type="hidden" /></th>
+            <th><input type="hidden" /></th>
+
+
+<#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
+    {
+        string realPropertyName = code.Escape(edmProperty);
+        realPropertyName = FixName(realPropertyName);
+        string realPropertyField = FixName(realPropertyName).ToLower();
+#>
+            <th><input type="text" name="<#=realPropertyName#>" class="dataTable-search-int"/></th>  
+<# } #>
+
+            <th>active</th>
+        </tr>
+
     </thead>
     <tbody>
                 @foreach (var item in Model)
@@ -178,7 +197,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
      </div>
 <# 
     WriteHtmlFormFooter();
-   WriteFile("HTML", realEntityName + "Detail.htm", overwrite);  
+   WriteFile("HTML", realEntityName + "Details.htm", overwrite);  
 }
 #>
 
@@ -267,10 +286,6 @@ void WriteHtmlFormListHeader(string realEntityName)
 <script type="text/javascript" src="/Scripts/app.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.table').dataTable({
-            "aaSorting": [[1, "asc"]],
-            "iDisplayLength": 200,
-        });
 
         // -------------------------------------------
         $(".tr-delete").on("click", function() {
