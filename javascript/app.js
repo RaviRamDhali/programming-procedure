@@ -1,8 +1,30 @@
 //---------------------------------------
-//---------------------------------------
-toastr.options = {
-    "positionClass": "toast-top-center"
-};
+$(document).ready(function () {
+    //---------------------------------------
+    //--- jquery.dataTables ---
+    var oTable = $('table.dataTable').dataTable({
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bFilter": true,
+        "bSort": true,
+        "bSortCellsTop": true,
+        "sDom": '<"top"i>t<"bottom"><"clear">',
+        aoColumnDefs: [{ aTargets: [-1], bSortable: false }]
+    });
+
+    $("thead input").keyup(function () {
+        /* Filter on the column (the index) of this element */
+        oTable.fnFilter(this.value, $(".dataTable-input input").index(this));
+    });
+    //---------------------------------------
+
+    //---------------------------------------
+    toastr.options = {
+        "positionClass": "toast-top-center"
+    };
+
+});
+
 
 function UpdateRecord(objForm,formButton,controller) {
     var postUrl = '/' + controller + '/Post';
@@ -105,5 +127,6 @@ function CreateSpinningIcon() {
 function WaitAndRedirect(url) {
     setTimeout(function () {
         window.location = url;
-    }, 3000);
+    }, 1500);
 }
+
