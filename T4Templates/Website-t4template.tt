@@ -9,6 +9,9 @@
 // Change Log v1.2
 //
 //
+//
+// 03/21/2014 : File names changed to .cshtml
+// 03/21/2014 : Creating folders in HTML dir
 // 03/20/2014 : Update Details to Detail page name
 // 03/19/2014 : Update JS code
 // 03/13/2014 : Replaced JS code /app.js has core code now
@@ -67,6 +70,7 @@ realEntityName = FixName(realEntityName);
 <li><a href="/<#=realEntityName#>"><#=realEntityName#></a></li>
 <# 
 
+CheckFolder("HTML/" + realEntityName);
     }
 WriteHtmlMenuFooter();
 WriteFile("HTML", "_nav.htm", overwrite);
@@ -165,7 +169,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 
 <# 
     WriteHtmlFormListFooter();
-    WriteFile("HTML", realEntityName + "List.htm", overwrite);
+    WriteFile("HTML", realEntityName + "List.cshtml", overwrite);
 // ------------------------------------------------------------------------
 // ------------------------------------------------------------------------
 
@@ -197,7 +201,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
      </div>
 <# 
     WriteHtmlFormFooter();
-   WriteFile("HTML", realEntityName + "Details.htm", overwrite);  
+   WriteFile("HTML", realEntityName + "Details.cshtml", overwrite);  
 }
 #>
 
@@ -215,6 +219,7 @@ void CheckFolder(string folder){
     if(!System.IO.Directory.Exists(directory))
         System.IO.Directory.CreateDirectory(directory);
 }
+
 
 void WriteFile(string folder, string file, bool overwrite){
     string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
