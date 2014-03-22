@@ -314,7 +314,7 @@ void WriteHtmlFormListHeader(string realEntityName)
 void WriteHtmlFormListFooter()
 {
 #>
-
+</form>
 <#+
 }
 
