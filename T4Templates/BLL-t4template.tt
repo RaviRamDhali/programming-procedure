@@ -9,7 +9,7 @@
 //
 // 
 // 
-// 
+// 04/03/2014 : Removed code >  was not processing "_" table names
 // 03/20/2014 : ** Added logic for Create and Update now will do DateTime.Now
 // 03/20/2014 : ** Added logic for GUID and ID in Create and Update
 // 03/19/2014 : Removed Del by Ids, updated Guid
@@ -68,16 +68,20 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
         string pluralizedName = entity1.Name;
 
     string realEntityName = entity.Name;
-    int index = 0;
-    while(index <= realEntityName.Length){
-        int p = realEntityName.IndexOf("_", index);
-        if( p!=-1 ){
-            realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
-            index = p++;
-        }
-        else
-            break;
-    }
+
+    // REMOVED - was not processing "_" table names
+    //int index = 0;
+    //while(index <= realEntityName.Length){
+        //int p = realEntityName.IndexOf("_", index);
+        //if( p!=-1 ){
+            //realEntityName = realEntityName.Substring(0, p) + realEntityName.Substring(p+1,1).ToUpper() + realEntityName.Substring(p+2);
+            //index = p++;
+        //}
+        //else
+            //break;
+    //}
+
+
     realEntityName = FixName(realEntityName);
 
 // Creating ValidationView -----------------------------------------------------------------------------
