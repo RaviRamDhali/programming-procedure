@@ -251,7 +251,7 @@ public class <#= realEntityName #> {
     {
         string realPropertyName = code.Escape(edmProperty);
         realPropertyName = FixName(realPropertyName);
-        if( (realPropertyName.ToLower() != "id") && (realPropertyName.ToLower() != "guid")) {
+        if( realPropertyName.ToLower() != "id")  {
                 if(code.Escape(edmProperty.TypeUsage) == "System.DateTime") {#>
                     data.<#= edmProperty #> = DateTime.Now;
                 <#}else{
