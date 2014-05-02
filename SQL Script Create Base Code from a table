@@ -1,0 +1,387 @@
+--/////////////////////////////////////////////////////
+--//GetSet from Table Name for Views in Class as in View classes-- //
+--//created rram: 09/19/2012 //////////////////////////////////
+--//updated rram: 05/26/2013 //////////////////////////////////
+--/////////////////////////////////////////////////////
+
+DECLARE @ScriptClass NVARCHAR(MAX) = ''
+DECLARE @t NVARCHAR(max) = 'Customers'  --// Table Name
+DECLARE @e NVARCHAR(max) = 'ICMSEntities'  --// Entity Name
+DECLARE @abr NVARCHAR(max) = LOWER(LEFT(@t,1))
+
+PRINT '---  ' + @t + '  ---'
+PRINT '-------------------------------------'
+SELECT @ScriptClass = @ScriptClass + '
+public ' + CASE WHEN DATA_TYPE IN ('nvarchar','ntext','varchar','text', 'char', 'nchar') THEN 'string'
+               WHEN DATA_TYPE IN ('datetime', 'smalldatetime') THEN 'DateTime'
+               WHEN DATA_TYPE = 'bit' THEN 'bool'
+               WHEN DATA_TYPE = 'uniqueidentifier' THEN 'Guid'
+               WHEN DATA_TYPE = 'tinyint' THEN 'byte'
+               WHEN DATA_TYPE = 'smallint' THEN 'short'
+               WHEN DATA_TYPE IN ('numeric', 'decimal') THEN 'decimal'
+               WHEN DATA_TYPE = 'bigint' THEN 'long'
+               ELSE DATA_TYPE
+           END
+                       + ' ' + COLUMN_NAME + ' { get; set; }'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+
+PRINT @ScriptClass
+
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT 'public static ' + @t + 'View Basic(' + @t + ' data)'
+PRINT '{'
+PRINT 'var view = new ' + @t + 'View();'
+DECLARE @ScriptCView NVARCHAR(MAX) = ''
+SELECT @ScriptCView = @ScriptCView + '
+view.' + COLUMN_NAME + ' = '+ 'data.' + COLUMN_NAME + ';'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @ScriptCView
+PRINT 'return view;'
+PRINT '}'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+--/////////////////////////////////////////////////////
+
+
+DECLARE @sGetAll NVARCHAR(MAX) = ''
+PRINT '-------------------------------------'
+PRINT 'public static List<' + @t + 'View> GetAll()'
+PRINT '{'
+PRINT ' using (var ctx = new ' + @e + '())'
+PRINT '{'
+PRINT 'var data = ctx.' + @t + '.OrderBy('+ @abr + ' => '+ @abr + '.Title).ToList();'
+PRINT 'return data.Select(CustomView).ToList();'
+PRINT '}'
+PRINT '}'
+PRINT ''
+--/////////////////////////////////////////////////////
+DECLARE @sGetByID NVARCHAR(MAX) = ''
+PRINT '-------------------------------------'
+PRINT 'public static ' + @t + 'View GetByID(int id)'
+PRINT '{'
+PRINT ' using (var ctx = new ' + @e + '())'
+PRINT '{'
+PRINT ' var data = ctx.' + @t + '.FirstOrDefault(' + @abr + ' => ' + @abr + '.ID == id);'
+PRINT ' return data != null ? CustomView(data) : null;'
+PRINT '}'
+PRINT '}'
+PRINT ''
+
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT 'public static ' + @t + 'View Create(' + @t + 'View view' + ')'
+PRINT '{'
+PRINT 'var data = new ' + @t +'();'
+PRINT 'try'
+PRINT '    {'
+PRINT ' using (var ctx = new ' + @e + '())'
+PRINT '{'
+PRINT 'if (view.ID ==0){'
+DECLARE @ScriptCreate NVARCHAR(MAX) = ''
+SELECT @ScriptCreate = @ScriptCreate + '
+data.' + COLUMN_NAME + ' = '+ 'view.' + COLUMN_NAME + ';'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @ScriptCreate
+PRINT 'ctx.AddTo' + @t + '(data);'
+PRINT 'ctx.SaveChanges();'
+PRINT 'Tracker.Track(Tracker.TrackingState.Created, "Created ' + @t +'", "' + @t +'", data.ID);'
+PRINT '}'
+PRINT '}'
+PRINT '    }'
+PRINT 'catch (Exception ex)'
+PRINT '    {'
+PRINT '        ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "' + @t + '.Create");'
+PRINT '        data = new ' + @t +'();'
+PRINT '    }'
+PRINT 'return CustomView(data);'
+PRINT '}'
+--/////////////////////////////////////////////////////
+PRINT 'public static ' + @t + 'View Update(' + @t + 'View view' + ')'
+PRINT '{'
+PRINT 'var data = new ' + @t +'();'
+PRINT 'try'
+PRINT '    {'
+PRINT ' using (var ctx = new ' + @e + '())'
+PRINT '{'
+PRINT 'data = ctx.' +@t+ '.SingleOrDefault('+ @abr +' => '+ @abr +'.ID == view.ID);'
+PRINT 'if (data != null){'
+DECLARE @ScriptUpdate NVARCHAR(MAX) = ''
+SELECT @ScriptUpdate = @ScriptUpdate + '
+data.' + COLUMN_NAME + ' = '+ 'view.' + COLUMN_NAME + ';'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @ScriptUpdate
+PRINT 'ctx.SaveChanges();'
+PRINT 'Tracker.Track(Tracker.TrackingState.Updated, "Updated ' + @t +'", "' + @t +'", data.ID);'
+PRINT '}'
+PRINT '}'
+PRINT '    }'
+PRINT 'catch (Exception ex)'
+PRINT '    {'
+PRINT '        ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "' + @t + '.Update");'
+PRINT '        data = new ' + @t +'();'
+PRINT '    }'
+PRINT 'return CustomView(data);'
+PRINT '}'
+PRINT ''
+PRINT 'public static bool Delete(int id)'
+PRINT '{'
+PRINT 'bool del = false;'
+PRINT 'try'
+PRINT '{'
+PRINT 'using (var ctx = new ' + @e + '())'
+PRINT '{'
+PRINT 'var result = ctx.' + @t + '.SingleOrDefault(c => c.' + @t + ' == id);'
+PRINT 'if (result != null)'
+PRINT '{'
+PRINT 'ctx.DeleteObject(result);'
+PRINT 'ctx.SaveChanges();'
+PRINT 'Tracker.Track(Tracker.TrackingState.Deleted, "Deleted ' + @t +'", "' + @t +'", ID);'
+PRINT 'del = true;'
+PRINT '}'
+PRINT '}'
+PRINT '}'
+PRINT 'catch (Exception ex)'
+PRINT '{'
+PRINT 'ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "' + @t + '.Delete");'
+PRINT 'del = false;'
+PRINT '}'
+PRINT ''
+PRINT 'return del;'
+PRINT '}'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+
+
+
+
+--/////////////////////////////////////////////////////
+--//GetSet from Table Name for Views in Class as in Presenter classes -- //
+--//rram: 05/02/2011//////////////////////////////////
+--/////////////////////////////////////////////////////
+DECLARE @Script1 NVARCHAR(MAX) = ''
+SELECT @Script1 = @Script1 + '
+view.' + COLUMN_NAME + ' = '+ 'data.' + COLUMN_NAME + ';'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script1
+
+--/////////////////////////////////////////////////////
+--//GetSet from Table Name for Copying between Class objects as in Controller classes -- //
+--//added: umed: 07/22/2011//////////////////////////////////
+--/////////////////////////////////////////////////////
+DECLARE @Script2 NVARCHAR(MAX) = ''
+SELECT @Script2 = @Script2 + '
+data.' + COLUMN_NAME + ' = '+ 'view.' + COLUMN_NAME + ';'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script2
+
+--/////////////////////////////////////////////////////
+--/////////////////////////////////////////////////////
+DECLARE @Script3 NVARCHAR(MAX) = ''
+
+SELECT @Script3 = @Script3 + '
+' + COLUMN_NAME + ''
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script3
+--/////////////////////////////////////////////////////
+--/////////////////////////////////////////////////////
+DECLARE @Script4 NVARCHAR(MAX) = ''
+SELECT @Script4 = @Script4 + '
+' + COLUMN_NAME + ' = '+ @abr + '.' + COLUMN_NAME + ','
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script4
+--/////////////////////////////////////////////////////
+
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+--/////////////////////////////////////////////////////
+--//EVAL from Table Name for ASPX pages -- //
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+
+DECLARE @Script10 NVARCHAR(MAX) = ''
+SELECT @Script10 = @Script10 + '
+<th>' + COLUMN_NAME + '</th>'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script10
+
+
+DECLARE @Script11 NVARCHAR(MAX) = ''
+SELECT @Script11 = @Script11 + '
+<td><%#Eval("' + COLUMN_NAME + '")%> </td>'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script11
+
+--/////////////////////////////////////////////////////
+
+--/////////////////////////////////////////////////////
+--//FormFields from Table Name for web pages -- //
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+
+
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+DECLARE @Script20 NVARCHAR(MAX) = ''
+SELECT @Script20 = @Script20 + '
+<input type="text" name="' + COLUMN_NAME + '" id="' + COLUMN_NAME +'" />'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script20
+--/////////////////////////////////////////////////////
+
+
+--/////////////////////////////////////////////////////
+--//FormFields from BootStrap for web pages -- //
+-- BASIC CLEAN FIELD
+--//rram: 05/04/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+DECLARE @Script24 NVARCHAR(MAX) = ''
+SELECT @Script24 = @Script24 + '
+<div class="control-group clearfix">
+   <div class="span4">
+    <label>' + COLUMN_NAME + '</label>
+    <input type="text" name="' + COLUMN_NAME + '" id="' + COLUMN_NAME + '" />
+   </div>
+</div>
+'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script24
+
+--/////////////////////////////////////////////////////
+
+
+--/////////////////////////////////////////////////////
+--//FormFields from BootStrap for web pages -- //
+-- VENDOR PROJECT
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+DECLARE @Script25 NVARCHAR(MAX) = ''
+SELECT @Script25 = @Script25 + '
+<div class="input-prepend clearfix">
+   <div class="span4">
+      <span class="add-on add-on-label">' + COLUMN_NAME + '</span>
+      <input type="text" name="' + COLUMN_NAME + '" id="' + COLUMN_NAME + '" />
+   </div>
+</div>
+'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script25
+
+--/////////////////////////////////////////////////////
+
+
+--/////////////////////////////////////////////////////
+--//JQuery - Clear Form Fields from Table Name for web pages -- //
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+DECLARE @Script30 NVARCHAR(MAX) = ''
+Print 'function ClearForm() {'
+SELECT @Script30 = @Script30 + '
+$(''#' + COLUMN_NAME + ''').val('''');'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script30
+Print '}'
+
+--/////////////////////////////////////////////////////
+
+--/////////////////////////////////////////////////////
+--//JQuery - Fill Form Fields from Table Name for web pages -- //
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+DECLARE @Script40 NVARCHAR(MAX) = ''
+Print 'function FillForm(data) {'
+SELECT @Script40 = @Script40 + '
+$(''#' + COLUMN_NAME + ''').val(data.' +COLUMN_NAME+ ');'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script40
+Print '}'
+
+--/////////////////////////////////////////////////////
+
+--/////////////////////////////////////////////////////
+--//JS Array - Fill ARRAY web pages -- //
+--//rram: 02/26/2013//////////////////////////////////
+--/////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+
+DECLARE @Script50 NVARCHAR(MAX) = ''
+Print 'function arrFillForm(id) {
+'
+SELECT @Script50 = @Script50 + '
+' + COLUMN_NAME + ' = $(''#' + COLUMN_NAME+ ''').val();'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script50
+
+
+DECLARE @Script55 NVARCHAR(MAX) = ''
+Print 'arrForm = [];'
+Print 'arrForm.push({'
+SELECT @Script55 = @Script55 + '
+' + COLUMN_NAME + ' : ' + COLUMN_NAME+ ','
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @Script55
+Print '});'
+Print 'return arrForm;'
+Print '}'
+
+-- /////////////////////////////////////////////////////
+-- /////////////////////////////////////////////////////
+PRINT '-------------------------------------'
+PRINT 'BEGIN VALIDATION FIELDS'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+DECLARE @Script60 varchar(max)= ''
+SELECT @Script60 = @Script60 + '
+
+if (Tools.Utilities.IsStringNullOrEmpty(view.' + COLUMN_NAME + ')){
+var validationview = new ValidationView();
+validationview.ValidationField = "'+ COLUMN_NAME + '";
+validationview.ValidationMessage = "' + COLUMN_NAME + ' is required";
+error.Add(validationview);
+}'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT 'public static List<ValidationView> ValidateForPublicForm(' + @t + 'View view)'
+PRINT  '{'
+PRINT  ''
+PRINT  'var error = new List<ValidationView>();'
+PRINT  ''
+PRINT @Script60
+PRINT  ''
+PRINT   'return error;'
+PRINT  '}'
+PRINT  ''
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+--/////////////////////////////////////////////////////
