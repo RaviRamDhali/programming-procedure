@@ -5,10 +5,13 @@
 <#@ output extension=".cs"#>
 <#
 
-// Change Log v3.0
+// Change Log v4.0
 //
 // 
 // 
+// 06/03/2014 : **Major Name changes to BLL Namespaces (Command Query Responsibility Segregation (CQRS))
+// 06/03/2014 : Commands, Queries, ModelViews (was Controller, Presenter, Views)
+// 06/03/2014 : Commands, Queries, ModelViews (was Controller, Presenter, Views)
 // 04/03/2014 : Removed code >  was not processing "_" table names
 // 03/20/2014 : ** Added logic for Create and Update now will do DateTime.Now
 // 03/20/2014 : ** Added logic for GUID and ID in Create and Update
@@ -45,17 +48,17 @@ EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDe
 // string namespaceName = code.VsNamespaceSuggestion();  //** DEFAULT NameSpace **
 string namespaceName = "BLL";  //** CHANGE NameSpace to BLL**
 
-string namespaceNameViews = namespaceName + ".Views";
-string namespaceNameControllers = namespaceName + ".Controllers";
-string namespaceNamePresenters = namespaceName + ".Presenters";
+string namespaceNameModelViews = namespaceName + ".ModelViews";
+string namespaceNameCommands = namespaceName + ".Commands";
+string namespaceNameQueries = namespaceName + ".Queries";
 string namespaceNameMappers = namespaceName + ".Mappers";
 string namespaceNameValidations = namespaceName + ".Validations";
-var namspaceNames = new string [] {dalNamespace, namespaceName, namespaceNameViews, namespaceNameControllers, namespaceNamePresenters, namespaceNameMappers, namespaceNameValidations};
+var namspaceNames = new string [] {dalNamespace, namespaceName, namespaceNameModelViews, namespaceNameCommands, namespaceNameQueries, namespaceNameMappers, namespaceNameValidations};
 
 // Checking folders
-CheckFolder("Views");
-CheckFolder("Controllers");
-CheckFolder("Presenters");
+CheckFolder("ModelViews");
+CheckFolder("Commands");
+CheckFolder("Queries");
 CheckFolder("Mappers");
 CheckFolder("Validations");
 
@@ -86,7 +89,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().Where(u => m
 
 // Creating ValidationView -----------------------------------------------------------------------------
     WriteHeader(namspaceNames);
-    BeginNamespace(namespaceNameViews, code);
+    BeginNamespace(namespaceNameModelViews, code);
 #>
 
 public class ValidationView {
@@ -120,13 +123,13 @@ public class JsonMessageView
     }
 
 <# 
-    EndNamespace(namespaceNameViews);
-    WriteFile("Views", "ValidationView.cs", overwrite);
+    EndNamespace(namespaceNameModelViews);
+    WriteFile("ModelViews", "ValidationView.cs", overwrite);
 
 
 // Creating Views-----------------------------------------------------------------------------
     WriteHeader(namspaceNames);
-    BeginNamespace(namespaceNameViews, code);
+    BeginNamespace(namespaceNameModelViews, code);
 #>
 
 public class <#= realEntityName #> {
@@ -150,17 +153,17 @@ public class <#= realEntityName #> {
 }
 
 <# 
-    EndNamespace(namespaceNameViews);
-    WriteFile("Views", realEntityName + "View.cs", overwrite);
+    EndNamespace(namespaceNameModelViews);
+    WriteFile("ModelViews", realEntityName + "ModelView.cs", overwrite);
 
-// Creating Presenters------------------------------------------------------------------------
+// Creating Queries------------------------------------------------------------------------
     WriteHeader(namspaceNames);
-    BeginNamespace(namespaceNamePresenters, code);
+    BeginNamespace(namespaceNameQueries, code);
 #>
 
 public static class <#= realEntityName #> {
 
-    public static List<Views.<#=realEntityName#>.Extend> GetAll()
+    public static List<ModelViews.<#=realEntityName#>.Extend> GetAll()
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
@@ -169,7 +172,7 @@ public static class <#= realEntityName #> {
         }
     }
 
-    public static List<Views.<#=realEntityName#>.Extend> GetActive()
+    public static List<ModelViews.<#=realEntityName#>.Extend> GetActive()
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
@@ -178,7 +181,7 @@ public static class <#= realEntityName #> {
         }
     }
 
-    public static Views.<#=realEntityName#>.Extend GetById(int id)
+    public static ModelViews.<#=realEntityName#>.Extend GetById(int id)
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
@@ -187,7 +190,7 @@ public static class <#= realEntityName #> {
         }
     }
 
-    public static Views.<#=realEntityName#>.Extend GetByGuid(Guid guid)
+    public static ModelViews.<#=realEntityName#>.Extend GetByGuid(Guid guid)
     {
         using (var ctx = new <#=code.Escape(container)#>())
         {
@@ -198,8 +201,8 @@ public static class <#= realEntityName #> {
 
 }
 <# 
-    EndNamespace(namespaceNamePresenters);
-    WriteFile("Presenters", realEntityName + "Presenter.cs", overwrite);
+    EndNamespace(namespaceNameQueries);
+    WriteFile("Queries", realEntityName + "Query.cs", overwrite);
 
 // Creating Mappers------------------------------------------------------------------------
     WriteHeader(namspaceNames);
@@ -208,9 +211,9 @@ public static class <#= realEntityName #> {
 
 public static class <#= realEntityName #> {
 
-    public static Views.<#= realEntityName #>.Extend Basic(DAL.<#=entity.Name#> data)
+    public static ModelViews.<#= realEntityName #>.Extend Basic(DAL.<#=entity.Name#> data)
     {
-        var view = new Views.<#= realEntityName #>.Extend();
+        var view = new ModelViews.<#= realEntityName #>.Extend();
 
 <#foreach (EdmProperty edmProperty in entity.Properties.Where(p => p.TypeUsage.EdmType is PrimitiveType && p.DeclaringType == entity))
     {
@@ -229,14 +232,14 @@ public static class <#= realEntityName #> {
     EndNamespace(namespaceNameMappers);
     WriteFile("Mappers", realEntityName + "Mapper.cs", overwrite);
 
-// Creating Controllers------------------------------------------------------------------------
+// Creating Commands------------------------------------------------------------------------
     WriteHeader(namspaceNames);
-    BeginNamespace(namespaceNameControllers, code);
+    BeginNamespace(namespaceNameCommands, code);
 #>
 
 public class <#= realEntityName #> {
 
-        public static Views.<#= realEntityName #>.Extend Create(Views.<#= realEntityName #>.Extend view) {
+        public static ModelViews.<#= realEntityName #>.Extend Create(ModelViews.<#= realEntityName #>.Extend view) {
 
             var data = new DAL.<#=entity.Name#>();
 
@@ -277,7 +280,7 @@ public class <#= realEntityName #> {
         return Mappers.<#= realEntityName #>.Basic(data);
     }
 
-        public static Views.<#= realEntityName #>.Extend Update(Views.<#= realEntityName #>.Extend view) {
+        public static ModelViews.<#= realEntityName #>.Extend Update(ModelViews.<#= realEntityName #>.Extend view) {
 
             var data = new DAL.<#=entity.Name#>();
 
@@ -348,8 +351,8 @@ public class <#= realEntityName #> {
 
 }
 <# 
-    EndNamespace(namespaceNameControllers);
-    WriteFile("Controllers", realEntityName + "Controller.cs", overwrite);
+    EndNamespace(namespaceNameCommands);
+    WriteFile("Commands", realEntityName + "Command.cs", overwrite);
     // Creating Validations------------------------------------------------------------------------
     WriteHeader(namspaceNames);
     BeginNamespace(namespaceNameValidations, code);
@@ -357,7 +360,7 @@ public class <#= realEntityName #> {
 
 public class <#= realEntityName #> {
 
-        public static List<ValidationView> Validate(Views.<#= realEntityName #>.Extend view) {
+        public static List<ValidationView> Validate(ModelViews.<#= realEntityName #>.Extend view) {
 
             var error = new List<ValidationView>();
 
@@ -378,7 +381,7 @@ public class <#= realEntityName #> {
     }
 }
 <# 
-    EndNamespace(namespaceNameControllers);
+    EndNamespace(namespaceNameCommands);
     WriteFile("Validations", realEntityName + "Validator.cs", overwrite);
 }
 #>
@@ -409,8 +412,8 @@ void WriteHeader(params string[] extraUsings)
 {
 #>
 //------------------------------------------------------------------------------
-// <auto-generated>	This code was generated from a T4 template on:
-//		<#= DateTime.Now.ToString() #> 
+// <auto-generated> This code was generated from a T4 template on:
+//      <#= DateTime.Now.ToString() #> 
 // </auto-generated>
 //------------------------------------------------------------------------------
 
