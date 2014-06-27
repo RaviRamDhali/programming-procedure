@@ -153,7 +153,7 @@ create table [dbo].[image](
 		[email] [nvarchar] (200) not null default ('0'),
 		[password] [nvarchar] (max) not null default ('0'),
 		[passwordSalt] [nvarchar] (max) not null default ('0'),
-		[clientID] [int] NOT NULL default (0),
+		[clientId] [int] NOT NULL default (0),
 		[administrator] [bit] NOT NULL default ((1)),
 		[lastLogin] [datetime] NULL,
 		[created] [datetime] NOT NULL default (getdate()),
