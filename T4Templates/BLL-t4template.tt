@@ -5,10 +5,12 @@
 <#@ output extension=".cs"#>
 <#
 
-// Change Log v4.0
+// Change Log v4.1
 //
 // 
 // 
+// 06/28/2014 : Added Del by Guid, updated Id (03/19/2014 this was reversed.)
+// 06/28/2014 : TrackingLog.CreateLog now working with Constants.tt
 // 06/03/2014 : **Major Name changes to BLL Namespaces (Command Query Responsibility Segregation (CQRS))
 // 06/03/2014 : Commands, Queries, ModelViews (was Controller, Presenter, Views)
 // 06/03/2014 : Commands, Queries, ModelViews (was Controller, Presenter, Views)
@@ -267,7 +269,7 @@ public class <#= realEntityName #> {
                     ctx.<#=pluralizedName#>.AddObject(data);
                     ctx.SaveChanges();
                     
-                    // Tracker.Track(TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
+                    TrackingLog.CreateLog(TrackingLog.TrackingState.Created, "Created <#=entity.Name#>", "<#=entity.Name#>", data.id);
                 }
             }
         }
@@ -288,7 +290,7 @@ public class <#= realEntityName #> {
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == view.Guid);
+                    data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == view.Id);
 
                     if (data != null)
                     {
@@ -312,7 +314,7 @@ public class <#= realEntityName #> {
 
                     ctx.SaveChanges();
                     
-                    // Tracker.Track(TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.guid);
+                    TrackingLog.CreateLog(TrackingLog.TrackingState.Updated, "Updated <#=entity.Name#>", "<#=entity.Name#>", data.id);
                 }
             }
         }
@@ -325,18 +327,18 @@ public class <#= realEntityName #> {
         return Mappers.<#= realEntityName #>.Basic(data);
     }
 
-        public static bool Delete(Guid guid)
+        public static bool Delete(int id)
         {
             try
             {
                 using (var ctx = new <#=code.Escape(container)#>())
                 {
-                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.guid == guid);
+                    var data = ctx.<#=pluralizedName#>.FirstOrDefault(c => c.id == id);
                     if (data != null)
                     {
                         ctx.<#=pluralizedName#>.DeleteObject(data);
                         ctx.SaveChanges();
-                        // Tracker.Track(TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.guid);
+                        TrackingLog.CreateLog(TrackingLog.TrackingState.Deleted, "Delete <#=entity.Name#>s", "<#=entity.Name#>", data.id);
                     }
                 }
             }
