@@ -142,8 +142,8 @@ create table [dbo].[image](
 		[id] [int] identity(1,1) primary key not null,
 		[title] [nvarchar](150) NOT NULL default ('0'),
 		[description] [nvarchar](max) NOT NULL default ('0'),
-		[active] [bit] NOT NULL ((1)),
-		[alert] [bit] NOT NULL ((0)),
+		[active] [bit] NOT NULL default ((1)),
+		[alert] [bit] NOT NULL default ((0)),
 	)
 	create table [dbo].[account](
 		[id] [int] identity(1,1) primary key not null,
