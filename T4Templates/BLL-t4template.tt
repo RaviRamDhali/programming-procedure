@@ -8,7 +8,7 @@
 // Change Log v4.1
 //
 // 
-// 
+// 06/28/2014 : ExceptionLog.CreateExceptionLog added
 // 06/28/2014 : Added Del by Guid, updated Id (03/19/2014 this was reversed.)
 // 06/28/2014 : TrackingLog.CreateLog now working with Constants.tt
 // 06/03/2014 : **Major Name changes to BLL Namespaces (Command Query Responsibility Segregation (CQRS))
@@ -22,6 +22,7 @@
 // 03/05/2014 : Pluralized EF Name !
 // 03/04/2014 : Removed HTML code into bew file
 // 03/01/2014 : Update all areas (crazy rain in socal)
+
 
 
 
@@ -276,7 +277,7 @@ public class <#= realEntityName #> {
         catch (Exception ex)
         {
             data = new DAL.<#=entity.Name#>();
-            // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Create");
+            ExceptionLog.CreateExceptionLog(ex, ExceptionLog.ErrorState.Significant, "<#= realEntityName #>Controller.Create");
         }
 
         return Mappers.<#= realEntityName #>.Basic(data);
@@ -321,7 +322,7 @@ public class <#= realEntityName #> {
         catch (Exception ex)
         {
             data = new DAL.<#=entity.Name#>();
-            // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Update");
+            ExceptionLog.CreateExceptionLog(ex, ExceptionLog.ErrorState.Significant, "<#= realEntityName #>Controller.Update");
         }
 
         return Mappers.<#= realEntityName #>.Basic(data);
@@ -344,7 +345,7 @@ public class <#= realEntityName #> {
             }
             catch (Exception ex)
             {
-                // ErrorHandler.InsertErrorInfo(ex, ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Guid");
+                ExceptionLog.CreateExceptionLog(ex, ExceptionLog.ErrorState.Significant, "<#= realEntityName #>Controller.Delete by Guid");
                 return false;
             }
 
