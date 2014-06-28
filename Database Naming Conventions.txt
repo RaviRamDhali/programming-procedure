@@ -31,7 +31,7 @@ CREATE TABLE [dbo].[account](
 	[guid] [uniqueidentifier] not null default ((newid())),
 	[lastName] [nvarchar](50) NOT NULL default ('0'),
 	[firstName] [nvarchar](50) NOT NULL default ('0'),
-	[email] [nvarchar](200) NOT NULL,
+	[email] [nvarchar](200) not null default ('0'),
 	[password] [nvarchar](max) NOT NULL,
 	[passwordSalt] [nvarchar](max) NOT NULL,
 	[administrator] [bit] not null default ((0))	
