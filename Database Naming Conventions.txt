@@ -156,8 +156,8 @@ create table [dbo].[image](
 		[clientId] [int] NOT NULL default (0),
 		[administrator] [bit] NOT NULL default ((1)),
 		[lastLogin] [datetime] NULL,
-		[created] [datetime] NOT NULL default (getdate()),
-		[modified] [datetime] NOT NULL,
+		[created] [datetime] not null default (getdate()),
+		[modified] [datetime] not null default (getdate()),
 		[active] [bit] NOT NULL default ((1)),
 	)
 
