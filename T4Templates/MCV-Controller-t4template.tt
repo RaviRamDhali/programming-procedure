@@ -5,11 +5,11 @@
 <#@ output extension=".cs"#>
 <#
 
-// MVC Controller TT
+// MVC Controller TT 
 // Change Log v1.0
 //
 //
-//
+// 06/28/2014 : Update CQRS
 // 03/19/2014 : Added Update to replace Create/Update
 // 03/06/2014 : Create - build MVC Controller for Views
 // 03/06/2014 : Create - build MVC Controller for Views
@@ -23,17 +23,17 @@ CodeGenerationTools code = new CodeGenerationTools(this);
 MetadataLoader loader = new MetadataLoader(this);
 CodeRegion region = new CodeRegion(this, 1);
 MetadataTools ef = new MetadataTools(this);
-
-// Please set the options here
+     
+// Please set the options here 
 
 bool overwrite = true;
 string inputFile = @"..\\DAL\\Model.edmx";   //** CHANGE SETTINGS  **
-var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **
+var dalNamespace = "DAL";                    //** CHANGE SETTINGS  **   
 // string tablePrefix = "c_";                   //** CHANGE SETTINGS  Not used**
 
 // var modelNames = new string[] {"c_master"};   //** CHANGE SETTINGS  for LIST OF TABLES**
 var modelNames = new string[] {};                //** CHANGE SETTINGS  for ALL TABLES in DB**
-
+    
 EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
 EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
@@ -64,24 +64,24 @@ WriteCNTRLHeader();
 
         public ActionResult Index()
         {
-            var data = BLL.Presenters.<#=realEntityName#>.GetAll();
+            var data = BLL.Queries.<#=realEntityName#>.GetAll();
             return View(data);
         }
 
         public ActionResult Details(Guid guid)
         {
-            var data = BLL.Presenters.<#=realEntityName#>.GetByGuid(guid);
+            var data = BLL.Queries.<#=realEntityName#>.GetByGuid(guid);
             return View(data);
         }
 
         public ActionResult Create()
         {
-            var data = new BLL.Views.<#=realEntityName#>.Extend();
+            var data = new BLL.ModelViews.<#=realEntityName#>.Extend();
             return View("Details", data);
         }
 
         [HttpPost]
-        public string Post(BLL.Views.<#=realEntityName#>.Extend collection)
+        public string Post(BLL.ModelViews.<#=realEntityName#>.Extend collection)
         {
             var results = new JsonMessageView();
 
@@ -98,7 +98,7 @@ WriteCNTRLHeader();
             if (collection.Guid == Guid.Empty)
             {
                 // Create record
-                var data = BLL.Controllers.<#=realEntityName#>.Create(collection);
+                var data = BLL.Commands.<#=realEntityName#>.Create(collection);
                 if (data.Guid  != Guid.Empty)
                 {
                     results.success = true;
@@ -114,7 +114,7 @@ WriteCNTRLHeader();
             else
             {
                 // Update record
-                var data = BLL.Controllers.<#=realEntityName#>.Update(collection);
+                var data = BLL.Commands.<#=realEntityName#>.Update(collection);
                 if (data != null)
                 {
                     results.success = true;
@@ -132,7 +132,7 @@ WriteCNTRLHeader();
         }
 
          //[HttpPost]
-        //public string Create(BLL.Views.Client.Extend collection)
+        //public string Create(BLL.ModelViews.Client.Extend collection)
         //{
             //var results = new JsonMessageView();
             //
@@ -140,7 +140,7 @@ WriteCNTRLHeader();
         //}
         //
         //[HttpPost]
-        //public string Edit(int id, BLL.Views.Client.Extend collection)
+        //public string Edit(int id, BLL.ModelViews.Client.Extend collection)
         //{
             //var results = new JsonMessageView();
             //
@@ -150,9 +150,9 @@ WriteCNTRLHeader();
         [HttpPost]
         public string Delete(Guid guid)
         {
-            var results = new BLL.Views.JsonMessageView();
+            var results = new BLL.ModelViews.JsonMessageView();
 
-            var isDeleted = BLL.Controllers.Client.Delete(guid);
+            var isDeleted = BLL.Commands.Client.Delete(guid);
             if (isDeleted)
             {
                 results.success = true;
@@ -162,7 +162,7 @@ WriteCNTRLHeader();
             return JsonConvert.SerializeObject(results);
         }
     }
-<#
+<# 
 WriteCNTRLFooter();
 WriteFile("CNTRL", realEntityName + "Controller.cs", overwrite);
 }
@@ -187,7 +187,7 @@ void WriteFile(string folder, string file, bool overwrite){
     string outputFilePath = Path.Combine(templateDirectory,folder, file);
 
     if(file.ToLower() == "debug.txt" || !File.Exists(outputFilePath) || overwrite)
-        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString());
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
     this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
 }
 
@@ -196,10 +196,10 @@ void WriteCNTRLHeader()
 { #>
 using System;
 using System.Web.Mvc;
-using BLL.Views;
+using BLL.ModelViews;
 using Newtonsoft.Json;
 
-namespace Web.Controllers
+namespace Web.Commands
 {
 <#+ }
 
