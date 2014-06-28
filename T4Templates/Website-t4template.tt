@@ -281,7 +281,7 @@ void WriteHtmlFormFooter()
 void WriteHtmlFormListHeader(string realEntityName)
 {
 #>
-@model List<BLL.Views.<#=realEntityName#>.Extend>
+@model List<BLL.ModelViews.<#=realEntityName#>.Extend>
 
 @{
     ViewBag.Title = "Index";
