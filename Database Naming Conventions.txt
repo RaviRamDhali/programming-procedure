@@ -173,58 +173,26 @@ create table [dbo].[image](
 
 	//------------------------------------------------------------//
 
-	create table [dbo].[block](
-		[id] [int] identity(1,1) primary key not null,
-		[guid] [uniqueidentifier] not null default ((newid())),
-		[title] [nvarchar](150) not null default ('0'),
-		[description] [nvarchar](max) not null default ('0'),
-		[cemeteryId] [int] not null default (0),
-		[crypts] [int] not null default (0),
-		[image] [nvarchar](150) not null default ('0'),
-		[created] [datetime] not null default (getdate()),
-		[modified] [datetime] not null default (getdate()),
-		[active] [bit] not null default ((1)),
-		[sort] [int] not null default ((0))	
-	)
+	
+	create table [dbo].[owner](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[clientId] [int] NOT NULL default (0),
+	[lastName] [nvarchar](50) NOT NULL default ('0'),
+	[firstName] [nvarchar](50) NOT NULL default ('0'),
+	[middleName] [nvarchar](50) NOT NULL default ('0'),
 
-	create table [dbo].[block](
-		[id] [int] identity(1,1) primary key not null,
-		[guid] [uniqueidentifier] not null default ((newid())),
-		[title] [nvarchar](150) not null default ('0'),
-		[description] [nvarchar](max) not null default ('0'),
-		[cemeteryId] [int] not null default (0),
-		[crypts] [int] not null default (0),
-		[image] [nvarchar](150) not null default ('0'),
-		[created] [datetime] not null default (getdate()),
-		[modified] [datetime] not null default (getdate()),
-		[active] [bit] not null default ((1)),
-		[sort] [int] not null default ((0))	
-	)
+	[address1] [nvarchar](150) NOT NULL default ('0'),
+	[address2] [nvarchar](150) NOT NULL default ('0'),
+	[city] [nvarchar](150) NOT NULL default ('0'),
+	[state] [nvarchar](2) NOT NULL default ('0'),
+	[zip] [nvarchar](10) NOT NULL default ('0'),
+	[phone] [nvarchar](10) NOT NULL default ('0'),
+	[cell] [nvarchar](10) NOT NULL default ('0'),
+	[email] [nvarchar](200) not null default ('0'),
+	
+	[created] [datetime] NOT NULL default (getdate()),
+	[modified] [datetime] NOT NULL default (getdate()),
+	[active] [bit] NOT NULL default ((1)),
+)
 
-	create table [dbo].[crypt](
-		[id] [int] identity(1,1) primary key not null,
-		[guid] [uniqueidentifier] not null default ((newid())),
-		[title] [nvarchar](150) not null default ('0'),
-		[description] [nvarchar](max) not null default ('0'),
-		[blockId] [int] not null default (0),
-		[niches] [int] not null default (0),
-		[image] [nvarchar](150) not null default ('0'),
-		[created] [datetime] not null default (getdate()),
-		[modified] [datetime] not null default (getdate()),
-		[active] [bit] not null default ((1)),
-		[sort] [int] not null default ((0))	
-	)
-
-	create table [dbo].[niche](
-		[id] [int] identity(1,1) primary key not null,
-		[guid] [uniqueidentifier] not null default ((newid())),
-		[title] [nvarchar](150) not null default ('0'),
-		[description] [nvarchar](max) not null default ('0'),
-		[cryptId] [int] not null default (0),
-		[image] [nvarchar](150) not null default ('0'),
-		[created] [datetime] not null default (getdate()),
-		[modified] [datetime] not null default (getdate()),
-		[active] [bit] not null default ((1)),
-		[group] [int] not null default ((0)),
-		[sortB] [int] not null default ((0))	
-	)
