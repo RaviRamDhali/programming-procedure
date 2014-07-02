@@ -1,0 +1,35 @@
+SELECT YEAR(created) AS [Year],
+   MONTH(created) AS [Month],
+   COUNT(*) AS [Count]
+FROM hr_app_applicant
+-- WHERE  YEAR(created) = @year
+   -- AND SUBJECT <> 'Welcome' --exclude default messages
+GROUP BY
+   YEAR(created),
+   MONTH(created);
+
+
+
+
+
+http://dba.stackexchange.com/questions/33975/get-counts-grouped-by-month-and-year
+
+Wrap this up in a stored procedure then:
+
+CREATE PROCEDURE GetYearCounts
+    @year INT
+AS
+    SELECT YEAR(crdate) AS y,
+           MONTH(crdate) AS m,
+           COUNT(*) AS tally
+    FROM   MESSAGE
+    WHERE  YEAR(crdate) = @year
+           AND SUBJECT <> 'Welcome' --exclude default messages
+    GROUP BY
+           YEAR(crdate),
+           MONTH(crdate);
+GO
+This will allow you to specify the year you want to get the data from in the call. I.e.
+
+EXEC GetYearCounts @year = 2012;
+GO
