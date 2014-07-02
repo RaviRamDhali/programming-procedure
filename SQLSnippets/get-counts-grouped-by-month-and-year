@@ -6,8 +6,8 @@ FROM hr_app_applicant
    -- AND SUBJECT <> 'Welcome' --exclude default messages
 GROUP BY
    YEAR(created),
-   MONTH(created);
-
+   MONTH(created)
+Order by [Month]
 
 
 
