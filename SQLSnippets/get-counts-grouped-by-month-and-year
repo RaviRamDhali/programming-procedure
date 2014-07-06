@@ -1,5 +1,18 @@
 SELECT YEAR(created) AS [Year],
    MONTH(created) AS [Month],
+   DAY(created) AS [Day],
+   COUNT(*) AS [Count]
+FROM Applicants
+GROUP BY
+   YEAR(created),
+   MONTH(created),
+   DAY(created)
+Order by [Year],[Month], [DAY] asc
+
+
+
+SELECT YEAR(created) AS [Year],
+   MONTH(created) AS [Month],
    COUNT(*) AS [Count]
 FROM hr_app_applicant
 -- WHERE  YEAR(created) = @year
