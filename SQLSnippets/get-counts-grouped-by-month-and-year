@@ -11,6 +11,8 @@ Order by [Year],[Month], [DAY] asc
 
 
 
+-- SQL Query Get counts for everyday day of the month -- 
+
 SELECT YEAR(created) AS [Year],
    MONTH(created) AS [Month],
    COUNT(*) AS [Count]
@@ -21,6 +23,34 @@ GROUP BY
    YEAR(created),
    MONTH(created)
 Order by [Month]
+
+
+DECLARE @DateFrom   DATE = '20140101',
+        @DateTo     DATE = '20141231'
+
+;WITH DateCTE (xDate) AS
+(
+    SELECT TOP (DATEDIFF(DAY, @DateFrom, @DateTo) + 1) 
+            DATEADD(DD, ROW_NUMBER() OVER (ORDER BY (SELECT NULL))-1, @DateFrom)
+    FROM syscolumns T1
+    --CROSS                 Uncomment if you need more dates
+    --JOIN syscolumns T2
+)
+SELECT   DT.xDate
+        ,DA.[Count]
+FROM DateCTE    DT
+LEFT
+JOIN 
+(
+    SELECT   [Count]    = COUNT(*)
+            ,Created    = CAST(created AS DATE)
+    FROM hr_app_applicant
+    GROUP BY CAST(created AS DATE)
+)               DA ON DT.xDate = DA.Created
+ORDER BY xDate ASC
+
+
+
 
 
 
