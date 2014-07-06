@@ -12,19 +12,6 @@ Order by [Year],[Month], [DAY] asc
 
 
 -- SQL Query Get counts for everyday day of the month -- 
-
-SELECT YEAR(created) AS [Year],
-   MONTH(created) AS [Month],
-   COUNT(*) AS [Count]
-FROM hr_app_applicant
--- WHERE  YEAR(created) = @year
-   -- AND SUBJECT <> 'Welcome' --exclude default messages
-GROUP BY
-   YEAR(created),
-   MONTH(created)
-Order by [Month]
-
-
 DECLARE @DateFrom   DATE = '20140101',
         @DateTo     DATE = '20141231'
 
@@ -51,6 +38,18 @@ ORDER BY xDate ASC
 
 
 
+
+
+SELECT YEAR(created) AS [Year],
+   MONTH(created) AS [Month],
+   COUNT(*) AS [Count]
+FROM hr_app_applicant
+-- WHERE  YEAR(created) = @year
+   -- AND SUBJECT <> 'Welcome' --exclude default messages
+GROUP BY
+   YEAR(created),
+   MONTH(created)
+Order by [Month]
 
 
 
