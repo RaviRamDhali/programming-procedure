@@ -1,0 +1,15 @@
+** Edik Simonian 09/05/2014
+
+Insert using simple select with custom field types/header
+
+
+INSERT INTO [dbo].[hr_job_to_customfield_group]
+           ([jobID]
+           ,[customfieldGroupID]
+           ,[created]
+           ,[active])
+select j.id, 32, '2014-09-05 00:00:00.000', 1  from hr_job as j
+join c_locs as c on j.FacilityID = c.id
+where c.state = 'ks' and j.c_code = '2209'
+
+GO
