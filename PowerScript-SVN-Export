@@ -1,0 +1,27 @@
+$repos = $args[0]
+$rev   = $args[1]
+$repodirname = Split-Path $repos -Leaf
+
+
+$path = "C:\temp\mylogfile.log"
+
+
+# Build url to repository
+$urepos = $repos -replace "\\", "/"
+$urepos
+$url = "file:///$urepos/"
+
+$destination = "C:\websites-wp\" + $repodirname
+$destination
+
+
+add-content -Path $path -Value "repos $repos" -Force
+add-content -Path $path -Value "rev $rev" -Force
+add-content -Path $path -Value "repodirname $repodirname" -Force
+add-content -Path $path -Value "url $url" -Force
+add-content -Path $path -Value "destination $destination" -Force
+
+
+# Build path to svn.exe
+$svn = "$env:VISUALSVN_SERVER\bin\svn.exe"
+&"$svn" export --force "$url" "$destination"
