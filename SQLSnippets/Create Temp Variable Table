@@ -1,0 +1,15 @@
+  -- rram: 09262014
+  Declare @listOfOIGTaskIDs table (id int)
+  Insert @listOfOIGTaskIDs(id) Select id from hr_app_task where ActionID = 
+4 and c_code = @CompanyCode
+  -- select * from  @listOfOIGTaskIDs
+
+
+  -- rram: 09262014
+Declare @list table (sp_id int, position_id int, applicantID int, FacilityID int)
+Insert @list(sp_id, position_id, applicantID, FacilityID) 
+Select p.id, p.position_id, p.applicantID, j.FacilityID from hr_app_emp_selected_position as p
+join hr_job as j on p.position_id = j.id
+where p.c_locsId = 0 and j.FacilityID > 0
+select * from  @list
+
