@@ -1,9 +1,10 @@
+# Get param from SVN
 $repos = $args[0]
 $rev   = $args[1]
+
+
+# Get trailing dir name
 $repodirname = Split-Path $repos -Leaf
-
-
-$path = "C:\temp\mylogfile.log"
 
 
 # Build url to repository
@@ -11,17 +12,27 @@ $urepos = $repos -replace "\\", "/"
 $urepos
 $url = "file:///$urepos/"
 
+# Destination Direcorty
 $destination = "C:\websites-wp\" + $repodirname
 $destination
 
 
+# Clear Destination Direcorty (delete all files)
+Remove-Item $destination\* -recurse
+
+
+# Build path to svn.exe
+$svn = "$env:VISUALSVN_SERVER\bin\svn.exe"
+
+# SVN Export Command
+&"$svn" export --force "$url" "$destination"
+
+
+
+# Tracking Log
+$path = "C:\temp\mylogfile.log"
 add-content -Path $path -Value "repos $repos" -Force
 add-content -Path $path -Value "rev $rev" -Force
 add-content -Path $path -Value "repodirname $repodirname" -Force
 add-content -Path $path -Value "url $url" -Force
 add-content -Path $path -Value "destination $destination" -Force
-
-
-# Build path to svn.exe
-$svn = "$env:VISUALSVN_SERVER\bin\svn.exe"
-&"$svn" export --force "$url" "$destination"
