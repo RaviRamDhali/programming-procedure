@@ -1,0 +1,12 @@
+USE AdventureWorks;
+GO
+SET STATISTICS IO  ON
+SET STATISTICS TIME  ON
+ 
+SELECT p.Name, pr.ProductReviewID
+FROM Production.Product p
+JOIN Production.ProductReview pr
+ON p.ProductID = pr.ProductID
+ 
+SET STATISTICS IO  OFF
+SET STATISTICS TIME  OFF
