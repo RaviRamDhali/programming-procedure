@@ -140,6 +140,7 @@ create table [dbo].[image](
 
 	create table [dbo].[roles](
 		[id] [int] identity(1,1) primary key not null,
+		[guid] [uniqueidentifier] not null default ((newid())),
 		[title] [nvarchar](150) NOT NULL default ('0'),
 		[description] [nvarchar](max) NOT NULL default ('0'),
 		[active] [bit] NOT NULL default ((1)),
