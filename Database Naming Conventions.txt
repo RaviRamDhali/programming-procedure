@@ -113,6 +113,17 @@ create table [dbo].[image](
 	)
 
 
+create table [dbo].[notes](
+	[id] [int] identity(1,1) primary key not null,
+	[guid] [uniqueidentifier] not null default ((newid())),
+	[accountId] [int] NOT NULL default (0),
+	[recordId] [int] NOT NULL default (0),
+	[recordTable] [nvarchar] (150) not null default ('0'),
+	[memo] [nvarchar](max) NOT NULL default ('0'),
+	[created] [datetime] NOT NULL default (getdate()),
+	[ipAddress] [nvarchar](50) NOT NULL default ('0'),
+)
+
 
 	create table [dbo].[exceptionLog](
 		[id] [int] identity(1,1) primary key not null,
