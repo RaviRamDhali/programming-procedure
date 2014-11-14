@@ -6,8 +6,13 @@ var jobs = (
             
             join f in ctx.c_locs on j.FacilityID equals f.id into joinF
             from f in joinF.DefaultIfEmpty() //<--- Left Join
-
-            select new {j,f}
+            
+            join f in ctx.c_locs on
+            new {locId = j.C_locsId} equals 
+            new {locId = f.Id}
+            into joinF from xF in joinF.DefaultIfEmpty()
+            
+            select new {joinF}
             
             ).ToList();
 
