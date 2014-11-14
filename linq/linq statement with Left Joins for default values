@@ -1,0 +1,14 @@
+// Linq statement with Left Joins for default values
+
+var jobs = (
+            from j in ctx.hr_job
+            where j.c_code == c_code
+            
+            join f in ctx.c_locs on j.FacilityID equals f.id into joinF
+            from f in joinF.DefaultIfEmpty() //<--- Left Join
+
+            select new {j,f}
+            
+            ).ToList();
+
+// begin filtering
