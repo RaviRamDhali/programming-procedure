@@ -1,0 +1,18 @@
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".fill").on("click", function () {
+
+            $('#Email').val($(this).data("email"));
+            $('#Password').val($(this).data("pw"));
+            $('#loginform').submit();
+
+        });
+
+        });
+</script>
+    
+<p> <a href="#" class="fill" data-email="Fake.User100@yahoo.com" data-pw="vwwbqa3l"> Fake.User100@yahoo.com </a>   |  vwwbqa3l </p>
+<p> <a href="#" class="fill" data-email="Fake.User200@aol.com" data-pw="l2g2a7k041mtrcp7heqs"> Fake.User200@aol.com </a> |  l2g2a7k041mtrcp7heqs </p>
