@@ -1,0 +1,37 @@
+@Html.CheckBox("AuthorizationExpires", Model.AuthorizationExpires) Check here if authorization expires
+
+@Html.DropDownList("st_code", new SelectList(stateList, "StateAbbr", "StateAbbr"), "- Select One -", new { @class = "hasState dropdown required" })
+
+@Html.RadioButton("Citizenship", Model.IsAlienAuthorized, new { data_action = "ShowAlien" }) An alien authorized to work
+
+@Html.RadioButton("Citizenship", Model.IsLawfulResident, new { data_action = "ShowLawful" }) A lawful permanent resident
+
+@Html.RadioButton("Citizenship", Model.IsNonUSCitizen)
+
+@Html.RadioButton("Citizenship", Model.IsUSCitizen) A citizen of the United States
+
+@Html.TextBoxFor(m => m.address, new { @class = "input-xlarge required" })
+
+@Html.TextBoxFor(m => m.apartment_number, new { @class = "input-small" })
+
+@Html.TextBoxFor(m => m.city, new { @class = "input-xlarge required" })
+
+@Html.TextBoxFor(m => m.email, new { @class = "" })
+
+@Html.TextBoxFor(m => m.email, new { @class = "required email" })
+
+@Html.TextBoxFor(m => m.ExpirationDate, new { @class = "required mask-date" })
+
+@Html.TextBoxFor(m => m.first_name, new { @class = "focusFirst required" })
+
+@Html.TextBoxFor(m => m.last_name, new { @class = "required" })
+
+@Html.TextBoxFor(m => m.middle_name, new { @class = "input-mini" })
+
+@Html.TextBoxFor(m => m.phone_Primary, new { @class = "required mask-date" })
+
+@Html.TextBoxFor(m => m.phone_Secondary, new { @class = "mask-phone" })
+
+@Html.TextBoxFor(m => m.phone_Secondary, new { @class = "mask-ssn" })
+
+@Html.TextBoxFor(m => m.zip, new { @class = "input-small required digits mask-zip" })
