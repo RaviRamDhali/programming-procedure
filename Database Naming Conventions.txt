@@ -252,3 +252,8 @@ create table [dbo].[contactTypes](
 	[active] [bit] NOT NULL default ((1)),
 )
 
+
+Referential integrity > relationships 
+ALTER TABLE memberContact ADD CONSTRAINT FK_memberContact_member
+FOREIGN KEY(memberId)
+REFERENCES Member(id)
