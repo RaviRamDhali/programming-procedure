@@ -1,3 +1,14 @@
+select YEAR(orderDate) AS [Year],
+   MONTH(orderDate) AS [Month], COUNT(*) AS [Count],SUM(orderPaidAmount) as TotalAmount
+from Orders
+--where year(date) = 2013
+group by YEAR(orderDate),
+   MONTH(orderDate)
+   Order by [Year], [Month]
+   
+   
+
+
 SELECT YEAR(created) AS [Year],
    MONTH(created) AS [Month],
    DAY(created) AS [Day],
