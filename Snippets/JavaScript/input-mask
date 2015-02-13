@@ -1,0 +1,13 @@
+$(document).ready(function () {
+    $('.focusFirst').focus();
+       // -----------------------------------------------------------------
+    // jquery.inputmask is a jQuery plugin which create an input mask.
+    $(".mask-number").inputmask("9999", { "clearIncomplete": true });
+    $('.mask-phone').inputmask("mask", { "mask": "(999) 999-9999", "clearIncomplete": true }); //specifying fn & options
+    $(".mask-zip").inputmask("99999", { "clearIncomplete": true });
+    $(".mask-ssn").inputmask("999-99-9999", { "clearIncomplete": true });
+    $(".mask-ssn4").inputmask("9999", { "clearIncomplete": true });
+    $(".mask-date").inputmask("99/99/9999", { "placeholder": "mm/dd/yyyy", "clearIncomplete": true });
+
+    // ----------------------------------------------------------------- 
+});
