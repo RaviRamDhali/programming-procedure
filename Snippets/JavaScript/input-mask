@@ -1,13 +1,15 @@
-$(document).ready(function () {
-    $('.focusFirst').focus();
-       // -----------------------------------------------------------------
     // jquery.inputmask is a jQuery plugin which create an input mask.
-    $(".mask-number").inputmask("9999", { "clearIncomplete": true });
-    $('.mask-phone').inputmask("mask", { "mask": "(999) 999-9999", "clearIncomplete": true }); //specifying fn & options
+    $(".mask-phone").inputmask("mask", { "mask": "(999) 999-9999", "clearIncomplete": true });
     $(".mask-zip").inputmask("99999", { "clearIncomplete": true });
     $(".mask-ssn").inputmask("999-99-9999", { "clearIncomplete": true });
     $(".mask-ssn4").inputmask("9999", { "clearIncomplete": true });
     $(".mask-date").inputmask("99/99/9999", { "placeholder": "mm/dd/yyyy", "clearIncomplete": true });
-
-    // ----------------------------------------------------------------- 
-});
+    $(".mask-middle-name").inputmask('Regex', { regex: "[a-zA-Z]{0,1}" });
+    $(".mask-name-inital").inputmask("a", { casing: "upper", "clearIncomplete": true });
+    $(".mask-dob-date").inputmask("date", { yearrange: { minyear: 1900, maxyear: new Date().getFullYear() - 10 }, "placeholder": "mm/dd/yyyy" });
+    $(".mask-uscis-number").inputmask('Regex', { regex: "[a-zA-Z0-9]{0,13}" })
+    $(".mask-alien-number").inputmask("999-999-999", { "clearIncomplete": false }); 
+    $(".mask-i94-number").inputmask('Regex', { regex: "[0-9]{0,11}" });
+    $(".mask-access-code").inputmask('Regex', { regex: "[0-9]{0,4}" });
+    $(".mask-alpha").inputmask('Regex', { regex: "[a-zA-Z ]{0,100}" });
+    $(".mask-alphanumeric").inputmask('Regex', { regex: "[a-zA-Z0-9 ]{0,100}" });
