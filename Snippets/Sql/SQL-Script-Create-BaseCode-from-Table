@@ -5,29 +5,32 @@
 --/////////////////////////////////////////////////////
 
 DECLARE @ScriptClass NVARCHAR(MAX) = ''
-DECLARE @t NVARCHAR(max) = 'Customers'
-DECLARE @e NVARCHAR(max) = 'ICMSEntities'
--- DECLARE @e NVARCHAR(max) = 'GroupProxyEntities'
-DECLARE @abr NVARCHAR(max) = LOWER(LEFT(@t,1))
+DECLARE @t NVARCHAR(max) = '{{YOUR_TABLE_NAME}}'
 
-PRINT '---  ' + @t + '  ---'
-PRINT '-------------------------------------'
+PRINT 'public class ' + @t 
+PRINT '{' 
 SELECT @ScriptClass = @ScriptClass + '
 public ' + CASE WHEN DATA_TYPE IN ('nvarchar','ntext','varchar','text', 'char', 'nchar') THEN 'string'
-               WHEN DATA_TYPE IN ('datetime', 'smalldatetime') THEN 'DateTime'
-               WHEN DATA_TYPE = 'bit' THEN 'bool'
-               WHEN DATA_TYPE = 'uniqueidentifier' THEN 'Guid'
-               WHEN DATA_TYPE = 'tinyint' THEN 'byte'
-               WHEN DATA_TYPE = 'smallint' THEN 'short'
-               WHEN DATA_TYPE IN ('numeric', 'decimal') THEN 'decimal'
-               WHEN DATA_TYPE = 'bigint' THEN 'long'
-               ELSE DATA_TYPE
-           END
-                       + ' ' + COLUMN_NAME + ' { get; set; }'
+WHEN DATA_TYPE IN ('datetime', 'smalldatetime') THEN 'DateTime'
+WHEN DATA_TYPE = 'bit' THEN 'bool'
+WHEN DATA_TYPE = 'uniqueidentifier' THEN 'Guid'
+WHEN DATA_TYPE = 'tinyint' THEN 'byte'
+WHEN DATA_TYPE = 'smallint' THEN 'short'
+WHEN DATA_TYPE IN ('numeric', 'decimal') THEN 'decimal'
+WHEN DATA_TYPE = 'bigint' THEN 'long'
+ELSE DATA_TYPE
+END
++ CASE
+WHEN IS_NULLABLE='Yes' AND  DATA_TYPE NOT IN ('nvarchar','ntext','varchar','text', 'char', 'nchar') THEN '?'
+ELSE ''
+END 
++ 
+ ' ' + COLUMN_NAME + ' { get; set; }'
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = @t
-
+ORDER BY COLUMN_NAME
 PRINT @ScriptClass
+PRINT '}'
 
 --/////////////////////////////////////////////////////
 PRINT '-------------------------------------'
