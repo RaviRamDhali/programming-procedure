@@ -1,0 +1,40 @@
+DEALLOCATE c1
+DECLARE @id NVARCHAR(max)
+DECLARE @title NVARCHAR(max)
+
+DECLARE @id2 NVARCHAR(max)
+DECLARE @title2 NVARCHAR(max)
+
+DECLARE c1 CURSOR FOR
+
+SELECT id, title FROM hr_app_task_action ORDER BY title, id
+OPEN c1
+
+FETCH NEXT FROM c1 INTO @id, @title
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+
+PRINT 'public enum ' + LOWER(@title) + ' // id ' + @id
+PRINT '{'
+
+
+	DECLARE Cur2 CURSOR FOR
+			SELECT title, id FROM dbo.hr_app_task_action_progress WHERE actionID = @id ORDER BY id, title
+	OPEN Cur2
+	FETCH NEXT FROM Cur2 INTO @title2, @id2
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+
+			PRINT REPLACE(@title2,' ', '_') + ' = ' + @id2 + ','
+
+			FETCH NEXT FROM Cur2 INTO @title2, @id2
+			END
+	CLOSE Cur2;
+	DEALLOCATE Cur2;
+
+
+PRINT '}'
+	
+FETCH NEXT FROM c1 INTO @id, @title
+END
