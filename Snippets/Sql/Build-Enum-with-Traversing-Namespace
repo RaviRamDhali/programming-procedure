@@ -15,6 +15,8 @@ FETCH NEXT FROM c1 INTO @id, @title
 WHILE @@FETCH_STATUS = 0
 BEGIN
 
+SET @title = REPLACE(@title,'-', '_')
+
 PRINT 'public enum ' + LOWER(@title) + ' // id ' + @id
 PRINT '{'
 
@@ -26,8 +28,17 @@ PRINT '{'
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
 
-			PRINT REPLACE(@title2,' ', '_') + ' = ' + @id2 + ','
+			SET @title2 = REPLACE(@title2,':', ' ')
+			SET @title2 = REPLACE(@title2,'(', '_')
+			SET @title2 = REPLACE(@title2,')', '_')
+			SET @title2 = REPLACE(@title2,' ', '_')
+			SET @title2 = REPLACE(@title2,'-', '_')
+			SET @title2 = REPLACE(@title2,'___', '_')
 
+
+			PRINT @title2 + ' = ' + @id2 + ','
+
+			
 			FETCH NEXT FROM Cur2 INTO @title2, @id2
 			END
 	CLOSE Cur2;
