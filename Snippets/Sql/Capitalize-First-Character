@@ -1,0 +1,1 @@
+SET word = UPPER(LEFT(word,1))+LOWER(SUBSTRING(word,2,LEN(word)))
