@@ -1,0 +1,17 @@
+[C#]
+
+<%# Eval("created", "{0:g}")%>  3/9/2008 4:05 PM
+
+String.Format("{0:t}", dt);  // "4:05 PM"                         ShortTime
+String.Format("{0:d}", dt);  // "3/9/2008"                        ShortDate
+String.Format("{0:T}", dt);  // "4:05:07 PM"                      LongTime
+String.Format("{0:D}", dt);  // "Sunday, March 09, 2008"          LongDate
+String.Format("{0:f}", dt);  // "Sunday, March 09, 2008 4:05 PM"  LongDate+ShortTime
+String.Format("{0:F}", dt);  // "Sunday, March 09, 2008 4:05:07 PM" FullDateTime
+String.Format("{0:g}", dt);  // "3/9/2008 4:05 PM"                ShortDate+ShortTime
+String.Format("{0:G}", dt);  // "3/9/2008 4:05:07 PM"             ShortDate+LongTime
+String.Format("{0:m}", dt);  // "March 09"                        MonthDay
+String.Format("{0:y}", dt);  // "March, 2008"                     YearMonth
+String.Format("{0:r}", dt);  // "Sun, 09 Mar 2008 16:05:07 GMT"   RFC1123
+String.Format("{0:s}", dt);  // "2008-03-09T16:05:07"             SortableDateTime
+String.Format("{0:u}", dt);  // "2008-03-09 16:05:07Z"            UniversalSortableDateTime
