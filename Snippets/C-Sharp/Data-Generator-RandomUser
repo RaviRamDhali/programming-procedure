@@ -1,0 +1,127 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Security.Policy;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BLL.DataGenerator
+{
+    /// <summary>
+    /// Using https://randomuser.me
+    /// </summary>
+
+    public class DummyUser
+    {
+        public class randomuser
+        {
+            public List<results> results { get; set; }
+        }
+
+        public class results
+        {
+            public user user { get; set; }
+            public string seed { get; set; }
+        }
+
+        public class user
+        {
+            public name name { get; set; }
+            public location location { get; set; }
+            public picture picture { get; set; }
+
+            public string gender { get; set; }
+            public string email { get; set; }
+            public string username { get; set; }
+            public string password { get; set; }
+            public string salt { get; set; }
+            public string md5 { get; set; }
+            public string sha1 { get; set; }
+            public string sha256 { get; set; }
+            public string registered { get; set; }
+            public string dob { get; set; }
+            public string phone { get; set; }
+            public string cell { get; set; }
+            public string SSN { get; set; }
+            public string version { get; set; }
+        }
+
+        public class name
+        {
+            public string title { get; set; }
+            public string first { get; set; }
+            public string last { get; set; }
+        }
+
+        public class location
+        {
+            public string street { get; set; }
+            public string city { get; set; }
+            public string state { get; set; }
+            public string zip { get; set; }
+        }
+
+        public class picture
+        {
+            public string large { get; set; }
+            public string medium { get; set; }
+            public string thumbnail { get; set; }
+        }
+
+
+        public static user GetSingleDummyUser()
+        {
+            var user = new user();
+
+            string url = "http://api.randomuser.me/";
+
+            var data = FetchJson(url);
+
+            if (data != null)
+                user = data.results.FirstOrDefault().user;
+
+            return user;
+        }
+
+        public static List<user> GetManyDummyUser(int take)
+        {
+            var users = new List<user>();
+            string url = "http://api.randomuser.me/?results=" + take;
+            
+            var data = FetchJson(url);
+
+            if (data.results != null)
+            {
+                foreach (var item in data.results)
+                {
+                    users.Add(item.user);
+                }
+            }
+
+            return users;
+
+        }
+
+        private static randomuser FetchJson(string url)
+        {
+            var data = new randomuser();
+
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    string json = wc.DownloadString(url);
+                    data = Newtonsoft.Json.JsonConvert.DeserializeObject<randomuser>(json);
+                }
+
+            }
+            catch (Exception)
+            {
+                // throw;
+            }
+
+            return data;
+        }
+    }    
+}
