@@ -5,8 +5,11 @@
 --//updated rram: 02/25/0215 (see pull-request) ///////////////
 --/////////////////////////////////////////////////////
 
+
 DECLARE @ScriptClass NVARCHAR(MAX) = ''
-DECLARE @t NVARCHAR(max) = '{{YOUR_TABLE_NAME}}'
+DECLARE @t NVARCHAR(max) = '{{tablename}}'
+DECLARE @e NVARCHAR(max) = '{{myEntities}}'
+DECLARE @abr NVARCHAR(max) = LOWER(LEFT(@t,1))
 
 PRINT 'public class ' + @t 
 PRINT '{' 
