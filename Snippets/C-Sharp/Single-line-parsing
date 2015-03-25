@@ -1,0 +1,54 @@
+//--------------------------------------------------------------------//
+//--------------------------------------------------------------------//
+http://bengribaudo.com/blog/2010/10/13/392/the-null-coalescing-operator
+
+C#’s null-coalescing operator (??) simplifies the syntax required to say “the value of an expression is x unless x is null in which case the value is y.”
+//--------------------------------------------------------------------//
+
+** Javascript ** BOOLEN CHECKBOX
+active = $('#active').is(':checked');
+** Javascript ** BOOLEN RADIOBUTTON
+$('input[name="race"]:checked').val();  //<-- If radio button is selected
+
+//--------------------------------------------------------------------//
+
+int catID = int.TryParse(Request.QueryString["id"], out catID) ? catID : 0;
+
+if (data.ended != null) view.ended = (DateTime)data.ended;  //<---- Nullable date
+if (data.raceID != null) view.raceID = (int)data.raceID;   //<---- Nullable int
+
+string productSKU = Request.QueryString["sku"] ?? string.Empty;
+
+bool isSearch = !string.IsNullOrEmpty(Request.QueryString["q"]);
+
+bool isCompare = Session["arrCompare"] != null ? true : false;
+
+Guid gI = Guid.TryParse(gID, out gI) ? gI : Guid.New;  <--new
+
+Guid gI = Guid.TryParse(gID, out gI) ? gI : Guid.Empty; <--old
+
+
+int intValue = int.TryParse(stringValue, out intValue) ? intValue : 0;
+
+int catID = int.TryParse(Request.QueryString["id"], out catID) ? catID : 0;
+
+string result = (fname == "Victor") ? "Welcome" : "Access Denied";
+
+disc.TotalScore == 100 ? "Green" : disc.TotalScore > 90 ? "Yellow" : "Red"
+
+p.productTags = (!String.IsNullOrWhiteSpace(tbTags.Text)) ? tbTags.Text : null;
+
+p.productSpecs = (!String.IsNullOrWhiteSpace(tbReviews.Text)) ? tbReviews.Text : null;
+
+string productSKU = Request.QueryString["sku"] ?? string.Empty;
+
+string q = Request.QueryString["q"] ?? string.Empty;
+bool isSearch = q != string.Empty ? true : false;
+
+
+// --------------------INLINE -------------------------------//
+
+<img src='images/brand/<%# Eval("productImage2") ?? "empty.gif"%>' alt="" />
+<a id="aEdit" href="CaseEdit.aspx" style='display:<%=(this.isCaseOwner) ? "display" : "none"%>'>Edit</a>
+
+// --------------------INLINE -------------------------------//
