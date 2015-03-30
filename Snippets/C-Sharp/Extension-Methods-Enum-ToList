@@ -1,0 +1,42 @@
+
+public enum InvoiceValidType
+{
+    Review = 0,
+    Approved = 1, 
+    Rejected = 2
+}
+
+
+public class EnumModel
+{
+    public int Value { get; set; }
+    public string Name { get; set; }
+}
+
+public static List<InvoiceValidTypePresenter.EnumModel> GetAll()
+{
+    var list = new List<InvoiceValidTypePresenter.EnumModel>();
+    int index = 0;
+
+    var enums = Enum.GetValues(typeof(BLL.Tool.Enums.InvoiceValidType));
+    foreach (var item in enums)
+    {
+        var each = new InvoiceValidTypePresenter.EnumModel();
+
+        each.Name = item.ToString();
+        each.Value = index;
+
+        index++;
+
+        list.Add(each);
+    }
+
+    return list;
+}
+
+  public static InvoiceValidTypePresenter.EnumModel GetById(int id)
+  {
+      var list = GetAll();
+      
+      return list.FirstOrDefault(x => x.Value == id);
+  }
