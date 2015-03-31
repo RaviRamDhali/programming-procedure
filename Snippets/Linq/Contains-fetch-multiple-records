@@ -1,0 +1,43 @@
+Linq - Using array in Lambda expression to fetch multiple records
+
+int[] progressIds = {40,11};
+var data = (
+from ta in Trackings
+join a in Applicants on ta.ApplicantID equals a.Id
+where !progressIds.Contains(ta.ProgressID)
+select ta).ToList();
+data.Dump();
+
+
+
+
+int[] userIds = {15850, 15858};
+var users = db.tblUsers.Where(x => userIds.Contains(x.UserId));
+
+
+
+var message = new JsonMessage();
+
+			string msgReturn = "ERROR: No matching email found in our system LocationID 0 .Contact Customer Service to resolve"
+			
+            string msgText = msgReturn.ToLower();
+
+            var errors = new List<string> { "error", "contact msg"};
+            var result = errors.Where(p => msgText.Contains(p.ToString())).ToList();
+
+            if (result.Count > 0)
+            {
+                message.Success = false;
+                message.Text = msgReturn;
+                message.Details = msgReturn;
+            }
+
+            return message;
+}
+
+
+public static bool IsUserInRoles(string roles)
+{
+    string[] arrRoles = roles.Split(',');
+    return arrRoles.Any(Roles.IsUserInRole);
+}
