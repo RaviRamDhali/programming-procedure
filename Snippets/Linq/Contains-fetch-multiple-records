@@ -14,6 +14,11 @@ data.Dump();
 int[] userIds = {15850, 15858};
 var users = db.tblUsers.Where(x => userIds.Contains(x.UserId));
 
+string[] arrRequiredStates = { "Florida", "Iowa", "Idaho", "Mississippi", "Nebraska" };
+if (arrRequiredStates.Any(x => x == stAuthority))
+{
+    // stAuthority has State .. do something
+}
 
 
 var message = new JsonMessage();
@@ -36,6 +41,7 @@ var message = new JsonMessage();
 }
 
 
+        
 public static bool IsUserInRoles(string roles)
 {
     string[] arrRoles = roles.Split(',');
