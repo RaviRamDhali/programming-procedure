@@ -1,0 +1,6 @@
+SELECT customInfo, count(customInfo) AS total	
+from tracking_errors
+WHERE created > '01/01/2015'
+group by customInfo
+ORDER BY total desc
+
