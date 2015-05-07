@@ -1,0 +1,18 @@
+
+
+$.validator.addMethod("simpleDate",function (value, element) {
+    return value.match(/\b\d{1,2}[\/-]\d{1,2}[\/-]\d{2}\b/);
+},
+    "Please enter a date in the format d/m/yy."
+);
+                
+
+$("#Form1").validate({
+	rules: {
+		tbDate: {
+			required: true,
+			date: true,
+	    simpleDate : true
+	    }
+	}
+});
