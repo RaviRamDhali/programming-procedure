@@ -1,3 +1,8 @@
+Sample Arrays
+int[] ids = new int[]{20125,20126,20127,20128};
+var set1 = new string[]{"a","b","c","d"};
+
+
 public class CommonViews
 {
     public class IdTitlePair
