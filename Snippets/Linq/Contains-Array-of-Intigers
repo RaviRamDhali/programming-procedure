@@ -1,0 +1,33 @@
+public class CommonViews
+{
+    public class IdTitlePair
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+    }
+}
+
+
+
+public static List<CommonViews.IdTitlePair> GetTitleByID(int[] ids)
+{
+    List<CommonViews.IdTitlePair> result = new List<CommonViews.IdTitlePair>();
+
+    using (var ctx = new CSMVendorEntities())
+    {
+
+        result =
+            (
+                from p in ctx.Payees
+                where ids.Contains(p.ID)
+                select new CommonViews.IdTitlePair
+                {
+                    Id = p.ID,
+                    Title = p.Title
+
+                }).ToList();
+
+    }
+
+    return result;
+}
