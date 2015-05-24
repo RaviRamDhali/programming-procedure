@@ -19,3 +19,11 @@ item
 designer
 base
 editor
+
+##Constructor##
+1.Constructor are used to initialize the state of object,where as method is expose the behaviour of object.
+2.Constructor must not have return type where as method must have return type.
+3.Constructor name same as the class name where as method may or may not the same class name.
+4.Constructor invoke implicitly where as method invoke explicitly.
+5.Constructor compiler provide default constructor where as method compiler does't provide.
+
