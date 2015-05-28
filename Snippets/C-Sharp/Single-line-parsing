@@ -17,7 +17,7 @@ int catID = int.TryParse(Request.QueryString["id"], out catID) ? catID : 0;
 if (data.ended != null) view.ended = (DateTime)data.ended;  //<---- Nullable date
 if (data.raceID != null) view.raceID = (int)data.raceID;   //<---- Nullable int
 
-var email = string.IsNullOrEmpty(inputEmail) ? inputEmail : String.Empty;
+var email = !string.IsNullOrEmpty(inputEmail) ? inputEmail : String.Empty;
 
 string productSKU = Request.QueryString["sku"] ?? string.Empty;
 
