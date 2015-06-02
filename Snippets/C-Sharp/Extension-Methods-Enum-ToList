@@ -16,21 +16,15 @@ public class EnumModel
 public static List<InvoiceValidTypePresenter.EnumModel> GetAll()
 {
     var list = new List<InvoiceValidTypePresenter.EnumModel>();
-    int index = 0;
 
-    var enums = Enum.GetValues(typeof(BLL.Tool.Enums.InvoiceValidType));
-    foreach (var item in enums)
-    {
-        var each = new InvoiceValidTypePresenter.EnumModel();
-
-        each.Name = item.ToString();
-        each.Value = index;
-
-        index++;
-
-        list.Add(each);
-    }
-
+            list = (
+                from IMSClasses.common.Enums.AttachmentDocTypes d 
+                    in Enum.GetValues(typeof (IMSClasses.common.Enums.AttachmentDocTypes))
+                select new InvoiceValidTypePresenter.EnumModel()
+                {
+                    Value = (int) d,
+                    Name = d.ToString()
+                }).ToList();
     return list;
 }
 
