@@ -1,0 +1,14 @@
+public class CommonViews
+    {
+        public class IdTitlePair
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+        }
+
+        public class IdBoolPair
+        {
+            public int Id { get; set; }
+            public bool IsTrue { get; set; }
+        }
+    }
