@@ -1,0 +1,34 @@
+public static string GetRandomWord(int size)
+{
+    char[] buffer = new char[size];
+
+    const string alphabets = "acefghkmnpqrstuvwxyz23456789-#$";
+
+    var random = new Random();
+
+    for (int i = 0; i < size; i++)
+    {
+        buffer[i] = alphabets[random.Next(alphabets.Length)];
+
+    }
+
+    return new string(buffer).ToUpper();
+
+}
+
+public static string GetRandomWordSimple(int size)
+{
+    char[] buffer = new char[size];
+
+    const string alphabets = "acefghkmnpqrstuvwxyz23456789";
+
+    var random = new Random();
+
+    for (int i = 0; i < size; i++)
+    {
+        buffer[i] = alphabets[random.Next(alphabets.Length)];
+
+    }
+
+    return new string(buffer).ToUpper();
+}
