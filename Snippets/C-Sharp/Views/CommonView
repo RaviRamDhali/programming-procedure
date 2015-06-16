@@ -1,5 +1,11 @@
 public class CommonViews
     {
+        public class MessageResult
+        {
+            public bool success { get; set; }
+            public string message { get; set; }
+        }
+        
         public class IdTitlePair
         {
             public int Id { get; set; }
