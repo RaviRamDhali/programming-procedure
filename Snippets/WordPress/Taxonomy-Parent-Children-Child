@@ -1,0 +1,56 @@
+<?php 
+
+// Set tax name
+$taxonomyName = "courses";
+// Get parents by tax
+$parents = get_terms( $taxonomyName, array(
+	'orderby'			=> 'slug',
+	'hide_empty'	=> 1,
+	'parent'        => 0
+
+	));
+
+foreach ($parents as $parent) {
+	echo '<strong>'. $parent->name .'</strong>';  
+
+//Get the Children
+	$children = get_terms($taxonomyName, array(
+		'parent' => $parent->term_id, 
+		'orderby' => 'slug', 
+		'hide_empty' => false
+		));
+	
+
+	foreach ($children as $child) {
+		echo '<li>'. $child->name .'</li>';  
+
+
+        // Get Child
+		$args = array(
+			'post_type' => 'course',
+			$taxonomyName => $child->slug,
+			);
+
+		$query = new WP_Query( $args );
+
+        // output the post titles in a list
+		echo '<ul>';
+
+        	// Start the Loop
+		while ( $query->have_posts() ) : $query->the_post(); ?>
+
+		<li id="post-<?php the_ID(); ?>">
+			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+		</li>
+
+		<?php endwhile;
+
+		echo '</ul>';
+
+        // use reset postdata to restore orginal query
+		wp_reset_postdata();
+
+	}
+}
+
+?>
