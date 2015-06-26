@@ -17,16 +17,17 @@ int catID = int.TryParse(Request.QueryString["id"], out catID) ? catID : 0;
 if (data.ended != null) view.ended = (DateTime)data.ended;  //<---- Nullable date
 if (data.raceID != null) view.raceID = (int)data.raceID;   //<---- Nullable int
 
-// myNumber will be 0 if 'test' is null or not a number
-var myNumber = Convert.ToInt32(Session["test"]);
+var myNumber = Convert.ToInt32(Session["test"]); //<--- Check session default is 0
+
+bool isI9Empty = Convert.ToBoolean(Session["emp_inine"]); //<--- Check session default is false
+
+bool isCompare = Session["arrCompare"] != null ? true : false;
 
 var email = !string.IsNullOrEmpty(inputEmail) ? inputEmail : String.Empty;
 
 string productSKU = Request.QueryString["sku"] ?? string.Empty;
 
 bool isSearch = !string.IsNullOrEmpty(Request.QueryString["q"]);
-
-bool isCompare = Session["arrCompare"] != null ? true : false;
 
 Guid gI = Guid.TryParse(gID, out gI) ? gI : Guid.New;  <--new
 
