@@ -1,4 +1,22 @@
- string result = null;
+public static async Task<string> CreateNewGame()
+    {
+        string newObjectId = null;
+
+        ParseObject myGame = new ParseObject("Games");
+        myGame["score"] = 223;
+        myGame["playerName"] = "Michael";
+
+        await myGame.SaveAsync().ContinueWith(
+              t =>
+              {
+                  newObjectId = myGame.ObjectId;
+              });
+
+        return newObjectId;
+    }
+
+---------------------------------------------------------
+string result = null;
 var dataset = new object();
 
 try
