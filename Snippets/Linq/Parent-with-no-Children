@@ -1,0 +1,7 @@
+var adultNoChildren = 
+(from i in Invoices
+where !InvoiceDetails.Any(child => child.InvoiceID == i.ID)
+select i).ToList();
+
+adultNoChildren.Dump();
+
