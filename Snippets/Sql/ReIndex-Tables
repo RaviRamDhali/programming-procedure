@@ -1,0 +1,13 @@
+DBCC DBREINDEX (Offers)
+DBCC SHOWCONTIG (Offers)
+
+
+DBCC SHRINKDATABASE (ICMS2_DEV, 10, TRUNCATEONLY)
+
+
+USE ABCStore
+GO
+EXEC sp_MSforeachtable @command1="print '?' DBCC DBREINDEX ('?', ' ', 80)"
+GO
+EXEC sp_updatestats
+GO
