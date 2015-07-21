@@ -1,0 +1,106 @@
+<script type="text/javascript">
+$(document).ready(function () {
+
+// ListBox Move Routine
+$(document).on("click", ".moveOver", function () {
+    var targetListBox = $('.' + $(this).data('target'));
+    var selectListBox = $('.' + $(this).data('select'));
+
+    ListBoxMoveItems(selectListBox, targetListBox);
+});
+
+function ListBoxMoveItems(selectListBox, targetListBox) {
+    var selectedOpts = $(selectListBox).find(':selected');
+    
+    $(targetListBox).append($(selectedOpts).clone());
+    $(selectedOpts).remove();
+    // Reorder Listbox
+    SortTexBoxList(selectListBox);
+    SortTexBoxList(targetListBox);
+}
+
+function SortTexBoxList(texboxList) {
+    var $r = $(texboxList).find('option');
+
+    $r.sort(function (a, b) {
+        if (a.text < b.text) return -1;
+        if (a.text == b.text) return 0;
+        return 1;
+    });
+
+    $($r).remove();
+
+    $(texboxList).append($($r));
+}
+
+});
+</script>
+
+<form action="/ProjectCreate/EntityRelationship" method="POST" class="form-horizontal" id="frmCreate" name="frCreate">
+
+
+        <div class="form-group">
+            <label for="serviceType" class="col-lg-2 control-label">Target Entity</label>
+            <div class="col-lg-10">
+                <select class="form-control" id="ddlPartner" name="ddlPartner">
+                    <option value="">--Choose a one--</option>
+                    <option value="2">Jeff Corp [Successor]</option>
+                    <option value="2">Rachael Inc [Predecessor]</option>
+                    <option value="2">Ashley LLC [Predecessor]</option>
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="serviceType" class="col-lg-2 control-label">Subject Entity</label>
+            <div class="col-lg-10">
+
+                <div class="row">
+                    <div class="col-lg-5">
+                        <strong>Available Subject Entity</strong><br>
+                        <select name="lbAvailable" multiple="multiple" class="lbAvailable input-lg">
+                            <option value="21">Jeff Corp [Successor]</option>
+                            <option value="22">Rachael Inc [Predecessor]</option>
+                            <option value="23">Ashley LLC [Predecessor]</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <br>
+
+                            <p>&nbsp;</p>
+                            <h5><span class="moveOver label label-success" data-select="lbAvailable" data-target="lbSelected">Add Entity <i class="fa fa-chevron-right" title="Add Entity"></i></span></h5>
+                            <h5><span class="moveOver label label-default" data-select="lbSelected" data-target="lbAvailable"><i class="fa fa-chevron-left" title="Remove Entity"></i> Remove Entity</span></h5>
+
+                    </div>
+                    <div class="col-lg-5">
+                        <strong>Selected Subject Entity</strong><br>
+                        <select name="lbSelected" multiple="multiple" class="lbSelected input-lg">
+                            
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button type="reset" class="btn btn-success">Add a Relationship</button>
+            </div>
+        </div>
+
+
+        <hr />
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <button type="reset" class="btn btn-default" id="reset">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save and Continue</button>
+                    </div>
+                </div>
+
+  
+
+    </form>
