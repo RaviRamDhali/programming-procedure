@@ -1,0 +1,28 @@
+
+/*=====================================================*/
+/* Get query string values in JavaScript */
+/* Usage:   var prodId = getQString('prodId'); */
+function getQString(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+/*=====================================================*/
+
+
+
+/*==============================*/
+/*Trigger Alert Messages*/
+	// Clear all alert messages
+		$('[class*=" qsStatus-"]').hide();
+
+	// Show alert message based on qstring
+		var st = getQString('st')
+		$('.qsStatus-' + st).show();
+/*==============================*/
+
+https://domain.com/ver2/views/login/reset.asp?st=sent
+
+<div class="alert alert-danger qsStatus-error">Email and password combination didn't work.</div>
+<div class="alert alert-warning qsStatus-logout">You've been logged out successfully.</div>
