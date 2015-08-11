@@ -1,0 +1,32 @@
+  // Select / Deselect All Checkboxes using Common CheckBox Class
+  $('.checkall').change(function() {
+    var countChecked = checkBoxToggleAll($(this), "memIds", "showCheckedMulti");
+    renderCount(countChecked);
+  });
+  
+  
+function checkBoxToggleAll(objCheckBox, commonCheckBoxClass, showWhenChecked){
+  $('.' + showWhenChecked).hide();
+  
+  var checked = $(objCheckBox).is(':checked');
+  
+  if(checked) {
+  	$('.' + commonCheckBoxClass).each(function() { 
+  		this.checked = true;
+  		$('.' + showWhenChecked).show();
+  	});
+  }else
+  {
+  	$('.' + commonCheckBoxClass).each(function() { 
+  		this.checked = false;
+  		$('.' + showWhenChecked).hide();
+  	});
+  }
+  
+  // Count Checked
+  var countChecked = 0;
+  var checked = $('.' + commonCheckBoxClass + ':checkbox:checked');
+  countChecked = $(checked).length;
+
+  return countChecked;
+}
