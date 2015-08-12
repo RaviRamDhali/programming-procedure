@@ -1,3 +1,6 @@
+Example: http://jsfiddle.net/afzaalace/QNP3r/
+
+
 $('.cbRelationship').change(function () {
     if ($(this).is(":checked")) {
         addColumnsToTable();
