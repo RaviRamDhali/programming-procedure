@@ -2,18 +2,28 @@ Example: http://jsfiddle.net/afzaalace/QNP3r/
 
 
 $('.cbRelationship').change(function () {
-    if ($(this).is(":checked")) {
-        addColumnsToTable();
 
+    cbValue = $(this).val();
+
+    if ($(this).is(":checked")) {
+        addColumnsToTable(cbValue);
+    } else {
+        removeColumnFromTable(cbValue);
     }
+
 });
 
 
-function addColumnsToTable() {
+function addColumnsToTable(strValue) {
     //mang-content-table
-    $('.mang-content-table tr').append($("<td>"));
-    $('.mang-content-table thead tr>td:last').html('new col'); //<--- add column title
+    $('.mang-content-table tr').append($("<td class='" + strValue + "'>"));
+    $('.mang-content-table thead tr>td:last').html(strValue);
     $('.mang-content-table tbody tr').each(function () {
         $(this).children('td:last').append($('<input type="checkbox">'));
     });
+}
+
+function removeColumnFromTable(strValue) {
+    //mang-content-table
+    $('.mang-content-table td.' + strValue).remove();
 }
