@@ -1,0 +1,32 @@
+Usage:  
+
+//---------------------------------
+$('#form1').validate(); //<--- nothing special
+
+//---------------------------------
+
+Use class = multiemails  <--- calls custom method below jQuery.validator.addMethod("multiemails" ... 
+<input type="text" class="form-control multiemails" placeholder="Email addresses separated by commas" name="emails" id="emails">
+
+
+//==============================================
+// jQuery validation plugin multiple email addresses
+// http://stackoverflow.com/questions/10352221/jquery-validation-plugin-multiple-email-addresses
+//==============================================
+
+jQuery.validator.addMethod("multiemails",function(value, element){
+if (this.optional(element)) // return true on optional element
+    return true;
+
+var emails = value.split(/[;,]+/); // split element by , and ;    
+    valid = true;
+    for (var i in emails) {
+        value = emails[i];
+        valid = valid &&
+                jQuery.validator.methods.email.call(this, $.trim(value), element);
+    }
+     return valid;
+ },
+
+"Invalid email(s) : Please check that each email address is valid"
+);
