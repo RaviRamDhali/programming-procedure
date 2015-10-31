@@ -27,3 +27,8 @@ editor
 4.Constructor invoke implicitly where as method invoke explicitly.
 5.Constructor compiler provide default constructor where as method compiler does't provide.
 
+##Factory pattern##
+[creational pattern] factory's sole purpose is to create objects
+
+##Strategy pattern##
+[operational pattern] strategy's sole intent to is to provide a mechanism to select different algorithm
