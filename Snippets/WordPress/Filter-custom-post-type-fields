@@ -1,0 +1,22 @@
+$args = array(
+	'post_type' => array( 'course' ),
+	'posts_per_page' => 1,
+	'meta_query' => array(
+		'relation' => 'AND',
+		array(
+			'key' => 'course_location',
+			'value' => 'los-angeles-county',
+			'compare' => 'LIKE',
+		),
+		array(
+			'key' => 'course_location',
+			'value' => 'test',
+			'compare' => 'LIKE',
+		)
+	)
+);
+
+$query = new WP_Query($args);
+echo "Last SQL-Query: {$query->request}";
+
+$wp_query = $query;
