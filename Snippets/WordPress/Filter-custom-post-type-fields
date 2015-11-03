@@ -17,6 +17,7 @@ $args = array(
 );
 
 $query = new WP_Query($args);
-echo "Last SQL-Query: {$query->request}";
+
+echo "Last SQL-Query: {$query->request}"; //<--- print query to screen
 
 $wp_query = $query;
