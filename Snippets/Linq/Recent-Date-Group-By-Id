@@ -1,0 +1,8 @@
+How to select only the records with the highest date in LINQ
+http://stackoverflow.com/questions/470440/how-to-select-only-the-records-with-the-highest-date-in-linq
+
+If you just want the last date for each account, you'd use this:
+  var q = from n in table
+  group n by n.AccountId into g
+  select new {AccountId = g.Key, Date = g.Max(t=>t.Date)};
+
