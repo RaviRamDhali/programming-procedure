@@ -1,12 +1,5 @@
 var membersCount = (
     from m in ctx.Members
-    group m by m.defaultClientID into c
-    select new {ClientId = c.Key, Count = (from x in c select x.memID).Count() }
-).ToList();
-
-
-var membersCount = (
-    from m in ctx.Members
     group m by m.defaultClientID
     into c
     select new {ClientId = c.Key, Count = (from x in c select x.memID).Count()}
