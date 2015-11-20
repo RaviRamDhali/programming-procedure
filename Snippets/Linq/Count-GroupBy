@@ -3,3 +3,21 @@ var membersCount = (
     group m by m.defaultClientID into c
     select new {ClientId = c.Key, Count = (from x in c select x.memID).Count() }
 ).ToList();
+
+
+var membersCount = (
+    from m in ctx.Members
+    group m by m.defaultClientID
+    into c
+    select new {ClientId = c.Key, Count = (from x in c select x.memID).Count()}
+    ).ToList();
+
+var casesCount = (
+    from c in ctx.Cases
+    join m in ctx.MemberToClients on c.memID equals m.memID
+    group m by m.clientID
+    into x
+    select new {ClientId = x.Key, Count = (from z in x select z.clientID).Count()}
+    ).OrderByDescending(d => d.Count).ToList();
+    
+                    
