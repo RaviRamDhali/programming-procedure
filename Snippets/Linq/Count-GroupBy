@@ -13,4 +13,18 @@ var casesCount = (
     select new {ClientId = x.Key, Count = (from z in x select z.clientID).Count()}
     ).OrderByDescending(d => d.Count).ToList();
     
-                    
+*Linq GroupBy Max and add column*
+http://stackoverflow.com/questions/33844990/linq-groupby-max-and-add-column/33845229#33845229
+
+var trackings = (
+    from t in ctx.Trackings
+    group t by t.clientID
+    into g
+    let maxTrackDate = g.Max(x => x.trackDate)
+    let maxRow = g.FirstOrDefault(x => x.trackDate == maxTrackDate)
+    select new
+    {
+        ClientID = g.Key,
+        Date = maxTrackDate,
+        Memo = maxRow.trackMemo
+    }).ToList();
