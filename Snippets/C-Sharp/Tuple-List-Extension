@@ -1,0 +1,63 @@
+/// <summary>
+/// Tuples - quickly group relevant information together without struct.
+/// This is very useful while refactoring very localized code.
+/// USAGE : var groceryList = new TupleList<int, string>
+/// {
+/// { 1, "kiwi" }, { 5, "apples" },{ 3, "potatoes" },{ 1, "tomato" }
+/// };
+/// </summary>
+/// <typeparam name="T1"></typeparam>
+/// <typeparam name="T2"></typeparam>
+public class TupleList<T1, T2> : List<Tuple<T1, T2>>
+{
+    public void Add(T1 item, T2 item2)
+    {
+        Add(new Tuple<T1, T2>(item, item2));
+    }
+}
+
+/// <summary>
+/// Merge Template items with values using TupleList string,string pair
+/// </summary>
+/// <param name="view"></param>
+/// <param name="template"></param>
+/// <returns></returns>
+public static string ReconstructTupleList(Extensions.TupleList<string, string> view, string template)
+{
+    string body = !template.IsNullOrEmpty() ? template : String.Empty;
+
+    foreach (var item in view)
+    {
+        if (item.Item1 != null)
+        {
+            body = body.Replace("##" + item.Item1 + "##", item.Item2);
+        }
+        else
+        {
+            body = body.Replace("##" + item.Item1 + "##", "");
+        }
+    }
+
+    return body;
+}
+
+
+
+var tempItems = TemplateDictionary();
+foreach (var cf in cforms)
+{
+    cf.Title = IMSClasses.common.Services.MergeTemplateService.ReconstructTupleList(tempItems, cf.Title);
+    cf.Description = IMSClasses.common.Services.MergeTemplateService.ReconstructTupleList(tempItems, cf.Description);
+}     
+
+##One Page Usage##
+
+public static Extensions.TupleList<string, string> TemplateDictionary()
+{
+    var items = new Extensions.TupleList<string, string>
+    {
+        {"ApplicantFirstName", "kiwi"},
+    };
+
+    return items;
+}
