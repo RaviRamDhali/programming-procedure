@@ -1,0 +1,23 @@
+on error resume next
+
+Set AdCn = CreateObject("ADODB.Connection")
+Set rs = CreateObject("ADODB.Recordset")
+
+connstr="Provider=SQLNCLI11;Data Source={server,port};Initial Catalog={table-name};user id ='{user-id}';password='{pw}'"
+
+AdCn.Open = connstr
+SQL="Select * from Roles"
+rs.Open SQL, AdCn,3,3
+
+
+if err.number <> 0 then
+msgbox "Can't connect! -- " & err.description & " : " & err.number
+else
+msgbox "connected"
+	Do While NOT rs.Eof   
+	        roleName = rs("RoleName")
+	        wscript.echo roleName
+	rs.MoveNext     
+Loop
+
+end if
