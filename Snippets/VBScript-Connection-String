@@ -21,3 +21,53 @@ msgbox "connected"
 Loop
 
 end if
+
+//-----------------------------------------------------------------------------//
+on error resume next
+
+dim filesys, filetxt, getname, path 
+Set filesys = CreateObject("Scripting.FileSystemObject") 
+Set filetxt = filesys.CreateTextFile("C:\_temp\rram\somefile.txt", True) 
+path = filesys.GetAbsolutePathName("C:\_temp\rram\somefile.txt") 
+getname = filesys.GetFileName(path) 
+
+
+Set AdCn = CreateObject("ADODB.Connection")
+Set rs = CreateObject("ADODB.Recordset")
+
+connstr="DSN=ClientDB;user id='{user-id}';password='{pw}'"
+
+AdCn.Open = connstr
+SQL="Select * from Contacts"
+rs.Open SQL, AdCn
+
+if err.number <> 0 then
+msgbox "Can't connect! -- " & err.description & " : " & err.number
+else
+msgbox "connected"
+	Do While NOT rs.Eof  
+
+		For Each fld in rs.Fields
+			'wscript.echo fld.Name
+		Next
+
+	        email = rs("Contact Email")
+	        lname = rs("Contact LName")
+	        fname = rs("Contact FName")
+	        company = rs("Contact Company")
+	        ' wscript.echo email & " " & lname & ", " & fname & " : " & company
+		
+		filetxt.WriteLine(email & " " & lname & ", " & fname & " : " & company) 
+
+	rs.MoveNext     
+	Loop
+
+end if
+
+filetxt.Close 
+
+
+
+
+
+
