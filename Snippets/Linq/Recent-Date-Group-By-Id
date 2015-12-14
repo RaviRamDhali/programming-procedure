@@ -6,3 +6,16 @@ If you just want the last date for each account, you'd use this:
   group n by n.AccountId into g
   select new {AccountId = g.Key, Date = g.Max(t=>t.Date)};
 
+
+Linq GroupBy Max and add column
+http://stackoverflow.com/questions/33844990/linq-groupby-max-and-add-column
+
+var q =(from t in Trackings
+        group t by t.ClientID into g
+        let lastTracking = g.OrderByDescending(x => x.TrackDate).FirstOrDefault()
+        select new 
+        {
+            ClientID = g.Key, 
+            Date = lastTracking.TrackDate,
+            Memo = lastTracking.Memo
+        }).ToList();
