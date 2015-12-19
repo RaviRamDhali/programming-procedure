@@ -1,0 +1,9 @@
+var data = (
+from r in CaseRosters
+join c in Cases on r.CaseID equals c.CaseID
+join m in Members on c.MemID equals m.MemID
+join s in CaseStatuses on c.CaseStatusID equals s.CaseStatusID into sjoin
+from sdata in sjoin.DefaultIfEmpty()
+where r.MemID == memId
+select new{c,r.CaseID, c.CaseName, c.CaseNumber, m.MemLastName, sdata.CaseStatusText}
+).ToList().Dump();
