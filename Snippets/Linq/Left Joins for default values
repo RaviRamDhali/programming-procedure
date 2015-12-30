@@ -1,5 +1,19 @@
-// Linq statement with Left Joins for default values
+http://stackoverflow.com/questions/1122942/linq-to-sql-left-outer-join-with-multiple-join-conditions
+You need to introduce your join condition before calling DefaultIfEmpty(). I would just use extension method syntax:
+var acknowledgements = (
+            from a in Hr_app_acknowledgements
+            where a.C_code == ccode && a.Active
+            join d in Hr_app_acknowledgements_data on a.Id equals d.AcknowledgmentsID into jD
+            from subD in jD.Where (d => d.ApplicantID == 12345).DefaultIfEmpty() //<--- Filter and Left Join
+            select new {
+                        a.Id,
+                        intitals = (subD == null ? string.Empty : subD.UserInput)
+            }).ToList().Dump();
 
+
+
+
+// Linq statement with Left Joins for default values
 var jobs = (
             from j in ctx.hr_job
             where j.c_code == c_code
