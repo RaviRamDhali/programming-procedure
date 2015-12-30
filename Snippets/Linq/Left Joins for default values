@@ -5,9 +5,12 @@ var acknowledgements = (
             where a.C_code == ccode && a.Active
             join d in Hr_app_acknowledgements_data on a.Id equals d.AcknowledgmentsID into jD
             from subD in jD.Where (d => d.ApplicantID == 12345).DefaultIfEmpty() //<--- Filter and Left Join
+            
+            // select new {a.Id,subD.UserInput}).ToList().Dump(); //<--- UserInput default to null
+            
             select new {
                         a.Id,
-                        intitals = (subD == null ? string.Empty : subD.UserInput)
+                        intitals = (subD == null ? string.Empty : subD.UserInput) //<--- Define UserInput when null
             }).ToList().Dump();
 
 
