@@ -1,3 +1,7 @@
+Reserved Word Checkers:
+http://www.petefreitag.com/tools/sql_reserved_words_checker/
+http://www.reservedwordsearch.com/
+
 Database Standard Operating Procedures
 - Use lowercase naming
 
