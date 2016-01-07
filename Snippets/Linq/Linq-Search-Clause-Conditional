@@ -1,0 +1,16 @@
+Linq Search Clause
+The conditional || only compares the first part and skips the second if the first part is true.
+
+
+List<Invoice> invoices = new List<Invoice>();
+
+invoices = (
+    from i in ctx.Invoices
+    where (i.NumberOfInvoice.Contains(invNum))
+    where (payeeID < 1 || i.PayeeID == payeeID)
+    where (invAmount < 1 || i.AmountOfInvoice == invAmount)
+    where (checkNum < 1 || i.CheckNumber == checkNum)
+    where (validState < 1 || i.Valid == validState)
+    select i).ToList();
+    
+    
