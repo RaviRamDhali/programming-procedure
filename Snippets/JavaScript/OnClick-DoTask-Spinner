@@ -1,0 +1,23 @@
+
+1) OnClick Call Function passing in element
+2) Find TR with Guid
+3) Toggle spinner
+4) Get values
+5) Redirect
+
+// Authorization Code
+$(".case-access").click(function (e) {
+    e.preventDefault();
+    DoAuthorizationCodeTask(this);
+});
+
+
+function DoAuthorizationCodeTask(element) {
+    var $e = $(element);
+    var access = $e.data("access");
+    $($e).find('i').toggleClass('hidden');
+    var $row = $e.closest("tr");
+    var caseGuid = $row.data("id");
+    var authCode = $row.find('.case-authCode').val();
+    window.location.href = ('/Dashboard/?task=caseaccess&caseGuid=' + caseGuid + '&authCode=' + authCode + '&access=' + access);
+};
