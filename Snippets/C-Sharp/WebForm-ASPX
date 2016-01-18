@@ -1,0 +1,9 @@
+*** Random code snippets for Webforms-ASPX pages
+
+// Selected in dropdown
+<select>
+  <option value="">--Select One --</option>
+    <% foreach (var package in Packages){ %>
+        <option value="<%=package.ID%>" <%(DefaultPackageId == package.ID) ? "selected" : ""%>><%=package.Title%></option>
+    <% }%>
+</select>
