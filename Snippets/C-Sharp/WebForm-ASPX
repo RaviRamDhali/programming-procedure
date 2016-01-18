@@ -4,6 +4,6 @@
 <select>
   <option value="">--Select One --</option>
     <% foreach (var package in Packages){ %>
-        <option value="<%=package.ID%>" <%(DefaultPackageId == package.ID) ? "selected" : ""%>><%=package.Title%></option>
+        <option value="<%=package.ID%>" <%=(DefaultPackageId == package.ID) ? "selected" : ""%>><%=package.Title%></option>
     <% }%>
 </select>
