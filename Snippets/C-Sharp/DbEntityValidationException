@@ -1,0 +1,20 @@
+catch (System.Data.Entity.Validation.DbEntityValidationException e)
+{
+    foreach (var eve in e.EntityValidationErrors)
+    {
+        var title=string.Format("Entity of type \"{0}\" in 
+            state \"{1}\" has the following validation errors:",
+            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+        
+        var sb = new StringBuilder();
+        
+        foreach (var ve in eve.ValidationErrors)
+        {
+            sb.Append(string.Format("- Property: \"{0}\", 
+                Error: \"{1}\"",
+                ve.PropertyName, ve.ErrorMessage));
+        }
+    }
+    data = new DAL.hr_app_education();
+    ExceptionLog.Create(e, ExceptionLog.ErrorState.Significant,"EducationController.Create :: Validation Error");
+}
