@@ -1,5 +1,11 @@
 *** Random code snippets for Webforms-ASPX pages
 
+ // foreach snippet
+ <% foreach (var VARIABLE in COLLECTION){ %>
+ -------------------------------------
+ <% } %>
+
+ 
 // Selected in dropdown
 <select>
   <option value="">--Select One --</option>
