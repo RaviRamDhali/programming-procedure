@@ -1,3 +1,5 @@
+** Place js at bottom of the page otherwise the .change will not work **
+
   // Select / Deselect All Checkboxes using Common CheckBox Class
   $('.checkall').change(function() {
     var countChecked = checkBoxToggleAll($(this), "memIds", "showCheckedMulti");
