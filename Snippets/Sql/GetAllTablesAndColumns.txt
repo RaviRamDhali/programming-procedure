@@ -13,14 +13,19 @@ BEGIN
 -- PRINT 'Select * from ' + @tableName
 
 		DECLARE colName CURSOR LOCAL FOR 
-		SELECT Column_name FROM CustomLeatherCraft.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @tableName
+		-- SELECT Column_name FROM antitheftdots.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @tableName
+
+		-- PRINT 'Col: ' + @tableName
+
+		SELECT name FROM sys.columns WHERE object_id = OBJECT_ID(@tableName)
+
 		OPEN colName
 		FETCH NEXT FROM colName into @colName
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
 		--//////////////////////////////////////
 
-			PRINT 'Col: ' + @colName
+			PRINT '' + @tableName + ' ' + @colName
 			
 		--//////////////////////////////////////
 		FETCH NEXT FROM colName into @colName
