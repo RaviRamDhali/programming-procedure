@@ -14,6 +14,22 @@ var acknowledgements = (
             }).ToList().Dump();
 
 
+int[] cIds = new int[]{1,2,3};
+int appId = 34;
+
+var data = (
+            from g in Customfield_groups
+            where cfGpIds.Contains(g.Id)
+            join f in Customfields on g.Id equals f.Customfield_groupID
+            
+            // Get data if exisits otherwise show NULL (Left Join)
+            join d in Customfield_data on f.Id equals d.CustomfieldID into joinD
+            from filterD in joinD.Where (d => d.ApplicantID == appId).DefaultIfEmpty() 
+            
+            select new {GrpId = g.Id,g.Title,FieldId = f.Id, FieldTitle = f.Title, filterD.UserInput}
+).ToList();
+
+data.Dump();
 
 
 // Linq statement with Left Joins for default values
