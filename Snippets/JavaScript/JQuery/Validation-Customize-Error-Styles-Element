@@ -1,0 +1,48 @@
+jQuery.validator.setDefaults errorPlacement
+http://codepen.io/ravir_dhali/pen/jWvpba
+
+
+jQuery.validator.setDefaults({
+  // where to display the error relative to the element
+   errorPlacement: function(error, element) {
+    if (element.hasClass('initals')) { // match your element's id
+      error.addClass("error-initals"); // add invalid class
+      error.appendTo(element.parent()); // this line willchange depends on your form layout
+    } else {
+      error.appendTo(element.parent()); // this line will change depends on your form layout
+    }
+  }
+ });
+
+$("#form-main").validate();
+
+
+
+<form name="form-main" id="form-main">
+  <div class="form-group">
+    <label for="email">Email address</label>
+    <input type="text" class="form-control required" id="email" name="email">
+  </div>
+  
+    <div class="form-group">
+    <label for="initals">Initals</label>
+    <input type="text" class="form-control required initals" id="initals" name="initals">
+  </div>
+  
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+body {
+  margin:50px;
+  font-family: Arial, Sans-serif;
+  width: 250px;
+}
+
+.error {
+  color: red;
+}
+
+.error-initals {
+  color: green;
+}
