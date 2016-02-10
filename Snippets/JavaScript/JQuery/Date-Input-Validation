@@ -1,0 +1,32 @@
+<script>
+    $(document).ready(function() {
+        $('form').validate({
+            rules: {
+                "UserDate": {
+                    required: true,
+                    areEqualDates: "#UserDate"
+                }
+            }
+        });//validate()
+
+        jQuery.validator.addMethod("areEqualDates", function (value, element, params)
+        {
+            // Get input value from #UserDate and parse date
+            var parsedDate = $.datepicker.parseDate('mm/dd/yy', value);
+
+            // Set todays date (removing time)
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            console.log(value); // inputed value
+            console.log(parsedDate); // input value parsed to date
+            console.log(today); // todays date (removed time)
+            console.log(parsedDate - today === 0); //compare parsed = today
+
+            var areEqual = (parsedDate - today === 0);
+            return areEqual;
+        }
+        , "Must be today's date.");
+
+    });
+</script>
