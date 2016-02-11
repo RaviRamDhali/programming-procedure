@@ -256,6 +256,19 @@ create table [dbo].[contactTypes](
 	[active] [bit] NOT NULL default ((1)),
 )
 
+create table [dbo].[EmailQueue](
+	[id] [int] identity(1,1) primary key not null,
+	[batchId] [int] NOT NULL default (0),
+	[created] [datetime] not null default (getdate()),
+	[toEmail] [nvarchar](200) not null default ('0'),
+	[fromEmail] [nvarchar](200) not null default ('0'),
+	[subject] [nvarchar] (150) not null default ('0'),
+	[body] [nvarchar](max) NOT NULL default ('0'),
+	[attachment1] [nvarchar](200) null,
+	[attachment2] [nvarchar](200) null,
+	[completed] [bit] not null default ((1))
+)
+
 
 Referential integrity > relationships 
 ALTER TABLE memberContact ADD CONSTRAINT FK_memberContact_member
