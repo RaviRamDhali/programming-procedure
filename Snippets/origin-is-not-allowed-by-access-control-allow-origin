@@ -1,0 +1,14 @@
+http://stackoverflow.com/questions/10143093/origin-is-not-allowed-by-access-control-allow-origin
+
+<httpProtocol>
+    <customHeaders>
+        <!-- Enable Cross Domain AJAX calls -->
+        <remove name="Access-Control-Allow-Origin" />
+        <add name="Access-Control-Allow-Origin" value="*" />
+    </customHeaders>
+</httpProtocol>
+
+
+$.getJSON(url,function( data ){
+			// nothing;
+});
