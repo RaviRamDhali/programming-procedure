@@ -1,0 +1,15 @@
+/*------------------------------------*\
+/*Input widht from Bootstrap3*/
+.input-12 {width: 100%;}
+.input-11 {width: 91.66666667%;}
+.input-10 {width: 83.33333333%;}
+.input-9 {width: 75%;}
+.input-8 {width: 66.66666667%;}
+.input-7 {width: 58.33333333%;}
+.input-6 {width: 50%;}
+.input-5 {width: 41.66666667%;}
+.input-4 {width: 33.33333333%;}
+.input-3 {width: 25%;}
+.input-2 {width: 16.66666667%;}
+.input-1 {width: 8.33333333%;}
+/*------------------------------------*\
