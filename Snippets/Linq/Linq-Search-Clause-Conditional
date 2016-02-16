@@ -11,6 +11,7 @@ invoices = (
     where (invAmount < 1 || i.AmountOfInvoice == invAmount)
     where (checkNum < 1 || i.CheckNumber == checkNum)
     where (validState < 1 || i.Valid == validState)
+     where (formCollection.AlphaCharacter == null || a.last_name.StartsWith(formCollection.AlphaCharacter))
     select i).ToList();
     
     
