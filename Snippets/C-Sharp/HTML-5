@@ -1,0 +1,3 @@
+Convert c# Datetime to HTML-5 Date value
+<input type="date" value="<%= ActivityDate.ToString("yyyy-MM-dd")%>"/>
+
