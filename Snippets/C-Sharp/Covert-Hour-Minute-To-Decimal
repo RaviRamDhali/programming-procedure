@@ -1,0 +1,31 @@
+     private decimal CovertHourMinuteToData(decimal hour, decimal minutes)
+        {
+            // Covert Hour and Minute dropdown to Decimal Value for single Database field
+            
+            decimal totalTime = 1;
+
+            decimal inputHours = hour.ToDecimalOrDefault();
+            decimal inputMinutes = minutes.ToDecimalOrDefault();
+
+            decimal calcMinutes = (inputMinutes / 60);
+
+            totalTime = (inputHours + calcMinutes);
+
+            return totalTime;
+        }
+
+        private Tuple<decimal,decimal> CovertDataToHourMinute(decimal data)
+        {
+            // Covert Decimal to Hour and Minute for single Database field
+
+            double convertData = data.ToDoubleOrDefault();
+            TimeSpan timespan = TimeSpan.FromHours(convertData);
+            string outputH = timespan.ToString("hh");
+            string outputM = timespan.ToString("mm");
+
+            decimal extractedHours = outputH.ToDecimalOrDefault();
+            decimal extractedMinutes = outputM.ToDecimalOrDefault();
+
+            return new Tuple<decimal, decimal>(extractedHours, extractedMinutes);
+        }
+    }
