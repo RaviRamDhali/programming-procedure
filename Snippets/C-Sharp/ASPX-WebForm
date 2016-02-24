@@ -18,3 +18,4 @@
 
 <a id="aEdit" href="CaseEdit.aspx" style='display:<%=(this.isCaseOwner) ? "display" : "none"%>'>Edit</a>
 
+<input type="checkbox" name="cbPublic" id="cbPublic" class="cbPublic" <%=(FormCollection.CbPublic) ? "checked" : ""%>/>
