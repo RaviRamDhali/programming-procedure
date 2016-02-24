@@ -1,7 +1,0 @@
-// --------------------INLINE -------------------------------//
-
-<img src='images/brand/<%# Eval("productImage2") ?? "empty.gif"%>' alt="" />
-
-<a id="aEdit" href="CaseEdit.aspx" style='display:<%=(this.isCaseOwner) ? "display" : "none"%>'>Edit</a>
-
-// --------------------INLINE -------------------------------//
