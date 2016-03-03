@@ -1,0 +1,11 @@
+  Check if any checkbox has been selected
+  
+  $('#btnSubmit').click(function(e) {
+      var cbCount = $('.cbCitizenshipOption:checked').length;
+      if (cbCount === 0) {
+          //CitizenshipOption not selected
+          $('#errorCitizenshipOptions').show();
+          e.preventDefault();
+          return;
+      }
+  });
