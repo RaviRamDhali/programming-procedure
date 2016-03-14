@@ -1,0 +1,20 @@
+http://codepen.io/ravir_dhali/pen/oxYNBv
+
+$('.option-add').click( function(e){
+  e.preventDefault();
+var htmlString = '<div class="row option-container"><span class="col-lg-6"><input type="text" class="form-control input-sm" name="lname" /></span><button class="option-delete">Delete</button></div>';
+$(htmlString).appendTo('div.options-container');  
+
+});
+
+$('.options-container').on('click', '.option-delete', function() {
+     $(this).parent('div.option-container').hide();
+});
+
+
+
+<div class="row">
+  <div class="options-container"></div>
+  <a class="option-add">add</a>
+</div>
+
