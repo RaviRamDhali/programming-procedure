@@ -12,7 +12,12 @@
 .input-3 {width: 25%;}
 .input-2 {width: 16.66666667%;}
 .input-1 {width: 8.33333333%;}
-/*------------------------------------*\
+
+@media ( max-width: 768px ) {
+.form-control {
+   width: 100%;
+  }
+}
 
 
 USAGE
@@ -32,17 +37,17 @@ USAGE
 <div class="row">
   <div class="form-group  col-sm-4">
     <label for="">Date</label>
-    <input type="date" class="form-control" name="aDate" />
+    <input type="date" class="form-control input-4" name="aDate" />
   </div>
 
   <div class="form-group  col-sm-4">
     <label for="activityHours">Hours</label>
-    <input type="number" min="0" max="99" class="form-control" name="hours" />
+    <input type="number" min="0" max="99" class="form-control input-2" name="hours" />
   </div>
 
   <div class="form-group  col-sm-4">
     <label for="activityMinutes">Car</label>
-    <select class="form-control" name="car">
+    <select class="form-control input-4" name="car" >
       <option value="volvo">Volvo</option>
       <option value="saab">Saab</option>
       <option value="mercedes">Mercedes</option>
