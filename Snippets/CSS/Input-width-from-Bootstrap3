@@ -13,3 +13,32 @@
 .input-2 {width: 16.66666667%;}
 .input-1 {width: 8.33333333%;}
 /*------------------------------------*\
+
+
+USAGE
+
+ <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+                            <div class="form-group  col-sm-4">
+                                <label for="">Activity Date</label>
+                                <input type="date" class="form-control id="activityDate" name="activityDate" />
+                            </div>
+
+                            <div class="form-group  col-sm-4">
+                                <label for="activityHours">Hours</label>
+                                <input type="number" min="0" max="99" class="form-control input-6" id="activityHours" name="activityHours" />
+                            </div>
+
+                            <div class="form-group  col-sm-4">
+                                <label for="activityMinutes">Minutes</label>
+                                <select class="form-control input-3" id="activityMinutes" name="activityMinutes">
+                                  <option value="volvo">Volvo</option>
+                                  <option value="saab">Saab</option>
+                                  <option value="mercedes">Mercedes</option>
+                                  <option value="audi">Audi</option>
+                                </select>
+                            </div>
+                        </div>
+             </div>
+</div>
