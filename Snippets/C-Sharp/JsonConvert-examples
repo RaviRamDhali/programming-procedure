@@ -1,2 +1,6 @@
+http://stackoverflow.com/questions/36374825/json-single-object-string-into-liststring
+
 var returnedJson = ["applicant","recruiter","team"];
 var list = JsonConvert.DeserializeObject<List<string>>(returnedJson);
+
+--------------------------------------------------------------------
