@@ -1,1 +1,2 @@
- var list = JsonConvert.DeserializeObject<List<string>>(toEmailConfig);
+var returnedJson = ["applicant","recruiter","team"];
+var list = JsonConvert.DeserializeObject<List<string>>(returnedJson);
