@@ -1,0 +1,15 @@
+example: http://localhost:10970/email_send.aspx?id=914870a4-3b70-457a-97b2-31b58b68260e&taskId=54&etemp=22
+result:  http://localhost:10970/email_send.aspx?id=914870a4-3b70-457a-97b2-31b58b68260e&taskId=54
+
+<script type="text/javascript">
+    $("#emailTemplateId").change(function () {
+        var id = $('option:selected', this).val();
+        var url = window.location.href;     // Returns full URL
+        //alert(url + '&actionId=3&etemp=' + id);
+
+        // similar behavior as clicking on a link
+        var cleanUrl = url.replace(/((&etemp=)\d+)/g, '');  //<--remove '&temp= + digit //
+        window.location.href = cleanUrl + '&etemp=' + id;
+
+});
+</script>
