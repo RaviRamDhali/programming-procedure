@@ -1,0 +1,13 @@
+LINQ: Group by month and year within a datetime field
+http://stackoverflow.com/questions/762899/linq-group-by-month-and-year-within-a-datetime-field
+
+var grouped = (
+from p in Hr_inines
+group p by new { 
+month = p.Dt_entered.Value.Month,
+year= p.Dt_entered.Value.Year } into d
+select new {
+year = d.Key.year,
+month = d.Key.month,
+count = d.Count()
+}).OrderBy(g => g.year).ThenBy(g => g.month).Dump();
