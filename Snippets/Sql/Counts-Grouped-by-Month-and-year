@@ -1,3 +1,8 @@
+---
+(Linq version at https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Linq/Counts-Grouped-by-Month-and-year)
+---
+
+
 select YEAR(orderDate) AS [Year],
    MONTH(orderDate) AS [Month], COUNT(*) AS [Count],SUM(orderPaidAmount) as TotalAmount
 from Orders
