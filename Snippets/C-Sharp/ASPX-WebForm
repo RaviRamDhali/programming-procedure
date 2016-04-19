@@ -1,5 +1,23 @@
-*** Random code snippets for Webforms-ASPX pages
+*** Webform code-behind basic MVC style ***
 
+// Initailize all public objects
+
+//  [POST]
+if (Page.IsPostBack)
+        {
+           FormCollection()
+           // do form collection task
+           // redirect back to current page
+        }
+
+//  [GET] (regular page load) after [POST]
+
+FillFormView()
+LoadData()
+
+
+
+*** Random code snippets for Webforms-ASPX pages
  // foreach snippet
  <% foreach (var VARIABLE in COLLECTION){ %>
  -------------------------------------
