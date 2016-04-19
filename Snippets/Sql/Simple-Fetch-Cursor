@@ -1,0 +1,28 @@
+DECLARE @id NVARCHAR(50)
+DECLARE sku CURSOR FOR
+
+SELECT p.prodStyleID FROM dbo.Product AS p
+
+OPEN sku
+FETCH NEXT FROM sku
+INTO @id
+WHILE @@FETCH_STATUS = 0
+   BEGIN
+   
+	PRINT @id + '_spec.pdf'
+	
+		--UPDATE dbo.Product
+		--SET prodSpecSheet = @id + '_spec.pdf'
+		--WHERE prodStyleID = @id
+		
+		--INSERT INTO option1 (option1Code,option1Desc,option1Other)
+		--VALUES (@skuV,@skuV + '_sm.jpg','goText')
+		
+		
+      FETCH NEXT FROM sku
+      INTO @id
+      
+   END
+CLOSE sku
+DEALLOCATE sku
+GO
