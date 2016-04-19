@@ -1,7 +1,5 @@
 *** Webform code-behind basic MVC style ***
 
-// Initailize all public objects
-
 //  [POST]
 if (Page.IsPostBack)
         {
@@ -12,9 +10,9 @@ if (Page.IsPostBack)
 
 //  [GET] (regular page load) after [POST]
 
+Initailize all public objects()
 FillFormView()
 LoadData()
-
 
 
 *** Random code snippets for Webforms-ASPX pages
