@@ -1,0 +1,10 @@
+Single Object 
+Functions should return NULL object
+Returning null is usually the best idea if you intend to indicate that no data is available.
+http://stackoverflow.com/a/1626620/665387
+
+List <Object>
+Functions should return an EMPTY List<object>
+It is considered a best practice to NEVER return null when returning a collection or enumerable. 
+ALWAYS return an empty enumerable/collection.
+http://stackoverflow.com/a/1970001/665387
