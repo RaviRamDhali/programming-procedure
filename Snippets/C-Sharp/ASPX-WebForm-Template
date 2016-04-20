@@ -1,0 +1,31 @@
+
+        //[POST]
+        if (IsPostBack)
+        {
+            //-- GetFormCollection
+            //--> IMSClasses.common.Tools.PostBackControl.GetPostBackControlId(Page) 
+            //-- Do Task
+            //-- If needed > Redirect (reload page)
+        }
+
+
+        //[GET]
+        //-- Initailize all public objects()
+        //-- QStringCollection
+        //-- FillFormValues()
+        //-- Load Data for Model > View
+
+
+    private object GetFormCollection(HttpRequest request)
+    {
+        object form = new object();
+
+        string tbFrom = request.Form["tbFrom"].ToStringOrDefault();
+
+        return form;
+    }
+
+    private object GetQStringCollection(HttpRequest request)
+    {
+        ApplicantGuid = request["id"].ToGuidOrDefault();
+    }
