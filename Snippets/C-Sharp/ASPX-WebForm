@@ -1,9 +1,13 @@
 *** Webform code-behind basic MVC style ***
 
-//[POST]
-//-- GetFormCollection
-//-- Do Task
-//-- Redirect (reload page)
+ //[POST]
+ if (IsPostBack)
+ {
+     //-- GetFormCollection
+     //--> IMSClasses.common.Tools.PostBackControl.GetPostBackControlId(Page) 
+     //-- Do Task
+     //-- If needed > Redirect (reload page)
+ }
 
 
 //[GET]
