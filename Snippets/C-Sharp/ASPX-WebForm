@@ -1,18 +1,16 @@
 *** Webform code-behind basic MVC style ***
 
-//  [POST]
-if (Page.IsPostBack)
-        {
-           FormCollection()
-           // do form collection task
-           // redirect back to current page
-        }
+//[POST]
+//-- GetFormCollection
+//-- Do Task
+//-- Redirect (reload page)
 
-//  [GET] (regular page load) after [POST]
 
-Initailize all public objects()
-FillFormView()
-LoadData()
+//[GET]
+//-- Initailize all public objects()
+//-- QStringCollection
+//-- FillFormValues()
+//-- Load Data for Model > View
 
 
 *** Random code snippets for Webforms-ASPX pages
