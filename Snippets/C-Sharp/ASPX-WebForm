@@ -1,22 +1,3 @@
-*** Webform code-behind basic MVC style ***
-
- //[POST]
- if (IsPostBack)
- {
-     //-- GetFormCollection
-     //--> IMSClasses.common.Tools.PostBackControl.GetPostBackControlId(Page) 
-     //-- Do Task
-     //-- If needed > Redirect (reload page)
- }
-
-
-//[GET]
-//-- Initailize all public objects()
-//-- QStringCollection
-//-- FillFormValues()
-//-- Load Data for Model > View
-
-
 *** Random code snippets for Webforms-ASPX pages
  // foreach snippet
  <% foreach (var VARIABLE in COLLECTION){ %>
