@@ -20,7 +20,10 @@
     {
         object form = new object();
 
-        string tbFrom = request.Form["tbFrom"].ToStringOrDefault();
+        string title = request.Form["Title"].ToStringOrDefault();
+        bool active = (request.Form["Active"] == "on") ? true :false ;
+        int id = request.Form["id"].ToInt32OrDefault();
+        string save = request.Form["save"].ToStringOrDefault();
 
         return form;
     }
