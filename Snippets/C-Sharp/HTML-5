@@ -1,3 +1,5 @@
+**HTML5 Requires Date/Time format to be yyyy-MM-dd**
+@Html.TextBoxFor(m => m.available_on,"{0:yyyy-MM-dd}",new { @type = "date", @class = "required" })
+
 Convert c# Datetime to HTML-5 Date value
 <input type="date" value="<%= ActivityDate.ToString("yyyy-MM-dd")%>"/>
-
