@@ -1,0 +1,8 @@
+
+// Sorting: Similar to filtering, a generic parameter sort can be used to describe sorting rules. 
+var sortField = HttpContext.Current.Request.QueryString["sort"].ToStringOrDefault();
+var propertyInfo = typeof(SomeView).GetProperty(sortField);
+
+if(propertyInfo.IsNotNull())
+  result = jobList.OrderBy(x => propertyInfo.GetValue(x, null)).ToList();
+  
