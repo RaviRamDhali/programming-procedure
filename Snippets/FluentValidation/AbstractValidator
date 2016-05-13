@@ -1,0 +1,32 @@
+namespace BLL.ViewModel
+{
+    [Validator(typeof (ProductCreateViewModelValidator))]
+    public class ProductCreateViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime Modified { get; set; }
+        public string ModifiedUserName { get; set; }
+        public bool Active { get; set; }
+
+        public int ProjectTaskId { get; set; }
+        public int RelatedTypeId { get; set; }
+        public int CategoryTypeId { get; set; }
+        public int State { get; set; }
+
+    }
+
+    public class ProductCreateViewModelValidator : AbstractValidator<ProductCreateViewModel>
+    {
+        public ProductCreateViewModelValidator()
+        {
+            RuleFor(x => x.Title).Length(5, 150).WithName("Title");
+            RuleFor(x => x.Content).NotEmpty().WithName("Content");
+            RuleFor(x => x.ProjectTaskId).GreaterThan(0).NotEmpty().WithName("Select a Task");
+            RuleFor(x => x.RelatedTypeId).GreaterThan(0).NotEmpty().WithName("Select a Related");
+            RuleFor(x => x.CategoryTypeId).GreaterThan(0).NotEmpty().WithName("Select a Category");
+            RuleFor(x => x.ProjectTaskId).NotEmpty().WithName("Select a State");
+        }
+    }
+}
