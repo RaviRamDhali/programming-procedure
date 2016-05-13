@@ -1,0 +1,33 @@
+namespace BLL.ViewModel.Product
+{
+    public class ProductViewModel
+    {
+        public ProductViewModel()
+        {
+            Product = new ProductItemViewModel();
+            SelectedImagesTask = new List<ImagesTasksItemViewModel>();
+            SelectedCategoryTypes = new List<CategoryTypeViewModel>();
+            SelectedRelatedTypes = new List<RelatedTypeViewModel>();
+        }
+
+        public ProductItemViewModel Product { get; set; }
+
+        public List<ImagesTasksItemViewModel> SelectedImagesTask { get; set; }
+        public List<CategoryTypeViewModel> SelectedCategoryTypes { get; set; }
+        public List<RelatedTypeViewModel> SelectedRelatedTypes { get; set; }
+    }
+
+    public class ProductItemViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string ProductContent { get; set; }
+        public DateTime Modified { get; set; }
+        public string ModifiedUserName { get; set; }
+        public bool Active { get; set; }
+
+        public int ProjectTaskId { get; set; }
+        public int CategoryTypeId { get; set; }
+        public int RelatedTypeId { get; set; }
+    }
+}
