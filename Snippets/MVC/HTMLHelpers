@@ -1,6 +1,6 @@
 @Html.CheckBox("AuthorizationExpires", Model.AuthorizationExpires) Check here if authorization expires
 
-@Html.DropDownList("st_code", new SelectList(stateList, "StateAbbr", "StateAbbr"), "- Select One -", new { @class = "hasState dropdown required" })
+@Html.DropDownListFor(m => m.Helper.ProjectTaskId, new SelectList(Model.SelectedActionTask, "ActionId", "ActionId"), "- Select One -", new { @class = "form-control" })
 
 @Html.RadioButton("Citizenship", Model.IsAlienAuthorized, new { data_action = "ShowAlien" }) An alien authorized to work
 
