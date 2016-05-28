@@ -1,14 +1,20 @@
 
+
+        //[POST from non-aspx page (aka API]
+        if (Request.Form.Count > 0)
+        {
+                var formData = GetFormCollection(Request);
+        }
+            
         //[POST]
         if (IsPostBack)
         {
-            //-- GetFormCollection
-            //--> IMSClasses.common.Tools.PostBackControl.GetPostBackControlId(Page) 
+            //-- GetFormCollection(Request)
+            //--> IMSClasses.common.Tools.PostBackControl.GetPostBackControlId(Request) 
             //-- Do Task
             //-- If needed > Redirect (reload page)
         }
-
-
+        
         //[GET]
         //-- Initailize all public objects()
         //-- QStringCollection
