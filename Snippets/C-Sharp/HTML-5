@@ -3,3 +3,21 @@
 
 Convert c# Datetime to HTML-5 Date value
 <input type="date" value="<%= ActivityDate.ToString("yyyy-MM-dd")%>"/>
+
+Search Fields for Date range (need to have string in view)
+<input type="date" name="start" id="start" placeholder="start" value="<%=FormCollection.StartString%>"/> to
+<input type="date" name="end" id="end" value="<%=FormCollection.EndString%>"/>
+
+public DateTime Start { get; set; }
+public DateTime End { get; set; }
+public string StartString { get; set; }
+public string EndString { get; set; }
+
+form.Start = request.Form["start"].ToDateTimeOrDefault();
+form.End = request.Form["end"].ToDateTimeOrDefault();
+
+if (form.Start != DateTime.MinValue)
+    form.StartString = form.Start.ToString("yyyy-MM-dd");
+
+if (form.End != DateTime.MinValue)
+    form.EndString = form.End.ToString("yyyy-MM-dd");
