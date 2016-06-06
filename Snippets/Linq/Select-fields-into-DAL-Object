@@ -1,0 +1,15 @@
+var members = (
+        from m in db.Members
+        where memIds.Contains(m.memID)
+        select new
+        {
+            m.memID,
+            m.memFirstName,
+            m.memLastName
+        }).AsEnumerable().Select(
+            x => new DAL.Member
+            {
+                memID = x.memID,
+                memFirstName = x.memFirstName,
+                memLastName = x.memLastName
+            }).ToList();
