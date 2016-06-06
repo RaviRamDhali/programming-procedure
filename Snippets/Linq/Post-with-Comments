@@ -1,0 +1,79 @@
+public class CaseEntireView
+    {
+        public DAL.Case Case { get; set; }
+        public DAL.Member Member { get; set; }
+        public List<Activity> Activities { get; set; }
+        
+        public class Activity
+        {
+            public DAL.CaseActivity CaseActivity { get; set; }
+            public DAL.Member Member { get; set; }
+            public List<Comments> Comments { get; set; }
+        }
+
+        public class Comments
+        {
+            public DAL.CaseComment ActivityComment { get; set; }
+            public DAL.Member Member { get; set; }
+        }
+    }
+
+
+ public static CaseEntireView CaseWithDetails(int caseId)
+        {
+            CaseEntireView view = new CaseEntireView();
+
+            view.Case = (
+                from c in db.Cases
+                where c.caseID == caseId
+                select c).FirstOrDefault();
+            
+            var activities = (
+                from a in db.CaseActivities
+                where a.caseID == caseId
+                select a).ToList();
+            
+            Guid[] caseGuids = activities.Select(a => a.caseActivityGUID).ToArray();
+            
+            var comments = (
+                from c in db.CaseComments
+                where caseGuids.Contains(c.caseActivityGUID)
+                select c).ToList();
+
+            
+            // -----------------------------------------------------
+            view.Activities = new List<BLL.Views.CaseEntireView.Activity>();
+
+            if (activities.IsNotNull())
+            {
+                foreach (var caseActivity in activities)
+                {
+                    var acs = ProcessActivity(caseActivity, comments);
+                    acs.CaseActivity = caseActivity;
+                    view.Activities.Add(acs);
+                }
+            }
+
+            List<int> memIds = CombineMemberIds(view.Case, activities, comments);
+
+            var members = (
+                from m in db.Members
+                where memIds.Contains(m.memID)
+                select new
+                {
+                    m.memID,
+                    m.memFirstName,
+                    m.memLastName
+                }).AsEnumerable().Select(
+                    x => new DAL.Member
+                    {
+                        memID = x.memID,
+                        memFirstName = x.memFirstName,
+                        memLastName = x.memLastName
+                    }).ToList();
+
+
+            view = FillMembersIntoView(view, members);
+
+            return view;
+        }
