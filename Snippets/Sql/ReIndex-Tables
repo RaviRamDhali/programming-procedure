@@ -11,3 +11,13 @@ EXEC sp_MSforeachtable @command1="print '?' DBCC DBREINDEX ('?', ' ', 80)"
 GO
 EXEC sp_updatestats
 GO
+
+-- Query Optimizer Trace Flag 4199 - Increase performance
+DBCC TRACEON (4199, -1)    -- Turn on the trace flag globally (for all sessions)
+-- Clear the cache because we don’t want any old, inefficient execution plans hanging around.
+CHECKPOINT;
+GO
+DBCC DROPCLEANBUFFERS;
+GO
+DBCC FREEPROCCACHE
+GO 
