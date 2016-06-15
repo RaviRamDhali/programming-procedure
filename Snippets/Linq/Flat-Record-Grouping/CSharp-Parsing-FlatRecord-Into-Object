@@ -1,0 +1,55 @@
+** Take FLAT record from database query and parse in c# ** 
+
+
+{
+            List<BLL.ViewModel.StateAction.ProjectViewModel> vm = new List<ProjectViewModel>();
+            var modelList = _projectActionRepository.GetActionsByStateByEngagementId(engagementId)
+                .Where(x => x.ProjectId == projectId) //Get new GetActionsByStateByProjectId to avoid WHERE
+                .OrderBy(x => x.Project)
+                .ThenBy(x => x.State);
+
+            // Grouped
+            var projectGrouped = modelList.GroupBy(x => x.ProjectId);
+            foreach (var project in projectGrouped)
+            {
+                BLL.ViewModel.StateAction.ProjectViewModel projectView = new ProjectViewModel();
+
+                projectView.Id = project.Key;
+                projectView.Name = project.Select(x => x.Project).FirstOrDefault();
+                projectView.TagName = project.Select(x => x.TagName).FirstOrDefault();
+
+                // Grouped
+                var statusGrouped = project.GroupBy(x => x.StatusTypesId);
+                foreach (var status in statusGrouped)
+                {
+                    BLL.ViewModel.StateAction.StatusTypeViewModel statusView = new StatusTypeViewModel();
+
+                    statusView.Id = status.Key;
+                    statusView.Name = status.Select(x => x.StatusTypes).FirstOrDefault();
+
+                    //Grouped
+                    var statesGrouped = status.GroupBy(x => x.State);
+                    foreach (var state in statesGrouped)
+                    {
+                        BLL.ViewModel.StateAction.StatesViewModel statesView = new StatesViewModel();
+                        statesView.State = state.Key;
+                        
+                        var statesViewModelList = FillStatesViewModel(state);
+                        statesView.Actions.AddRange(statesViewModelList); //Add Group
+
+                        //Add Group
+                        statusView.States.Add(statesView);
+                       
+                    }
+                    
+                    //Add Group
+                    projectView.Status.Add(statusView);
+                }
+
+                //Add Group
+                vm.Add(projectView);
+            }
+
+            return vm;
+            
+        }
