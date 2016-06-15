@@ -1,0 +1,43 @@
+int engagementId = 18;
+
+#region StatesWithActions
+var StatesWithActions =  (
+from ast in ActionJurisdictionStates
+join a in ProjectActions on ast.ActionId equals a.Id
+join p in ProjectTasks on a.ProjectTaskId equals p.Id
+where p.ParentID == engagementId
+join j in JurisdictionTypes on ast.JurisdictionId equals j.Id
+join s in StatusTypes on ast.StatusTypeId equals s.Id
+select new {
+// ast,a,j,s,p,
+	State=ast.State,
+	ActionId=a.Id,
+	Action=a.Name,
+	Task = p.Name,
+	TaskId = p.Id,
+	ProjectId=p.Id,
+	Jurisdiction=j.Name,
+	JurisdictionId=j.Id,
+	StatusTypes=s.Name,
+	StatusTypesId=s.Id
+}).ToList();
+#endregion
+
+//var dataState = (
+//from actions in StatesWithActions
+//group actions by actions.State into stateGrp
+//select stateGrp ).ToList().Dump("State");
+
+var dataStatus = (
+from actions in StatesWithActions
+group actions by actions.StatusTypesId into statusGrp
+select new {
+Status = statusGrp.Key,
+States =	from s in statusGrp
+			group s by s.State into stateGrp
+			select new {
+			State = stateGrp.Key,
+			Actions = from action in stateGrp
+			select action			
+			}
+			}).ToList().Dump();
