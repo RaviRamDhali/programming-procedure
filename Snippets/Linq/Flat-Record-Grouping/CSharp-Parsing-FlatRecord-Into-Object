@@ -7,7 +7,8 @@
                 .Where(x => x.ProjectId == projectId) //Get new GetActionsByStateByProjectId to avoid WHERE
                 .OrderBy(x => x.Project)
                 .ThenBy(x => x.State);
-
+                
+                
             // Grouped
             var projectGrouped = modelList.GroupBy(x => x.ProjectId);
             foreach (var project in projectGrouped)
