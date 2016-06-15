@@ -1,0 +1,54 @@
+namespace BLL.ViewModel.StateAction
+{
+    public class ProjectViewModel
+    {
+        public ProjectViewModel()
+        {
+            Status = new List<StatusTypeViewModel>();
+        }
+
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public string TagName { get; set; }
+        public List<StatusTypeViewModel> Status { get; set; }
+        
+    }
+
+    public class StatusTypeViewModel
+    {
+        public StatusTypeViewModel()
+        {
+            States = new List<StatesViewModel>();
+        }
+
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public List<StatesViewModel> States { get; set; }
+    }
+
+    public class StatesViewModel
+    {
+        public StatesViewModel()
+        {
+            Actions = new List<ActionsViewModel>();
+        }
+
+        public string State { get; set; }
+        public List<ActionsViewModel> Actions { get; set; }
+    }
+    public class ActionsViewModel
+    {
+        public string State { get; set; }
+        public int ActionId { get; set; }
+        public string Action { get; set; }
+        public string Task { get; set; }
+        public int TaskId { get; set; }
+        public string Jurisdiction { get; set; }
+        public int JurisdictionId { get; set; }
+        public string StatusTypes { get; set; }
+        public int StatusTypesId { get; set; }
+        public string Project { get; set; }
+        public int ProjectId { get; set; }
+    }
+
+}
