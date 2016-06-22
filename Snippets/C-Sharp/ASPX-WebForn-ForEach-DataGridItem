@@ -1,0 +1,22 @@
+        foreach (DataGridItem gridItem in grid_i9_results.Items)
+        {
+            LinkButton lb = null;
+            for (int i = 0; i < gridItem.Cells.Count; i++)
+            {
+                for (int j = 0; j < gridItem.Cells[i].Controls.Count; j++)
+                {
+                    if (gridItem.Cells[i].Controls[j] is LinkButton)
+                    {
+                        lb = (LinkButton)gridItem.Cells[i].Controls[j];
+                    }
+                }
+            }
+            
+            int.TryParse(gridItem.Cells[0].Text, out i9_id);
+            cc = gridItem.Cells[2].Text;
+            // public_id = ((LinkButton)gridItem.Cells[4].Controls[0]).Text;
+            public_id = ((LinkButton)gridItem.Cells[4].Controls[0]).Text;
+            emp_name = gridItem.Cells[5].Text;
+            DateTime.TryParse(gridItem.Cells[9].Text, out dt_entered);
+
+        }
