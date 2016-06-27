@@ -4,8 +4,10 @@
 
 //Id and Name
 @Html.DropDownListFor(m => m.Helper.State, new SelectList(Model.SelectState, "Abbreviation", "Name"), "- Select One -", new { @class = "form-control" , Name = "State" })
-    
 
+// HTML 5 Date formate
+<input id="@field.Guid" name="@field.Guid" type="date" class="form-control" @(field.Required ? "required" : "") value="@string.Format("{0:yyyy-MM-ddyy}",data)"/>
+                                   
 @Html.RadioButton("Citizenship", Model.IsAlienAuthorized, new { data_action = "ShowAlien" }) An alien authorized to work
 
 @Html.RadioButton("Citizenship", Model.IsLawfulResident, new { data_action = "ShowLawful" }) A lawful permanent resident
