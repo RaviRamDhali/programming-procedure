@@ -1,0 +1,25 @@
+ 
+    <%
+        Response.Write("<hr />");
+        Response.Write("Context.User.Identity.IsAuthenticated: " + string.Concat(Context.User.Identity.IsAuthenticated) + "<br />");
+        Response.Write("Request.IsAuthenticated: " + string.Concat(Request.IsAuthenticated) + "<br />");
+
+        Response.Write("<hr />");
+        
+        for (int i = 0; i < Session.Count; i++)
+        {
+            var crntSession = Session.Keys[i];
+            Response.Write(string.Concat(crntSession, "=", Session[crntSession]) + "<br />");
+        }         
+     
+        
+
+        Response.Write("<strong>Roles</strong>");
+        foreach (var r in WebSessions.Roles)
+        {
+            Response.Write("<li>" + r + "</li>");
+        }
+
+        
+
+    %>
