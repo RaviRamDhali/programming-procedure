@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+using BLL.ModelViews;
+
+namespace BLL.CustomException
+{
+    public class EmploymentApplicationException : Exception
+    {
+        private readonly CommonViews.RedirectMessageResult _redirect;
+        public CommonViews.RedirectMessageResult Redirect { get { return _redirect; } }
+
+
+        public EmploymentApplicationException()
+        {
+            // Add implementation.
+        }
+        public EmploymentApplicationException(string message)
+        {
+            // Add implementation.
+        }
+        public EmploymentApplicationException(string message, Exception inner)
+        {
+            // Add implementation.
+        }
+        public EmploymentApplicationException(CommonViews.RedirectMessageResult redirect, string message)
+        {
+            _redirect = redirect;
+        }
+        
+        // This constructor is needed for serialization.
+        protected EmploymentApplicationException(SerializationInfo info, StreamingContext context)
+        {
+            // Add implementation.
+        }
+    }
+}
