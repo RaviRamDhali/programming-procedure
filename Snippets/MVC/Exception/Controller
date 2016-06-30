@@ -1,0 +1,15 @@
+
+if (acknowledgement.IsNull())
+  throw new EmploymentApplicationException(RedirectMessageResult(), "message");
+
+
+try
+{
+    var model = BLL.Services.Controller.EmploymentApplication.Review.Get(applicantGuid);
+}
+catch (EmploymentApplicationException exception)
+{
+    if (exception.Redirect.IsNotNull())
+        return RedirectToAction(exception.Redirect.actionName, exception.Redirect.controllerName,
+            exception.Redirect.routeValues);
+}
