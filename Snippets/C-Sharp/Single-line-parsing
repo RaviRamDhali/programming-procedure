@@ -15,6 +15,8 @@ $('input[name="race"]:checked').val();  //<-- If radio button is selected
 int catID = int.TryParse(Request.QueryString["id"], out catID) ? catID : 0;
 
 if (data.ended != null) view.ended = (DateTime)data.ended;  //<---- Nullable date
+if (!form.Started.IsDefault()) model.started = form.Started;  //<---- Nullable date check if default date
+
 if (data.raceID != null) view.raceID = (int)data.raceID;   //<---- Nullable int
 
 bool isReport = (report == true); //<---- Nullable bool (ex bool? report = false)
