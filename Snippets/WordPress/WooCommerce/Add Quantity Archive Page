@@ -1,0 +1,7 @@
+Adding Quantity to archive page add to cart (31 posts)
+
+// remove that ajaxified Add To Cart button that automatically adds 1 item to the cart.
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart'); 
+
+// replace it with the Add To Cart Button, complete with QTY field.. the same one that is used on the Single Product page.
+add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_single_add_to_cart', 1); 
