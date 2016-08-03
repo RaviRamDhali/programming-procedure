@@ -1,0 +1,7 @@
+// get cart quantity
+$qty = $woocommerce->cart->get_cart_contents_count();
+
+// get cart url
+$cart_url = $woocommerce->cart->get_cart_url();
+
+<?php if($qty>1) echo '<a href="'.$cart_url.'">View Cart</a>'; ?>
