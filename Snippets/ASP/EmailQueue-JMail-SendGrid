@@ -1,0 +1,95 @@
+<!--#include virtual="/_app/add_EmailQueue.asp" -->
+<%
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sub emailFunc(emailHTML)
+
+' SEND EMAIL
+'///////////////////////////////////////////////////
+
+' SendGrid Email Settings 01/22/2016
+smtpServer = "smtp.sendgrid.net"
+smtpUserName = "*************************"
+smtpPassword = "********************"
+
+
+'// Added 04/16/2016 - Training Cert is dynamic attachment
+'// SendGrid code not working with individual certs/attachement
+
+	Call AddToEmailQueue(batchId,strEmail,strSenderEmail,Filename3)
+
+	' If Filename3 <> "" then
+		' Call SendEmailWithTrainingCert()
+	' Else
+		' Call AddToEmailQueue(batchId,strEmail,strSenderEmail,Filename3)
+	' End If
+
+End Sub
+
+
+Sub SendEmailWithTrainingCert()
+			
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+			Set JMail = Server.CreateObject("JMail.Message") 
+			JMail.MailServerUserName = smtpUserName
+			JMail.MailServerPassword = smtpPassword
+
+
+			JMail.Silent = true
+			JMail.Logging = true
+			JMail.ISOEncodeHeaders = false
+			JMail.ContentTransferEncoding = "8bit" 
+			JMail.AddHeader "Originating-IP", Request.ServerVariables("REMOTE_ADDR") 
+			JMail.AddHeader "EmailSystem", "https://trainingjacket.com"
+			JMail.AddHeader "TJServiceBatchId", batchId
+				JMail.From = strSenderEmail
+				JMail.FromName = strSenderName
+				JMail.Subject = strSubject
+				JMail.AddRecipient strEmail
+
+			Jmail.HTMLBody = emailHTML
+
+
+			'///////////////////////////////////////////////////
+			' Check file attachments
+			'///////////////////////////////////////////////////
+			If Filename1 <> "" then
+			Jmail.Addattachment (Directory & Filename1)
+			End If
+
+			If Filename2 <> "" then
+			Jmail.Addattachment (Directory & Filename2)
+			End If
+
+			'///////////////////////////////////////////////////
+			'// Added 01/11/2010 for Email Event Cert (see email_MembersSend.asp)
+			If Filename3 <> "" then
+			Jmail.Addattachment (Filename3)
+			End If
+			'///////////////////////////////////////////////////
+
+			strAttachment = Filename1 & "," & Filename2 & "," & Filename3
+			'///////////////////////////////////////////////////
+
+					'To capture any errors which might occur we wrap the call in an IF statement
+					if not Jmail.Send(smtpServer) then
+						errorLogJmail = "ERROR MESSAGE: " & JMail.ErrorMessage & "<BR>" & vbcrlf
+						errorLogJmail = errorLogJmail & "ERROR SOURCE: " & JMail.ErrorSource & "<BR>" & vbcrlf 
+						errorLogJmail = errorLogJmail & "LOG: <pre>" & JMail.Log & "</pre>" & vbcrlf
+
+						set qJMail = Server.CreateObject( "JMail.Speedmailer" )
+						'qJMail.SendMail "ravi@dhali.com", "ravi@dhali.com" , "TJ JMail Error", errorLogJmail, "mail.dhali.om"
+						Set qJMail = Nothing
+						' Response.write "<pre>" & errorLogJmail & "</pre>"
+					else
+						' Response.write "Message sent succesfully!"
+					end if
+
+
+			Set JMail = Nothing
+'
+End Sub
+
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+%>
