@@ -1,0 +1,74 @@
+<%
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Function TokenHTMLBuild(ByRef HTML, ByRef Subject, ByRef Body, ByRef Footer)
+
+'------------ HTML Email - Build Header info (To, From, Subject)
+set readHTML = new fileManager
+readHTML.readFile HTML,"tj"
+HTML = readHTML.FileContent
+
+'---------------------  HTML Email - Build Body (FileContent)
+clientLogoFullPath = "http://trainingjacket.com" & Session("clientlogo")
+HTML = Replace(HTML,"##clientLogo##", clientLogoFullPath)
+
+'----------- ##strSubject##
+HTML = Replace(HTML,"##strSubject##", Subject)
+
+
+'----------- ##memname##
+HTML = Replace(HTML,"##memname##", Session("memName")) 
+
+'----------- ##usr_email##
+HTML = Replace(HTML,"##usr_email##", Session("usr_email")) 
+
+'----------- ##now##
+HTML = Replace(HTML,"##now##", now())
+
+'----------- ##Body##
+Body = Replace(Body,vbCrLf, "<br>")
+
+HTML = Replace(HTML,"##Footer##", Footer)
+HTML = Replace(HTML,"##strBody##", Body)
+
+
+'----------- ##strBody##
+HTML = Replace(HTML,"##clientName##", Session("clientName"))
+HTML = Replace(HTML,"##clientDept##", Session("clientDept"))
+HTML = Replace(HTML,"##clientWebsite##", Session("clientWebsite"))
+HTML = Replace(HTML,"##clientEmail##", clientEmail)
+HTML = Replace(HTML,"##clientContact##", clientContact)
+
+'------------------- Dues Information
+HTML = Replace(HTML,"##strName##", strName)
+HTML = Replace(HTML,"##strExpires##", strExpires)
+HTML = Replace(HTML,"##strEmail##", strEmail)
+HTML = Replace(HTML,"##clientDuesAmount##", clientDuesAmount) 
+
+'------------------- Event Registration
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+'rram: There is another replace fucn for Events [emailFunctions.asp]
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+HTML = Replace(HTML,"##eventName#", eventName) 
+HTML = Replace(HTML,"##eventStartDate##", eventStartDate) 
+HTML = Replace(HTML,"##eventLocName##", eventLocName) 
+HTML = Replace(HTML,"##eventLocAdd1##", eventLocAdd1) 
+HTML = Replace(HTML,"##eventLocAdd2##", eventLocAdd2) 
+HTML = Replace(HTML,"##eventLocCity##", eventLocCity) 
+HTML = Replace(HTML,"##eventLocST##", eventLocST) 
+HTML = Replace(HTML,"##eventLocZIP##", eventLocZIP) 
+HTML = Replace(HTML,"##eventCost##", eventCost) 
+HTML = Replace(HTML,"##eventPlannerInfo##", eventPlannerInfo)
+
+HTML = Replace(HTML,"##eventAttendeeDepartment##", eventAttendeeDepartment) 
+HTML = Replace(HTML,"##eventAttendeeLastName##", eventAttendeeLastName) 
+HTML = Replace(HTML,"##eventAttendeeFirstName##", eventAttendeeFirstName) 
+HTML = Replace(HTML,"##eventAttendeePaidNotes##", eventAttendeePaidNotes) 
+HTML = Replace(HTML,"##eventAttendeePaid##", eventAttendeePaid) 
+HTML = Replace(HTML,"##eventAttendeePaidDate##", eventAttendeePaidDate)
+
+		TokenHTMLBuild = HTML
+
+    End Function
+'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+%>
