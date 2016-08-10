@@ -1,0 +1,43 @@
+<%
+' ///////////// File Manager Class ////////////////
+' rram 10/05/08
+' /////////////////////////////////////////////////
+
+Class fileManager
+	Public FileContent
+
+	
+' /////////// Values to Read file from server ; rram10/05/08
+
+	Function readFile(ByRef FileName, ByRef FilePath)
+
+		' Set server paths in client CSS Dir
+		LocalPath = (Server.MapPath("/"))		
+		ClientPath  = Session("clientpath") '  \client_css\CSAIA\
+		ClientPath = LocalPath & ClientPath
+		ClientPath = ClientPath & "\" & FileName
+				
+		' Set default path for TJ Dir
+		TemplateEmailPath  = "\templateEmails\" & FilePath
+		TemplateEmailPath  = TemplateEmailPath & "\" & FileName
+		TemplateEmailPath = LocalPath & TemplateEmailPath
+
+		Set fsFile = Server.CreateObject("Scripting.FileSystemObject")
+	
+		If FilePath = "client" Then
+			Set fsFile = fsFile.OpenTextFile(ClientPath, 1)
+		End If
+
+		If FilePath = "tj" Then
+			Set fsFile = fsFile.OpenTextFile(TemplateEmailPath, 1)
+		End If
+		
+		FileContent = (fsFile.ReadAll)
+							
+		fsFile.Close
+		Set fsFile=Nothing
+		
+	End Function
+
+End Class
+%>
