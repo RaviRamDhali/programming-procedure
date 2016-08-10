@@ -1,0 +1,140 @@
+GO
+/****** Object:  StoredProcedure [dbo].[app_GetApplicantQualifyingTasks]    Script Date: 5/30/2016 11:43:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+ALTER PROC [dbo].[app_GetApplicantQualifyingTasks]
+@CompanyCode nvarchar(11),
+@ApplicantId int
+
+AS
+BEGIN
+
+SET NOCOUNT ON
+
+ ------------------------------------------------------------
+ -- Remove temp tables
+ ------------------------------------------------------------
+ --Drop table #tmpDetails
+ --Drop table #tmpResults
+
+ ------------------------------------------------------------
+ -- GET JOB AND RELATED TABLES FOR APPLICANT
+ ------------------------------------------------------------
+
+ SELECT
+ applicant.id as applicantid,
+ job.id AS jobId,
+ title.id AS jobTitleId,
+ facility.id as facilityId,
+ facility.[state] AS facilityState,
+ facility.loc_code AS facilityCode
+ Into #tmpDetails
+ FROM [hr_app_applicant] AS applicant
+ JOIN [hr_app_emp_selected_position] AS position ON position.applicantId =
+applicant.id
+ JOIN hr_job AS job ON position.jobId = job.id
+ JOIN hr_job_jobtitle AS title ON job.jobTitleId = title.id
+ JOIN c_locs AS facility ON position.c_locsId = facility.id
+ WHERE applicant.c_code = @CompanyCode and applicantID = @ApplicantId
+
+
+ ------------------------------------------------------------
+ -- CREATE Scratch table
+ ------------------------------------------------------------
+ Declare @Scratch table (
+ id INT IDENTITY(1, 1) PRIMARY KEY,
+ applicantId int,
+ applicantCreated date,
+ taskId int,
+ taskCreated date,
+ actionId int,
+ actionValue varchar(32),
+ UNIQUE CLUSTERED (id,applicantId)
+ )
+
+
+ ------------------------------------------------------------
+ -- FILL @Scratch with Applicant and All Tasks
+ -----------------------------------------------------------
+
+ DECLARE @appID int
+ DECLARE @appCreated date
+ DECLARE cur CURSOR LOCAL READ_ONLY FORWARD_ONLY FOR
+
+ select id, created from hr_app_applicant where c_code = @CompanyCode and
+id = @ApplicantId
+ OPEN cur
+ FETCH NEXT FROM cur INTO @appID, @appCreated
+ WHILE @@FETCH_STATUS = 0
+ BEGIN
+
+ Insert into @Scratch (applicantId, applicantCreated, taskId, taskCreated,
+actionId, actionValue)
+ Select @appID,@appCreated,t.id, t.created, t.actionId, t.ActionValue
+ from hr_app_task as t where categoryID = 3 and active = 1 and c_code =
+@CompanyCode
+
+ FETCH NEXT FROM cur INTO @appID, @appCreated
+ END
+
+ CLOSE cur
+ DEALLOCATE cur
+ SET NOCOUNT OFF
+
+ ------------------------------------------------------------
+ -- Run Function app_NewFunctionGetTaskVisibility to Remove Tasks
+ -- Run Function app_NewFunctionVersionCheck versioning check
+ -- FILL #tmpResults with Applicant Tracking Data
+ ------------------------------------------------------------
+ select id, applicantId, applicantCreated, taskId, taskCreated, actionId,
+actionValue, visable, versionCheck,
+ (
+ ------------------------------------------------------------
+ -- LOOKUP Passed progressId for each task
+ -- ** Set passed value from hr_app_tracking
+ ------------------------------------------------------------
+ select passed
+ from hr_app_task_action_progress where id = (
+ select progressId from hr_app_tracking where id =
+ (select max(t.id) from hr_app_tracking as t where t.applicantId =
+tt.applicantId and t.taskID = tt.taskId)
+ )
+
+ ) as passed
+ Into #tmpResults
+ from (
+ select p.* , dbo.app_NewFunctionGetTaskVisibility(t.jobId, t.jobTitleId,
+t.facilityId, t.facilityState, p.actionValue) as visable,
+ dbo.app_NewFunctionVersionCheck(applicantCreated, taskCreated) as
+versionCheck
+ from @Scratch as p
+ join #tmpDetails as t on p.applicantId = t.applicantId
+ where p.actionId = 14
+ UNION ALL
+ select p.* , 1 as visable,
+ dbo.app_NewFunctionVersionCheck(applicantCreated, taskCreated) as
+versionCheck
+ from @Scratch as p
+ join #tmpDetails as t on p.applicantId = t.applicantId
+ where p.actionId <> 14) as tt
+ where visable = 1  and  versionCheck = 1
+ order by tt.applicantId
+
+ ------------------------------------------------------------
+ -- UPDATED Null passed to 0
+ ------------------------------------------------------------
+ Update #tmpResults set passed = 0 where passed is null
+
+
+ ------------------------------------------------------------
+ -- DONE
+ ------------------------------------------------------------
+ select * from #tmpResults
+
+END
+
