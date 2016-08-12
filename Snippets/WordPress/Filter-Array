@@ -1,0 +1,13 @@
+$skuquantity = null;
+
+//Filter (search) array by productId
+$key = array_search($skuId, array_column($oItems, 'productId'));
+
+//Get fields from array
+$skuproductId = $oItems[$key]['productId'];
+$skuquantity = $oItems[$key]['quantity'];
+
+print_r('skuId: ' . $skuId . '<br/>');
+print_r('skuproductId: ' . $skuproductId . '<br/>');
+print_r('skuquantity: ' . $skuquantity . '<br/>');
+
