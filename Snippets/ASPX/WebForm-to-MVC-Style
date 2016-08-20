@@ -31,6 +31,9 @@
     private object GetFormCollection(HttpRequest request)
     {
         object form = new object();
+        
+        if (request.HttpMethod != "POST")
+                return form;
 
         string title = request.Form["Title"].ToStringOrDefault();
         bool active = (request.Form["Active"] == "on") ? true :false ;
