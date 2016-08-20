@@ -5,6 +5,18 @@
         {
                 var formData = GetFormCollection(Request);
         }
+        
+        if (Request.HttpMethod == "POST")
+        {
+                var formData = GetFormCollection(Request);
+        }
+
+
+        if (Request.Form.Count > 0)
+        {
+                // var formData = GetFormCollection(Request);
+        }
+            
             
         //[POST]
         if (IsPostBack)
