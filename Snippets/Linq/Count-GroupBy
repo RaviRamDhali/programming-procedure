@@ -5,6 +5,16 @@ var membersCount = (
     select new {ClientId = c.Key, Count = (from x in c select x.memID).Count()}
     ).ToList();
 
+    var totalHoursWorkedPerCase = (
+    from a in CaseActivities
+    group a by a.CaseID into g
+    orderby g.Sum (x => x.CaseActivityHours)
+    select new {
+    caseId = g.Key,
+    hours = g.Sum (x => x.CaseActivityHours)
+    }).OrderBy (d => d.caseId).Dump();
+
+
 var casesCount = (
     from c in ctx.Cases
     join m in ctx.MemberToClients on c.memID equals m.memID
