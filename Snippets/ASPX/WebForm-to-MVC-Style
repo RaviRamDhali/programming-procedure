@@ -1,3 +1,21 @@
+-------------------------------------------------------
+[System.Web.Services.WebMethod]
+-------------------------------------------------------
+[System.Web.Services.WebMethod]
+    public static string AddMembersToCase(List<MemberCaseAccessLevel> memberAccessLevels)
+    {
+        BLL.Controllers.CaseToMembersController.AddMembersToCase(CaseGuid, memberAccessLevels);
+        return "The invitation has been sent to the selected members."; 
+    }
+
+type: "POST",
+url: "CaseToMembersEdit.aspx/ReinviteMemberToCase",
+data: JSON.stringify({ memberAccessLevel: memberData }),
+contentType: "application/json; charset=utf-8",
+dataType: "text",
+
+-------------------------------------------------------
+-------------------------------------------------------
 
 
         //[POST from non-aspx page (aka API]
