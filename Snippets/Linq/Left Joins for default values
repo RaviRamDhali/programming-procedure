@@ -50,3 +50,25 @@ var jobs = (
             ).ToList();
 
 // begin filtering
+
+
+//----------------------------------------------------
+Nested Left Join
+//----------------------------------------------------
+int caseId = 233;
+
+var data = (
+from doc in CaseDocuments
+
+// Get data if exists otherwise show NULL (Left Join)
+join c in CaseDocumentsToCategories on doc.CaseDocID equals c.CaseDocID into joinC
+from cat in joinC.DefaultIfEmpty()
+
+// Get data if exists otherwise show NULL (Left Join)
+join n in Categories on cat.CatID equals n.CatID into joinN
+from catName in joinN.DefaultIfEmpty()
+
+where doc.CaseID == caseId
+select new {doc, cat, catName}
+).ToList().Dump();
+
