@@ -22,7 +22,7 @@ var data = (
             where cfGpIds.Contains(g.Id)
             join f in Customfields on g.Id equals f.Customfield_groupID
             
-            // Get data if exisits otherwise show NULL (Left Join)
+            // Get data if exists otherwise show NULL (Left Join)
             join d in Customfield_data on f.Id equals d.CustomfieldID into joinD
             from filterD in joinD.Where (d => d.ApplicantID == appId).DefaultIfEmpty() 
             
