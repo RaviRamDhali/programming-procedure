@@ -1,0 +1,19 @@
+Is array empty
+
+//Get selected guids
+  var values = $('.hiddenField').val();
+
+  var array = values.split(',');
+  
+  // Not working
+  if (array.length === 0)
+      console.log('no arra');
+
+  // Working
+  var newArray = $.map(array, function (v) {
+      return v === "" ? null : v;
+  });
+   if (array.length === 0)
+   console.log(newArray);
+  
+  console.log(newArray.length);
