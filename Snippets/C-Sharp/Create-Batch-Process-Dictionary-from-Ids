@@ -1,0 +1,27 @@
+// Begin Batch Process from 10000 of ints
+
+            int batchSize = 10;
+
+            // orderIds sort by Id
+            orderIds.Sort();
+
+            int batchIndex = (orderIds.Count/ batchSize) + 1; //Plus 1 to grab remainder items
+
+            Dictionary<int, List<int>> batchDictionary = new Dictionary<int, List<int>>();
+
+            // Create new batch items from orderIds
+            for (int i = 0; i < batchIndex; i++)
+            {
+                var batchable = new List<int>();
+                if (i == 0)
+                {
+                    batchable = orderIds.Take(batchSize).ToList();
+                }
+                else
+                {
+                    int skip = (batchSize * i);
+                    batchable = orderIds.Skip(skip).Take(batchSize).ToList();
+                }
+                
+                batchDictionary.Add(i, batchable);
+            }
