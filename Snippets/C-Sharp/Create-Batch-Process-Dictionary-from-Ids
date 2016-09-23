@@ -1,14 +1,12 @@
-// Begin Batch Process from 10000 of ints
-
-            int batchSize = 10;
+private static Dictionary<int, List<int>> InitializeBatch(List<int> orderIds, int batchSize)
+        {
+            Dictionary<int, List<int>> batchDictionary = new Dictionary<int, List<int>>();
 
             // orderIds sort by Id
             orderIds.Sort();
 
-            int batchIndex = (orderIds.Count/ batchSize) + 1; //Plus 1 to grab remainder items
-
-            Dictionary<int, List<int>> batchDictionary = new Dictionary<int, List<int>>();
-
+            int batchIndex = (orderIds.Count / batchSize) + 1; //Plus 1 to grab remainder items
+            
             // Create new batch items from orderIds
             for (int i = 0; i < batchIndex; i++)
             {
@@ -22,6 +20,9 @@
                     int skip = (batchSize * i);
                     batchable = orderIds.Skip(skip).Take(batchSize).ToList();
                 }
-                
+
                 batchDictionary.Add(i, batchable);
             }
+
+            return batchDictionary;
+        }
