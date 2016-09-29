@@ -1,3 +1,32 @@
+var dataStatus = (
+from actions in StatesWithActions
+group actions by actions.StatusTypesId into statusGrp
+select new {
+Status = statusGrp.Key,
+States =	from s in statusGrp
+			group s by s.State into stateGrp
+			select new {
+			State = stateGrp.Key,
+			Actions = from action in stateGrp
+			select action			
+			}
+			}).ToList().Dump();
+			
+***************************************************
+--- Group By Multiple Columns ---
+
+List<int> custIds = new List<int>(new int[] {597375,595070,606252,598366,598653,602310,602721,602724,595064,598754});
+//custIds.Dump();
+var data = (
+from o in OfferOrders
+where custIds.Contains(o.CustID)
+group o by new{o.CustID, o.OfferID} into custGrp
+select new {
+ClientId = custGrp.Key,
+Offers = from c in custGrp select new {c.OOrderID, c.CustID, c.OfferID, c.OOrderAmount}}).Dump();
+***************************************************
+
+
 int engagementId = 18;
 
 #region StatesWithActions
@@ -28,16 +57,4 @@ select new {
 //group actions by actions.State into stateGrp
 //select stateGrp ).ToList().Dump("State");
 
-var dataStatus = (
-from actions in StatesWithActions
-group actions by actions.StatusTypesId into statusGrp
-select new {
-Status = statusGrp.Key,
-States =	from s in statusGrp
-			group s by s.State into stateGrp
-			select new {
-			State = stateGrp.Key,
-			Actions = from action in stateGrp
-			select action			
-			}
-			}).ToList().Dump();
+
