@@ -29,7 +29,11 @@ var featureCollection = {
   "features": [
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+          "fillColor": "blue",
+          "title": "La Jolla Cove",
+          "description": "A description"
+       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
@@ -57,6 +61,31 @@ var featureCollection = {
           ]
         ]
       }
+    },
+        {
+      "type": "Feature",
+      "properties": {
+          "fillColor": "red",
+          "title": "La Jolla Cove",
+          "description": "A description"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-117.27395117282867,32.85064613042267],
+            [-117.27374196052553,32.85079484744437],
+            [-117.27359712123871,32.85086244600821],
+            [-117.2735059261322,32.85071372909978],
+            [-117.27354884147644,32.85063261068105],
+            [-117.27375268936157,32.85052445267405],
+            [-117.2737580537796,32.85042981430979],
+            [-117.27390825748444,32.85050191973933],
+            [-117.27395117282867,32.85064613042267]
+          ]
+        ]
+      }
     }
   ]
 };
+
