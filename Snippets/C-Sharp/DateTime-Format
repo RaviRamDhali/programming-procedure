@@ -1,11 +1,5 @@
 [C#]
 
-// Set date with the time component set to 00:00:00
-public static DateTime GetDateZeroTime(DateTime date)
-{
-    return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
-}   
-
 <%# Eval("created", "{0:g}")%>  3/9/2008 4:05 PM
 
 String.Format("{0:t}", dt);  // "4:05 PM"                         ShortTime
@@ -21,3 +15,18 @@ String.Format("{0:y}", dt);  // "March, 2008"                     YearMonth
 String.Format("{0:r}", dt);  // "Sun, 09 Mar 2008 16:05:07 GMT"   RFC1123
 String.Format("{0:s}", dt);  // "2008-03-09T16:05:07"             SortableDateTime
 String.Format("{0:u}", dt);  // "2008-03-09 16:05:07Z"            UniversalSortableDateTime
+
+
+// Set date with the time component set to 00:00:00
+public static DateTime GetDateZeroTime(DateTime date)
+{
+    return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+}
+
+// set date with the time component set to 00:00:00
+form.modifieddatebegin = Tools.Utilities.GetDateZeroTime(form.modifieddatebegin);
+form.modifieddateend = Tools.Utilities.GetDateZeroTime(form.modifieddateend.AddDays(1));
+form.postmarkdatebegin = Tools.Utilities.GetDateZeroTime(form.postmarkdatebegin);
+form.postmarkdateend = Tools.Utilities.GetDateZeroTime(form.postmarkdateend.AddDays(1));
+// ------------------------------------------------
+
