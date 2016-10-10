@@ -1,5 +1,9 @@
 [C#]
 
+DateTime myDate = DateTime.Parse("8/27/2016");
+var zeroDateTime = new DateTime(myDate.Year, myDate.Month, myDate.Day, 0, 0, 0);
+Console.WriteLine(zeroDateTime);     
+
 <%# Eval("created", "{0:g}")%>  3/9/2008 4:05 PM
 
 String.Format("{0:t}", dt);  // "4:05 PM"                         ShortTime
