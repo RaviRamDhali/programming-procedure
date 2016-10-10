@@ -17,6 +17,7 @@ String.Format("{0:s}", dt);  // "2008-03-09T16:05:07"             SortableDateTi
 String.Format("{0:u}", dt);  // "2008-03-09 16:05:07Z"            UniversalSortableDateTime
 
 
+http://stackoverflow.com/questions/13467230/how-to-set-time-to-midnight-for-current-day/39962449#39962449
 // Set date with the time component set to 00:00:00
 public static DateTime GetDateZeroTime(DateTime date)
 {
