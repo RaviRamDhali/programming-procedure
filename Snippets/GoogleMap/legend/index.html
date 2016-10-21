@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Portfolio Item - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/map-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/portfolio-item.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+        <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #map-canvas {
+        height: 500px;
+        width: 750px
+      }
+
+    .labels {
+        color: red;
+        background-color: white;
+        font-family: "Lucida Grande", "Arial", sans-serif;
+        font-size: 10px;
+        font-weight: bold;
+        text-align: center;
+        width: 40px;
+        border: 2px solid black;
+        white-space: nowrap;
+   }
+
+    </style>
+
+
+<!-- Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPThGqaX5P00Fs1C2reKgPN4sFYYNPoT8"></script>
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Map Icons -->
+<link rel="stylesheet" type="text/css" href="css/map-icons.css">
+<script type="text/javascript" src="js/map-icons.js"></script>
+
+<!-- Example -->
+<script type="text/javascript" src="json.js"></script>
+<script type="text/javascript" src="js/google-map.js"></script>
+<script type="text/javascript" src="js/markerwithlabel.js"></script>
+
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Google Map Example</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+
+    
+
+
+
+    <div class="container">
+
+        <!-- Portfolio Item Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Scripps Park 
+                    <small>at La Jolla Cove</small>
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+
+        <!-- Portfolio Item Row -->
+        <div class="row">
+
+            <div class="col-md-8 droppable">
+                <div id="map-canvas"></div>
+                <ul class="info-box list-group"></ul>
+                
+            </div>
+
+
+            <div class="col-md-4">
+                <h3>Project Icons</h3>
+                <ul class="list-group">
+                <li class='list-group-item'>
+                    <a href='http://geojson.io/#map=18/32.84933/-117.27436' target="_blank" class="marker-add"><i class="fa fa-map-marker"></i> GeoJsonIO</a>
+                    </li>                    
+                </ul>
+
+            </div>
+
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+<div class="col-md-6">
+<h3>Polygon</h3>
+<table class="table table-striped">
+<thead>
+    <tr>
+    <th>Title</th>
+    <th>Desc</th>
+    <th>Color</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td><input type="text" name="pTitle" class="form-control"></td>
+        <td><input type="text" name="pDesc" class="form-control"></td>
+        <td><input type="text" name="pColor" class="form-control">
+        <a href="#">add</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td>Desc</td>
+        <td>Color</td>
+    </tr>
+</tbody>
+</table>
+   
+</div>
+
+<div class="col-md-6">
+<h3>Labels</h3>
+<table class="table table-striped">
+<thead>
+    <tr>
+    <th>Title</th>
+    <th>Desc</th>
+    <th>Color</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td><input type="text" name="pTitle" class="form-control"></td>
+        <td><input type="text" name="pDesc" class="form-control"></td>
+        <td><input type="text" name="pColor" class="form-control">
+        <a href="#">add</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td>Desc</td>
+        <td>Color</td>
+    </tr>
+        <tr>
+        <td>Title</td>
+        <td>Desc</td>
+        <td>Color</td>
+    </tr>
+        <tr>
+        <td>Title</td>
+        <td>Desc</td>
+        <td>Color</td>
+    </tr>
+</tbody>
+</table>
+
+    
+</div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+
+
+    </div>
+    <!-- /.container -->
+
+
+    <script>
+
+$( document ).ready(function() {
+    $( "li.draggable" ).draggable();
+
+    $( ".droppable" ).droppable({
+        drop: function( event, ui ) {
+            $( this ).addClass( "ui-state-highlight" ).find( "p" ).html( "Dropped!" );
+        }
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>
