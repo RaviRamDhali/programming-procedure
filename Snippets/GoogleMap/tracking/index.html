@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Travel Points</title>
+    <!-- main design file -->
+    <link rel="stylesheet" type="text/css" href="css/travel.css">
+    <!-- Google Maps -->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPThGqaX5P00Fs1C2reKgPN4sFYYNPoT8&v=3.exp&libraries=geometry"></script>
+    
+    <!-- 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvhdlffO9CDbVYzLaiCa8M3pMCTtFwEDA&v=3.exp&libraries=geometry"></script>
+    -->
+
+    <script src="js/jquery.min.js"></script>
+    <!--main scripti file -->
+    <script src="js/travel.js"></script>
+  </head>
+  <body>
+  <!-- map canvas -->
+    <div id="map-canvas"></div>
+
+    <!-- route infor -->
+    <div id="route-info" class="tm-route disable" style="z-index: 0; position: absolute; bottom: 26px; left: 0px;">
+      <label for="unitSelector">Zipcode</label>
+      <input id="zipcode" name="zipcode" type="text" value="67333">
+      <label for="radiusInput">Radius(in miles)</label> <input type="number" value="10" min="0" id="radiusInput" name="radiusInput" autofocus="">&nbsp;&nbsp;
+      <button id="geocode" type="button" onclick="codeAddress();" class="btn">Generate Map</button>&nbsp;&nbsp;
+      <button id="save-record" type="button" class="btn">Save</button>
+      <!--<p>Click to place a circle, right click to remove</p>-->
+      <p></p>
+    </div>
+  </body>
+</html>
