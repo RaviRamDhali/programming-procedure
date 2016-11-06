@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace Website.Authentication.Login
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Request.HttpMethod == "POST")
+            {
+                var formData = GetFormCollection(Request.Form);
+            }
+
+            var qStringData = GetQStringCollection(Request);
+
+        }
+
+        private object GetFormCollection(NameValueCollection formCollection)
+        {
+            object form = new object();
+
+            string email = formCollection["email"].ToStringOrDefault().Trim();
+            if (email.IsNullOrEmpty())
+                email = null;
+
+            string password = formCollection["password"].ToStringOrDefault().Trim();
+            if (password.IsNullOrEmpty())
+                password = null;
+
+            return form;
+        }
+
+        private object GetQStringCollection(HttpRequest request)
+        {
+            object qstring = new object();
+
+            string status = request["st"].ToStringOrDefault();
+            int id = request["id"].ToInt32OrDefault();
+            
+            return qstring;
+        }
+    }
+}
