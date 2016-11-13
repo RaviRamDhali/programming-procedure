@@ -1,0 +1,53 @@
+public class MessageResultURL
+{
+    public bool success { get; set; }
+    public string message { get; set; }
+    public string url { get; set; }
+}
+
+public Common.MessageResultURL Model;
+
+protected void Page_Load(object sender, EventArgs e)
+{
+    BLL.Services.Authorization.DoLogOut(false);
+
+    string ip = Request.ServerVariables["REMOTE_ADDR"].ToStringOrDefault();
+
+    if (Request.HttpMethod == "POST")
+        Model = BLL.Services.Auth.ForgotPassword.Post(Request.Form, ip);
+
+    if(Model.IsNull())
+        Model = BLL.Services.Auth.ForgotPassword.Get(Request);
+}
+
+
+public class ForgotPassword
+{
+    public static Common.MessageResultURL Get(HttpRequest request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Common.MessageResultURL Post(NameValueCollection form, string ip)
+    {
+        return InitializePasswordRequestNotFound();
+    }
+}
+
+public static Common.MessageResultURL Get(HttpRequest request)
+  {
+      string status = request["st"].ToStringOrDefault().Trim().ToLower();
+      int id = request["id"].ToInt32OrDefault();
+      
+      return InitializePasswordRequestNotFound();
+  }
+        
+private static Common.MessageResultURL InitializePasswordRequestNotFound()
+{
+    return new Common.MessageResultURL
+    {
+        success = false,
+        message = "You password rest has expired. Request a new reset.",
+        url = null
+    };
+}
