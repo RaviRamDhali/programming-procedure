@@ -1,0 +1,97 @@
+string someConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["someConnectionString"].ConnectionString;
+        SqlConnection sqlConn = new SqlConnection(someConnectionString);
+
+        using (sqlConn)
+        {
+            using (SqlCommand cmd = new SqlCommand(sql, sqlConn))
+            {
+                List<SqlParameter> formCollectionParameters = InitializeSqlParameterCollection(form);
+                cmd.Parameters.AddRange(formCollectionParameters.ToArray());
+
+                List<SqlParameter> pagingSortingCollectionParameters = InitializePagingSortingSqlParameterCollection(pagingSortingCollection);
+                cmd.Parameters.AddRange(pagingSortingCollectionParameters.ToArray());
+
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                sqlConn.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        SearchResultView employee = MapDBToModel(dr);
+                        items.Add(employee);
+                    }
+                }
+            }
+ }
+ 
+  private List<SqlParameter> InitializePagingSortingSqlParameterCollection(PagingSorting.PagingSortingCollection pagingSortingCollection)
+    {
+        // Build Paging Skip and Take
+        int selectPageNumber = pagingSortingCollection.pagerField;
+        int pagerSize = pagingSortingCollection.pagerSize;
+        int selectedPage = (selectPageNumber - 1); //User selected page index 0
+        int skipRecords = (selectedPage * pagerSize); // Calc skip to
+        int take = pagerSize;
+
+        skipRecords = (skipRecords > 0) ? skipRecords : 0; //Skip(0) OR Skip(-neg)
+        
+        List<SqlParameter> parameters = new List<SqlParameter>();
+        parameters.Add(new SqlParameter("skipRecords", skipRecords));
+        parameters.Add(new SqlParameter("take", take));
+
+        return parameters;
+    }
+ 
+  private List<SqlParameter> InitializeSqlParameterCollection(LocationsPresenter.I9ReportingCollection form)
+    {
+        List<SqlParameter> parameters = new List<SqlParameter>();
+
+        parameters.Add(new SqlParameter("start_date", utility.HireDate("01/01/2015")));
+        parameters.Add(new SqlParameter("end_date", utility.HireDate("01/01/2016")));
+        parameters.Add(new SqlParameter("formLastName", form.LastName + "%"));
+        parameters.Add(new SqlParameter("formEmpStatus", form.EmpStatus));
+        if (form.RegionId > 0)
+            parameters.Add(new SqlParameter("formRegionId", form.RegionId));
+
+        if (form.DistrictId > 0)
+            parameters.Add(new SqlParameter("formDistrictId", form.DistrictId));
+
+        if (form.LocationCode.IsNotNullOrEmpty())
+            parameters.Add(new SqlParameter("formLocationCode", form.LocationCode));
+
+        if (form.HireDate > 0)
+        {
+            DateTime HireDate_start = DateTime.Today.AddDays(1); //lower
+            DateTime HireDate_end = DateTime.Today.AddYears(100); //upper
+
+            if (form.HireDate == 30)
+            {
+                HireDate_start = DateTime.Today.AddDays(-30);
+                HireDate_end = DateTime.Today.AddDays(1);
+            }
+
+            if (form.HireDate == 60)
+            {
+                HireDate_start = DateTime.Today.AddDays(-60);
+                HireDate_end = DateTime.Today.AddDays(-30);
+            }
+
+            if (form.HireDate == 90)
+            {
+                HireDate_start = DateTime.Today.AddDays(-90);
+                HireDate_end = DateTime.Today.AddDays(-60);
+            }
+
+            if (form.HireDate == 365)
+            {
+                HireDate_start = DateTime.Today.AddYears(-100);
+                HireDate_end = DateTime.Today.AddYears(-1);
+            }
+
+            parameters.Add(new SqlParameter("HireDate_start", HireDate_start));
+            parameters.Add(new SqlParameter("HireDate_end", HireDate_end));
+        }
+
+        return parameters;
+    }
