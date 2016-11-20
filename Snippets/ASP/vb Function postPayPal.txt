@@ -1,0 +1,32 @@
+<%
+    Public Function postPayPal(ByRef strCMD, ByRef strQuantity, ByRef strItemName, ByRef strAmount)
+
+	'Call postPayPal(strCMD,strQuantity,strItemName,strAmount)
+
+		' Predefined variables
+		strAction = "https://www.paypal.com/cgi-bin/webscr?cmd="
+		strBusiness = "someemail.com"
+		strCurrency_code = "USD"
+
+		' Submiited variables
+		strCMD = strCMD
+		strQuantity = strQuantity
+		strItemName = strItemName
+		strAmount = strAmount
+
+		' Post message to server
+
+		' read post from PayPal system and add 'cmd'
+		strFixed = strCMD & "&business=" & strBusiness
+		strVar = "&item_name=" & strItemName & "&amount=" & strAmount
+
+		strSubscribe = "&a3=" & strAmount & "&p3=1&t3=M&src=1&sra=1"
+
+		strURL = (strFixed & strVar)
+
+'		Response.Write strAction & strURL & strSubscribe
+		Response.Redirect strAction & strURL & strSubscribe
+
+    End Function
+
+%>

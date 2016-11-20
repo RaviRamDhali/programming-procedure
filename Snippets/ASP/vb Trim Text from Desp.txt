@@ -1,0 +1,40 @@
+'This is the function. You can place it at the top of your page or in an include file if you are going to use it on several pages
+
+'To Call Function
+' <p><%=TrimDescription(rsWhatever("ColumnName"))%></p>
+
+ 
+Function TrimDescription(str)
+  str = str
+  'Set the maximum characters we want to display
+  iTrim = 150
+  
+  'If there is a value in the field, do our calculations
+  If str <> "" Then
+    'If the description is less than the amount we want to display, then we can show the whole description
+    If Len(str) < iTrim Then
+      strTemp = str
+    'Otherwise we do our calculations
+    Else
+      'Set the starting position
+      iPos = iTrim
+      'Perform until we get to the beginning (this stops infinate looping if the description is all one word)
+      Do While iPos > 0
+        'If the character at the position we're in is either a space, full stop or carriage return then we can stop the loop
+        'and trim the description and add the dots to the end
+        If mid(str,iPos,1)=" " or mid(str,iPos,1)="." or mid(str,iPos,1)=chr(13) Then
+          strTemp=left(str,iPos) & "..."
+          Exit Do
+        'Otherwise move back along the string one place and check again
+        Else
+          iPos = iPos-1
+        End If
+      Loop
+    End If
+  'There is nothing in the field that we've passed through, so show the no description text
+  Else
+   strTemp = "No description available..."
+  End If
+
+  TrimDescription = strTemp
+End Function

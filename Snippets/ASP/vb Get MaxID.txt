@@ -1,0 +1,21 @@
+		' Get newly created Customer ID		
+		Set RSmax = Server.CreateObject("ADODB.Recordset")
+		RSmax.ActiveConnection = MM_griswoldcontrols_STRING
+		RSmax.OPEN "SELECT max(custID) as MaxID  FROM Customers"
+		custID = RSmax("MaxID")
+		Response.Write ("New CustomerID: " & custID & "<p>")
+		RSmax.Close()
+		RSmax.ActiveConnection.Close
+
+
+
+<% 
+Set rsMax = Server.CreateObject("ADODB.Recordset")
+rsMax.ActiveConnection = SQL_STRING
+rsMax.Source = "SELECT max(contactID) as MaxID  FROM dbo.contact"
+rsMax.CursorType = 0
+rsMax.CursorLocation = 2
+rsMax.LockType = 3
+rsMax.Open()
+Session("contactID")=rsMax("MaxID")
+%>

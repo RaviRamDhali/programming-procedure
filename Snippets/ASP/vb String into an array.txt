@@ -1,0 +1,36 @@
+' ////////// Get Prod Name , Price from string
+strValue = "(1) One Year Membership,75.00"
+strAryWords = Split(strValue, ",")
+	strItemName = strAryWords(0)
+	strAmount = strAryWords(1)
+' ///////////////////////
+
+
+
+Breaks the string into an array of strings, each containing one word. 
+
+Dim strAryWords
+Dim strValue
+
+strValue = "This is the tactical ASP column by Rama Ramachandran"
+strAryWords = Split(strValue, " ")
+' - strAryWords is now an array 
+Dim i
+For i = 0 to Ubound(strAryWords)
+	Response.Write i & " = " & strAryWords(i) & "<BR>"
+Next
+
+The above code will produce the following output: 
+
+
+
+0 = This
+1 = is
+2 = the
+3 = tactical
+4 = ASP
+5 = column
+6 = by
+7 = Rama
+8 = Ramachandran
+

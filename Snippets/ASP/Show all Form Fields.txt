@@ -1,0 +1,85 @@
+------ FORM FIELDS OUTPUT TO SCREEN -------
+
+<% 
+For x = 1 to Request.Form.Count 
+  Response.Write x & ": " _ 
+    & Request.Form.Key(x) & "=" & Request.Form.Item(x) & "<BR>" 
+Next 
+ %> 
+
+
+<%
+' Create submit for ADD-EDIT form fields
+For x = 1 to Request.Form.Count 
+Dim fieldName
+fieldName = Request.Form.Key(x)
+fieldName = "rs(&quot;" & fieldName & "&quot;) = Request.Form(&quot;" & fieldName & "&quot;)"
+Response.Write fieldName & "<BR>"
+fieldName = "<% =request.form(&quot;" & fieldName & "&quot;)&#37;>"
+Response.Write fieldName & "<BR>" 
+Next 
+%>
+
+//////////////////////////
+//////////////////////////
+' Create DIM
+For x = 1 to Request.Form.Count 
+fName = Request.Form.Key(x)
+pName = "Dim " & fName
+Response.Write pName & "<BR>"
+Next 
+
+' Create Form =
+For x = 1 to Request.Form.Count 
+fName = Request.Form.Key(x)
+fName = fName & " = Request.Form(&quot;" & fName & "&quot;)"
+Response.Write fName & "<BR>" 
+Next 
+//////////////////////////
+//////////////////////////
+
+
+
+
+
+//// CREATE ADD STRING
+<% 
+For x = 1 to Request.Form.Count 
+  Dim frmStrng
+  frmStrng = "rsJobAdd(" & chr(34) & Request.Form.Key(x)& chr(34) & ")"
+  frmStrngRequest = "Request.Form(" & chr(34) & Request.Form.Key(x) & chr(34) & ")"
+  Response.Write frmStrng & "=" & frmStrngRequest & "<BR>" 
+  Next 
+%> 
+
+
+/// CREATE VARDIABLE FROM GET FORM DATA
+<%
+For x = 1 to Request.Form.Count 
+Dim fieldName
+fieldName = Request.Form.Key(x)
+fieldName = fieldName & " = request.form(&quot;" & fieldName & "&quot;)"
+Response.Write fieldName & "<BR>" 
+Next 
+%>
+<p>
+<%
+For x = 1 to Request.Form.Count 
+Dim DfieldName
+DfieldName = Request.Form.Key(x)
+DfieldName = DfieldName & ", "
+Response.Write DfieldName
+Next 
+%>
+/////
+
+
+
+<%
+For x = 1 to Request.Form.Count 
+Dim fieldName
+fieldName = Request.Form.Key(x)
+fieldName = "rsEmployee.Fields.Item(~" & fieldName & "~)=" & "Request.Form(~" & fieldName & "~)"
+Response.Write fieldName & "<BR>" 
+Next 
+%>

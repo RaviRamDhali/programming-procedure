@@ -1,0 +1,26 @@
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+RUN A SP, pass values OPEN RecordSet
+Create sp_GetDuesStatus.sql (W:\App_Data\sql\groupproxy\-workingFiles)
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<%
+strconn= MM_GroupProxy_STRING
+set conn = server.createobject("adodb.connection")
+conn.open strconn
+strsql = "Exec sp_GetDuesStatus " & GetSess("clientID")
+set rs = server.createobject("adodb.recordset")
+rs.open strsql, conn
+
+'memID	clientID	Latest	Status	memDateLogin	LastLogin	memLastName	memFirstName	memGUID'
+
+do while not rs.EOF
+Response.Write rs("clientID") & " " & rs("memID") & " " & rs("status") & "<br>"
+rs.MoveNext
+loop
+
+rs.Close 
+Set rs = nothing
+set cmd = nothing
+%>
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+

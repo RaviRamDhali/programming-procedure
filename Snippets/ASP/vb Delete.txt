@@ -1,0 +1,23 @@
+<% 
+If (CStr(Request("MM_update")) = "form1") Then
+%>
+
+
+<% ' Delete a TASK
+if (cStr(Request("del")) = "task" ) then
+Dim rsEmployee__MMColParam
+rsEmployee__MMColParam = Request.QueryString("taskID")
+Dim rsEmployee
+Set rsEmployee = Server.CreateObject("ADODB.Recordset")
+rsEmployee.ActiveConnection = TaskAssignment_STRING
+rsEmployee.Source = "SELECT * FROM task WHERE taskID = " + Replace(rsEmployee__MMColParam, "'", "''") + ""
+rsEmployee.CursorType = 0
+rsEmployee.CursorLocation = 2
+rsEmployee.LockType = 3
+rsEmployee.Open()
+rsEmployee.delete
+response.redirect "dashboard.asp?st=delTask"
+rsEmployee.Close()
+Set rsEmployee = Nothing
+End IF
+%>

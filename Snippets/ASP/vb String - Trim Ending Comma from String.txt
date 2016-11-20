@@ -1,0 +1,6 @@
+strchars = strSKU
+If Mid(strchars , Len(strchars ), 1) = "," Then 
+    strchars = Mid(strchars , 1, Len(strchars ) - 1) 
+End If 
+Response.Write (strchars & "<br>") 
+Response.Write(strSKU)

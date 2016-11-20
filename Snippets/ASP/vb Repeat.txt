@@ -1,0 +1,35 @@
+<% 
+Dim t 
+t = Session("swatchCount")
+For i= 1 to t %>
+
+<tr> 
+<td><div align="right">Swatch :</div></td>
+<td> 
+<% Session("swatchName") %>
+</td>
+</tr>
+
+<% Next %>
+
+
+
+' Create String from RS
+Session.Contents.Remove "taskListString"
+Dim t
+t = rsGrpQuizTaskID.RecordCount
+For i = 1 to t
+
+If Session("taskListString") <> "" Then
+taskListString = taskListString & "," & rsGrpQuizTaskID.Fields.Item("taskListID")
+taskListString  = taskListString & ","
+Session("taskListString") = taskListString
+Else
+taskListString = rsGrpQuizTaskID.Fields.Item("taskListID")
+Session("taskListString") = taskListString
+End IF
+
+rsGrpQuizTaskID.MoveNext()
+next
+taskListString = Left (taskListString, InStrRev (taskListString, ",") - 1)
+Session("taskListString") = taskListString

@@ -1,0 +1,34 @@
+<% 
+    Dim rsArray 
+    Set conn = CreateObject("ADODB.Connection") 
+    conn.open  GPProxy_STRING
+    Set rs = conn.execute(sql) 
+    if not rs.eof then 
+        rsArray = rs.GetRows() 
+        rsCount = UBound(rsArray, 2) + 1 
+        response.write "There were " & rsCount & " matches." 
+        ' ... process real results here ... 
+    end if 
+    rs.close: set rs = nothing 
+    conn.close: set conn = nothing 
+%>
+
+
+
+<% 
+Dim recordset, connection
+Dim count, sSQL, sConnString
+sSQL="SELECT * FROM dbo.TrainingMeasure WHERE memID=" + Replace(memID, "'", "''") + "ORDER BY TrainingMeasureLable" 
+Set Connection=Server.CreateObject("ADODB.Connection")
+Set Recordset=Server.CreateObject("ADODB.Recordset") 
+sConnString = GPProxy_STRING
+Connection.Open(sConnString)
+Recordset.Open sSQL,connection,3,3
+count=Recordset.recordcount
+rsCountTM = count
+Recordset.Close
+Set Recordset=Nothing
+Connection.Close
+Set Connection=Nothing
+%>
+

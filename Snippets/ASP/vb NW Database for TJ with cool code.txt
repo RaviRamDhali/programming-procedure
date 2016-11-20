@@ -1,0 +1,80 @@
+<%
+	Function RegExpReplace(Str, Pattern, Replacement)
+		Set objRegExp = New RegExp
+		objRegExp.Pattern = Pattern
+		objRegExp.Global = True
+		objRegExp.IgnoreCase = True
+		RegExpReplace = objRegExp.Replace(Str, Replacement)
+		Set objRegExp = Nothing
+	End Function
+	
+	strTest = "abcd2""$$£"
+	strPattern = "[^A-Za-z 0-9]*"
+	strReplace = ""
+
+
+Dim Conn, rs
+Set Conn = Server.CreateObject("ADODB.Connection")
+' Set the Dbq portion of the string to the physical folder where your price files reside
+Conn.Open "Driver={Microsoft Text Driver (*.txt; *.csv)};" & _
+"Dbq=D:\Websites\App_Data\sql\groupproxy\readTxtFile;" & _
+"Extensions=asc,csv,tab,txt;" & _
+"Persist Security Info=False"
+Dim sql
+sql = "SELECT * from NorthWindCustomers.csv"
+'(implicit recordset creation through execute method)
+set rs = conn.execute(sql)
+Response.write "<Table><TR BGCOLOR=lightgrey><TH>Company</TH><TH>Fname</TH><TH>LName</TH><TH>Contact Title</TH><TH>Address</TH><TH>City</TH><TH>Postal Code</TH><TH>Country</TH><TH>Phone</TH><TH>Email</TH></TR>"
+While Not rs.EOF
+
+dhaName = rs(1)
+strAryWords = Split(dhaName, " ")
+fname = strAryWords(0)
+lname = strAryWords(1)
+company = CStr(rs(0))
+company = RegExpReplace(company, strPattern, strReplace)
+fname = RegExpReplace(fname, strPattern, strReplace)
+lname = RegExpReplace(lname, strPattern, strReplace)
+address = rs(3)
+city = rs(4)
+city = RegExpReplace(city, strPattern, strReplace)
+
+company = RegExpReplace(company, strPattern, strReplace)
+compEmail = Split(company, " ")
+
+randomize
+random_=int(rnd*5)+1
+
+Select Case random_
+  case 1
+    domain = (".com")
+  case 2
+     domain =(".edu")
+  case 3
+       domain =(".gov")
+  case 4
+       domain =(".co.ca.gov")
+  case 5
+       domain =(".mil")
+  end select
+  
+email = LCASE(Left(fname,1))
+email = email & "." & LCASE(fname) & "@" & LCASE(compEmail(0)) & domain
+
+
+
+address = RegExpReplace(address, strPattern, strReplace)
+
+
+
+'here we have stock price text file in format: Date High Low Close Volume
+Response.Write "<TR bgcolor=#CCCCCC><TD>" & company & "</TD><TD>" & fname &"<TD> " & lname & "</TD>" _
+& "</TD><TD>" & rs(2) & "</TD><TD>" & address & "</TD><TD> " & city & "</TD><TD> " & rs(5) & "</TD><TD> " & rs(6) & "</TD><TD> " & rs(7) & "</TD><TD> " & email & "</TD></TR>"
+rs.MoveNext 
+Wend
+Response.write "</TABLE>"
+rs.close
+set rs = nothing
+conn.close
+set conn = nothing
+%>

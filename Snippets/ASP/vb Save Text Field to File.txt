@@ -1,0 +1,28 @@
+<% ' Text Field to FILE
+'foStringCL = rndNumName
+'foStringCL = foStringCL & "_CoverLetter.txt"
+'set fs = CreateObject("Scripting.FileSystemObject")
+'set file = fs.CreateTextFile("E:\websites\folder.com\applications\"& foStringCL)
+'file.WriteLine Upload.Form("applicantCoverLetter")
+'
+'	If Err.Number <> 0 then
+'		Response.Write("foStringCL - Field to File Error -> " & Err.Number & "<p>")
+'		Err.Clear
+'	End If
+'
+'file.Close
+'Session("foStringCL") = foStringCL
+'
+'foStringCert = rndNumName
+'foStringCert = foStringCert & "_Certs.txt"
+'set fs = CreateObject("Scripting.FileSystemObject")
+'set file = fs.CreateTextFile("E:\websites\folder.com\applications\"& foStringCert)
+'file.WriteLine Upload.Form("applicantCerts")
+'	If Err.Number <> 0 then
+'		Response.Write("foStringCert - Field to File Error -> " & Err.Number & "<p>")
+'		Err.Clear
+'	End If
+'
+'file.Close
+'Session("foStringCert") = foStringCert
+%>

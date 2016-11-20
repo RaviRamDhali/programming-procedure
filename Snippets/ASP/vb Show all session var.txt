@@ -1,0 +1,39 @@
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="1252"%>
+<%  'This is the code to show ALL SESSION VARIABLES!
+
+'How many session variables are there?
+Response.Write "" & Session.Contents.Count & _
+" Session variables<P>" 
+%>
+  <table width="50%" height="1" border="1" cellpadding="1" cellspacing="1">
+<% for each key in Session.Contents %>
+<tr onmouseover="this.style.background='#FFFFCC'" onmouseout="this.style.background='#FFFFFF'" >
+  	<td width="38%" valign="top"><b style="COLOR: black; BACKGROUND-COLOR: #ffff66">Session</b>("<%=lcase (key)%>")</td>
+	
+	<td width="62%" valign="top">
+	<%
+  if IsObject(Session.Contents(key)) then
+    if lcase(TypeName(Session.Contents(key))) = "dictionary" then
+      dumpDictionary(Session.Contents(key))
+    else
+      Response.Write TypeName(Session.Contents(key))
+    end if
+  else
+    if IsArray(Session.Contents(key)) then
+      %><%
+      for each n in Session.Contents(key)
+        Response.Write ("=" & Session.Contents(key)(n))
+      next
+      %>=<%
+    else
+      Response.Write ("<pre>" & Session.Contents(key) & "</pre>")
+    end if
+  end if
+  %>    </td>
+  <%
+  %>
+  </tr>
+  <%
+next
+%>
+</table>

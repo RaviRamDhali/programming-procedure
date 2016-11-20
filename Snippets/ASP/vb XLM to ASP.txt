@@ -1,0 +1,92 @@
+<%
+sURL = "http://www.curbsideinvestigator.com/?feed=podcast" 
+
+Set objXML = Server.CreateObject("Microsoft.XMLDOM")
+objXML.async = False
+objXML.setProperty "ServerHTTPRequest", true
+objXML.Load (sURL)
+If objXML.parseError.errorCode <> 0 Then
+Response.Write objXML.parseError.reason
+End If
+
+Set objVal = objXML.getElementsByTagName("item") 
+For i = 0 to (objVal.length - 1)
+		title = objVal.item(i).getElementsByTagName("title").item(0).childNodes(0).nodeValue
+		pubDate = objVal.item(i).getElementsByTagName("pubDate").item(0).childNodes(0).nodeValue
+		link = objVal.item(i).getElementsByTagName("link").item(0).childNodes(0).nodeValue 
+		description = objVal.item(i).getElementsByTagName("description").item(0).childNodes(0).nodeValue		 
+%>
+
+<table width="85%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td width="10%" valign="top"><a href="<%=link%>"><img src="images/podcastIcon.gif" border="0" align="left" /></a></td>
+    <td width="90%" valign="top">
+	<a href="<%=link%>"><%= title %></a> - <%= description %><br>
+<%= pubDate%></td>
+  </tr>
+  <tr>
+    <td colspan="2" valign="top"><hr /></td>
+    </tr>
+</table>
+
+<% Next %>
+
+
+
+
+
+
+
+
+<%@ Language="VBScript" %>
+<%
+sURL = "http://www.domain.com/demo/some/news.asp?id=1" 
+
+Set objXML = Server.CreateObject("MSXML2.DOMDOCUMENT.4.0") 
+objXML.async = False 
+objXML.setProperty "ServerHTTPRequest", True 
+If objXML.load(sURL) Then 
+Set objLst = objXML.getElementsByTagName("story") 
+For i = 0 to (objLst.length - 1) 
+    strHeadline = objLst.item(i).getElementsByTagName("name").item(0).childNodes(0).nodeValue
+	strDate = objLst.item(i).getElementsByTagName("date").item(0).childNodes(0).nodeValue 
+	image1 = objLst.item(i).getElementsByTagName("image1").item(0).childNodes(0).nodeValue 
+   
+%>
+<link href="../dashboard.css" rel="stylesheet" type="text/css">
+<p>
+<%= strHeadline %> -- 
+<%= strDate%><br>
+
+<%
+Next 
+End If 
+%>
+
+
+
+
+<%
+sURL = "http://apps.shareholder.com/irxml/irxml.aspx?COMPANYID=RURL&PIN=761439217&FUNCTION=NewsReleases&OUTPUT=xml&NUMBERPERPAGE=4&SUMMARYLENGTH=250&RELEASETYPE=Financial+News%2COther+Company+News" 
+
+Set objXML = Server.CreateObject("MSXML2.DOMDOCUMENT.4.0") 
+objXML.async = False 
+objXML.setProperty "ServerHTTPRequest", True 
+If objXML.load(sURL) Then 
+Response.Write(sURL)
+Set objLst = objXML.getElementsByTagName("NewsItem") 
+else
+Response.Write(objXML.parseError.errorCode)
+strError = "<br>INVALID XML FILE !" _
+                & "<br>File URL: " & objXML.parseError.url _
+                & "<br>Line No.: " & objXML.parseError.Line _
+                & "<br>Character: " & objXML.parseError.linepos _
+                & "<br>File Position: " & objXML.parseError.filepos _
+                & "<br>Source Text: " & objXML.parseError.srcText _
+                & "<br>Error Code: " & objXML.parseError.errorCode _
+                & "<br>Description: " & objXML.parseError.reason
+Response.Write(strError)'Debug.Print strError or msgbox strError
+End If 
+%>
+
+<?xml version="1.0" encoding="iso-8859-1"?>

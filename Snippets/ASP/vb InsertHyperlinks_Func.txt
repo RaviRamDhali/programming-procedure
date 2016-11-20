@@ -1,0 +1,71 @@
+<% ' Place Code On Page
+Dim dhText
+dhText = rsNews.Fields.Item("newsDetails")
+dhText = InsertHyperlinks(dhText)
+dhText = Replace(dhText, vbcrlf," <br> ")
+Response.Write dhText
+%>
+
+
+
+
+' InsertHyperlinks(inText)
+' Returns a inText with "<a href="URL" target="_BLANK">URL</a>"
+' inserted where there is URL found.
+' These functions are to cater for web content stored in a database where URLs & email address are part of the content.
+' The function uses Regular Expression to search and replace URLs and Email address and turn them into viable hyperlinks...
+' http://www.4guysfromrolla.com/webtech/tips/t110900-1.shtml
+' URL can start with "www" or "http"
+' or
+' URL can be a email address "*@*"
+'----------------------------------------------
+
+Function InsertHyperlinks(inText)
+Dim objRegExp, strBuf
+Dim objMatches, objMatch
+Dim Value, ReplaceValue, iStart, iEnd
+
+  strBuf = ""
+  iStart = 1
+  iEnd = 1
+  Set objRegExp = New RegExp
+
+  objRegExp.Pattern = "\b(www|http|\S+@)\S+\b"  ' Match URLs and emails
+  objRegExp.IgnoreCase = True                   ' Set case insensitivity.
+  objRegExp.Global = True                       ' Set global applicability.
+  Set objMatches = objRegExp.Execute(inText)
+  For Each objMatch in objMatches
+    iEnd = objMatch.FirstIndex
+    strBuf = strBuf & Mid(inText, iStart, iEnd-iStart+1)
+    If InStr(1, objMatch.Value, "@") Then
+      strBuf = strBuf & GetHref(objMatch.Value, "EMAIL", "_BLANK")
+    Else
+      strBuf = strBuf & GetHref(objMatch.Value, "WEB", "_BLANK")
+    End If
+    iStart = iEnd+objMatch.Length+1
+  Next
+  strBuf = strBuf & Mid(inText, iStart)
+  InsertHyperlinks = strBuf
+End Function
+
+
+Function GetHref(url, urlType, Target)
+Dim strBuf
+
+  strBuf = "<a href="""
+  If UCase(urlType) = "WEB" Then
+    If LCase(Left(url, 3)) = "www" Then
+      strBuf = "<a href=""http://" & url & """ Target=""" & _
+               Target & """>" & url & "</a>"
+    Else
+      strBuf = "<a href=""" & url & """ Target=""" & _
+               Target & """>" & url & "</a>"
+    End If
+  ElseIf UCase(urlType) = "EMAIL" Then
+    strBuf = "<a href=""mailto:" & url & """ Target=""" & _
+             Target & """>" & url & "</a>"
+  End If
+
+  GetHref = strBuf
+
+End Function

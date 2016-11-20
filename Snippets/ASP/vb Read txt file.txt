@@ -1,0 +1,10 @@
+<% 
+  sFileName = Server.MapPath("/adcopy/01/" & Request.QueryString("id") & 
+".txt") 
+  Set fs = CreateObject("Scripting.FileSystemObject") 
+  Set a = fs.OpenTextFile(sFilename, 1, TristateFalse) 
+  sLine = a.ReadAll 
+  Response.Write sLine 
+  a.close 
+  Set fs=Nothing 
+%> 

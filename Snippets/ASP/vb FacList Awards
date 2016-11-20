@@ -1,0 +1,27 @@
+<%
+Function in_facList(element, arr)
+  in_array = False
+  For i=0 To Ubound(arr)
+     If Trim(arr(i)) = Trim(element) Then
+        in_array = True
+        Exit Function      
+     End If
+  Next
+End Function
+
+
+'/////////////////////////////////////////////////////////////////////////
+fac2012Bronze = Array("15","16","18")
+
+
+
+'/////////////////////////////////////////////////////////////////////////
+%>
+
+
+
+If in_facList(facID, fac2012Bronze) Then 
+  Response.Write findThis & " is in the array"
+End If
+
+%>

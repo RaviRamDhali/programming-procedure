@@ -1,0 +1,15 @@
+<%
+newsCatSQL = "SELECT DISTINCT newsTypeLable, resourceID FROM dbo.News"
+newsCatSQL = newsCatSQL & " WHERE resourceID = 1"
+newsCatSQL = newsCatSQL & " ORDER BY newsTypeLable"
+
+Dim rsNewsCat
+Set rsNewsCat = Server.CreateObject("ADODB.Recordset")
+rsNewsCat.ActiveConnection = GPProduct_STRING
+rsNewsCat.Source = newsCatSQL
+rsNewsCat.CursorType = 0
+rsNewsCat.CursorLocation = 2
+rsNewsCat.LockType = 1
+rsNewsCat.Open()
+rsNewsCat_numRows = 0
+%>

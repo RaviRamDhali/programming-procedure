@@ -1,0 +1,6 @@
+<% Session.Contents.Remove "txtpassword"  %>
+
+
+
+
+<%  Session.Contents.RemoveAll %>

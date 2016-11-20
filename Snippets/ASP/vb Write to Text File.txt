@@ -1,0 +1,13 @@
+
+<% ' Write Quic Log File for Submit
+Dim objFSO, objTextFile
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+strPath = Server.MapPath("..")
+strPath = strPath & "\admin\"
+' Open the file and Write
+Set objTextFile = objFSO.OpenTextFile(strPath & "email_address.csv",8,fales,0)
+objTextFile.WriteLine facName & "," & facContactEmail & "," & Now() & "," & ip_sender
+objTextFile.Close
+Set objTextFile = Nothing
+Set objFSO = Nothing
+%>

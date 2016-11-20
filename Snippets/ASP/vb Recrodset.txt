@@ -1,0 +1,84 @@
+/// Build RS list
+
+<%
+For x = 1 to rsEvent.Fields.Count 
+Dim fieldName
+fieldName = rsEvent.Fields(x).Name
+fieldName = "rsEmployee.Fields.Item(~" & fieldName & "~)=" & "Request.Form(~" & fieldName & "~)"
+Response.Write fieldName & "<BR>" 
+Next 
+%>
+
+
+For x = 0 to RS.Fields.Count - 1
+fieldName = RS.Fields(x).Name
+str = fieldName & ", "
+Response.Write str
+Next
+Response.Write "<p>"
+
+For x = 0 to RS.Fields.Count - 1
+fieldName = RS.Fields(x).Name
+gRS = fieldName & " = Request.Form(&quot;" & fieldName & "&quot;)" & "<br>"
+' gRS = fieldName & " = RS.Fields.Item(&quot;" & fieldName & "&quot;)" & "<p>"
+Response.Write gRS
+Next
+
+
+
+<% 
+Dim empID
+RS_empID = rsTask.Fields.Item("empID")
+Set RS = Server.CreateObject("ADODB.Recordset")
+RS.ActiveConnection = MM_taskAssignment_STRING
+RS.OPEN "SELECT empID, EmpNumber FROM employee WHERE empID = " + Replace(RS_empID, "'", "''") + " "
+%>
+
+
+RS.Fields.Item("taskListID")
+
+
+
+' Change ALL type from OLD value to NEW value
+
+Set MM_editCmd = Server.CreateObject("ADODB.Command")
+MM_editCmd.ActiveConnection = MM_GroupProxy_STRING
+sbquery = "update Members SET memTypeLable ='" &  memTypeLable & "' WHERE memTypeLable = '" &  memTypeLableOLD & "' AND clientID='" & clientID & "'"
+MM_editCmd.CommandText = sbquery
+MM_editCmd.Execute
+MM_editCmd.ActiveConnection.Close
+
+
+
+//BUILD DIM ///
+For x = 0 to RS.Fields.Count - 1
+fieldName = RS.Fields(x).Name
+str = "Dim " & fieldName & "<BR>"
+Response.Write str
+Next
+
+
+
+
+////// ---- RS Table and Rows
+<TABLE BORDER="1" CELLPADDING="2" CELLSPACING="1" WIDTH="100%">
+<%
+Set RS = Server.CreateObject("ADODB.Recordset")
+RS.ActiveConnection = MM_griswoldcontrols_STRING
+RS.OPEN "SELECT * from Orders"
+	Response.Write "<TR BGCOLOR=""#CCCCCC"">"
+	For i = 0 to RS.Fields.Count - 1
+		Response.Write "<TH><FONT FACE=""ARIAL"" SIZE=""2"">" & RS.Fields(i).Name & "</FONT></TH>"
+	Next
+	Response.write "</TR>"
+	RS.MoveFirst
+	Do While Not RS.EOF
+		Response.Write "<TR>"
+		For i = 0 to RS.Fields.Count - 1
+			Response.Write "<TD><FONT FACE=""ARIAL"" SIZE=""1"">" & RS.Fields(i) & "</FONT></TD>"
+		Next
+		Response.write "</TR>"
+		RS.MoveNext
+	Loop
+ %>
+</TABLE>

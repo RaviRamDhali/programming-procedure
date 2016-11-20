@@ -1,0 +1,11 @@
+<% Dynamic Count
+If Session("swatchCount") <> "" Then
+Session("swatchCount")= Session("swatchCount") + 1
+Session("swatchName" & Session("swatchCount")) = "Ravi" & Session("swatchCount")
+
+Session("swatchTotal") = Session ("swatchCount")
+Else
+Session("swatchCount")= "1"
+Session("swatchName" & Session("swatchCount")) = "Ravi" & Session("swatchCount")
+End If
+%>

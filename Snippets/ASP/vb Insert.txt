@@ -1,0 +1,20 @@
+
+<%
+' Tracking added
+Dim rsTracking
+Set rsTracking = Server.CreateObject("ADODB.Recordset")
+rsTracking.ActiveConnection = SQL_STRING
+rsTracking.Source = "SELECT * FROM tblTracking "
+rsTracking.CursorType = 0
+rsTracking.CursorLocation = 2
+rsTracking.LockType = 3
+rsTracking.Open()
+
+rsTracking.addnew
+rsTracking("jobID") = Session("jobID")
+rsTracking("trackDate") = Now()
+rsTracking("trackMemo") = trackMemo
+rsTracking("trackIP") = Request.ServerVariables("REMOTE_HOST")
+rsTracking.update
+rsTracking.Close()
+%>

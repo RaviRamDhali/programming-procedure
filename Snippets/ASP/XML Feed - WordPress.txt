@@ -1,0 +1,95 @@
+<%@ Language="VBScript" %>
+<% Option Explicit %>
+<% Response.Charset = "UTF-8" %>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Dermatology and Laser Center Blog</title>
+</head>
+<body>
+
+<%
+    Dim objXML
+    Dim objItemList
+    Dim objItem
+    Dim strHTML
+
+    Set objXML = Server.CreateObject("MSXML2.FreeThreadedDOMDocument")
+    objXML.async = False
+ 
+    objXML.setProperty "ServerHTTPRequest", True
+    objXML.Load("http://mariomelchor.wordpress.com/feed/")
+
+    If objXML.parseError.errorCode <> 0 Then
+       Response.Write "<pre>" & vbCrLf
+       Response.Write "<strong>Error:</strong> " & objXML.parseError.reason
+       Response.Write "<strong>Line:</strong>  " & objXML.parseError.line & vbCrLf
+       Response.Write "<strong>Text:</strong>  " _
+          & Server.HTMLEncode(objXML.parseError.srcText) & vbCrLf
+       Response.Write "</pre>" & vbCrLf
+    End If
+
+    Set objItemList = objXML.getElementsByTagName("item")
+    Set objXML = Nothing
+
+    For Each objItem In objItemList
+
+		' WordPress Feed Below
+		Dim title
+		title = objItem.childNodes(0).text
+		
+		Dim link
+		link = objItem.childNodes(1).text
+		
+		Dim comments
+		comments = objItem.childNodes(2).text
+		
+		Dim pubDate
+		pubDate = objItem.childNodes(3).text
+
+		Dim creator
+		creator = objItem.childNodes(4).text
+
+		Dim category
+		category = objItem.childNodes(5).text
+
+		Dim guid
+		guid = objItem.childNodes(6).text
+		
+		Dim description
+		description = objItem.childNodes(7).text
+		
+		Dim media
+		media = objItem.childNodes(11).text
+		
+		Dim mediaContent
+		mediaContent = objItem.selectSingleNode("media:content").getAttribute("url")
+		
+	
+	   
+       strHTML = strHTML & "<p>" & vbCrLf
+ 		strHTML = strHTML & "<img name='' src='" & mediaContent & "' alt='' />" & vbCrLf
+        
+	   
+	   strHTML = strHTML & "<a href=""" & link & """>"
+       strHTML = strHTML & "<strong><em>" & title & "</em></strong></a><br />" & vbCrLf
+       strHTML = strHTML & Replace(description, "<br>", "<br />") & vbCrLf
+       strHTML = strHTML & "<br>Published Date: " & pubDate & "</br>" & vbCrLf
+	   strHTML = strHTML & "<br>Category: " & category & "</br>" & vbCrLf
+	   strHTML = strHTML & "</p>" & vbCrLf
+
+    Next
+
+    Set objItemList = Nothing
+    
+    Application.Lock
+    Application("MegaTokyoContent") = strHTML
+    Application.UnLock
+
+%>
+<%= Application("MegaTokyoContent") %>
+</body>
+</html>
+ 
