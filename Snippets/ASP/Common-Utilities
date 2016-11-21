@@ -1,0 +1,5 @@
+// Convert String to Int
+string strId = Request.QueryString("id")
+id = CInt(strId)  // If string is empty, CInt() will return ZERO
+
+
