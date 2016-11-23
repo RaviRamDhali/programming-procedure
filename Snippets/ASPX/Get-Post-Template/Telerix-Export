@@ -1,0 +1,36 @@
+private void DoExport()
+    {
+
+        RadGrid RadGrid1 = new RadGrid();
+
+        // ASPX does not have gridview. 
+        // Telerix requires a webform control
+        // We need to dynamically create a webform control
+        Page.Controls.Add(RadGrid1); //<-- add RadGrid on main Page
+        RadGrid1.ID = "RadGrid1"; //<-- add Id to new control
+
+        RadGrid1.ExportSettings.FileName = "Missing-Report";
+        
+        //Set @take (paging) to 500,000 (to get all records)
+        //Filter will still work
+        PagerFilterCollection.pagerSize = 500000;
+        string sql = IMSClasses.I9.Service.ReportsMissing.SqlGetMissingi9s(CompanyCode.ToString(), FormCollection,
+            PagerFilterCollection);
+
+        Model = IMSClasses.I9.Service.ReportsMissing.GetI9SearchResults(sql, CompanyCode.ToString(), FormCollection,
+            PagerFilterCollection);
+
+        foreach (var record in Model)
+        {
+            record.ss = null;
+        }
+
+        RadGrid1.DataSource = Model; //<-- Datasoruce
+        // RadGrid1.MasterTableView.GetColumn("ss").Display = false;
+        // RadGrid1.MasterTableView.GetColumn("cc").Display = false;
+
+        RadGrid1.MasterTableView.ExportToCSV();
+        RadGrid1.ExportSettings.Excel.Format = GridExcelExportFormat.Biff;
+        RadGrid1.MasterTableView.ExportToExcel();
+
+    }
