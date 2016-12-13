@@ -1,7 +1,11 @@
 /* Reto Egeter, fullparam.wordpress.com */
 
 DECLARE @SearchStrTableName nvarchar(255), @SearchStrColumnName nvarchar(255), @SearchStrColumnValue nvarchar(255), @SearchStrInXML bit, @FullRowResult bit, @FullRowResultRows int
+
 SET @SearchStrColumnValue = '%ravi%' /* use LIKE syntax */
+
+SET @SearchStrColumnValue = '%[0-9]{9}%' /* SSN RegEx */
+
 SET @FullRowResult = 1
 SET @FullRowResultRows = 3
 SET @SearchStrTableName = NULL /* NULL for all tables, uses LIKE syntax */
