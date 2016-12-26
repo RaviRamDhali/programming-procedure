@@ -1,0 +1,13 @@
+http://stackoverflow.com/questions/373541/how-to-do-joins-in-linq-on-multiple-fields-in-single-join/373550#comment69848072_373550
+
+Join on both memberId AND clientId
+
+int caseId = 1233;
+
+var data = ( 
+from r in MemberToCases
+join mc in MemberToClients 
+on new { X1= r.MemberId, X2= r.ClientId } equals new { X1= mc.MemID, X2= mc.ClientID}
+where r.CaseId == caseId
+select new {r, mc}
+).ToList().Dump();
