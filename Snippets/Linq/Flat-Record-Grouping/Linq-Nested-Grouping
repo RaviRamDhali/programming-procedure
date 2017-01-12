@@ -27,6 +27,44 @@ Offers = from c in custGrp select new {c.OOrderID, c.CustID, c.OfferID, c.OOrder
 ***************************************************
 
 
+***************************************************
+--- Group By Multiple and Grab more data ---
+***************************************************
+var groups = (
+
+// Get each CFGroup
+from g in ClientCustomFields
+where g.ClientID == 22
+group g by g.CustomFieldGroupGUID into gr
+let cfg = gr.FirstOrDefault()
+
+//Get each Person Data
+join p in CasePersonToClientCustomProfiles on cfg.CustomFieldGroupGUID equals p.CustomFieldGroupGUID into jP
+from subP in jP.Where(j => j.PersonID == 462).DefaultIfEmpty()
+
+//Get Person Data selection value
+join f in ClientCustomFields on subP.CustomFieldItemGUID equals f.CustomFieldItemGUID into jF
+from f in jF.DefaultIfEmpty()
+
+select new {
+PersonId = (subP == null ? 0 : subP.PersonID),
+ClientId = cfg.ClientID,
+CustomFieldGroupGuid = gr.Key,
+//ClientId = cfg.ClientID,
+FieldLabel = cfg.CustomFieldLabel,
+EnteredValue = subP.CustomFieldItemValue,
+SelecteValue = f.CustomFieldItem,
+FieldType = cfg.CustomControlType,
+SelecteValueCustomFieldItemGuid = (subP == null ? Guid.Empty : subP.CustomFieldItemGUID),
+}
+).OrderBy (d => d.FieldLabel).ToList().Dump();
+***************************************************
+***************************************************
+
+
+
+
+
 int engagementId = 18;
 
 #region StatesWithActions
