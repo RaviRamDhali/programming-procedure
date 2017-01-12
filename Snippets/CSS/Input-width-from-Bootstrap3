@@ -1,5 +1,5 @@
 /*------------------------------------*\
-/*Input widht from Bootstrap3*/
+/*Input width from Bootstrap3*/
 .input-12 {width: 100%;}
 .input-11 {width: 91.66666667%;}
 .input-10 {width: 83.33333333%;}
