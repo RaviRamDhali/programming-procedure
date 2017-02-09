@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Web;
+
+namespace BLL.Services
+{
+    public class Api
+    {
+        public static object Post(NameValueCollection form)
+        {
+            var forData = GetFormCollection(form);
+            throw new NotImplementedException();
+        }
+
+        public static object Get(NameValueCollection request)
+        {
+            string status = request["st"].ToStringOrDefault().Trim().ToLower();
+            int id = request["id"].ToInt32OrDefault();
+            throw new NotImplementedException();
+            return InitializePasswordRequestNotFound();
+        }
+
+        private static object GetFormCollection(NameValueCollection form)
+        {
+            object formData = new object();
+
+            string title = form["Title"].ToStringOrDefault();
+            bool active = (form["Active"] == "on") ? true : false;
+            int id = form["id"].ToInt32OrDefault();
+            string save = form["save"].ToStringOrDefault();
+            throw new NotImplementedException();
+            return formData;
+        }
+
+        private static BLL.Views.CommonViews.MessageResultURL InitializePasswordRequestNotFound()
+        {
+            throw new NotImplementedException();
+
+            return new BLL.Views.CommonViews.MessageResultURL
+            {
+                success = false,
+                message = "You password rest has expired. Request a new reset.",
+                url = null
+            };
+
+        }
+
+    }
+}
