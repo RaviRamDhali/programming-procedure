@@ -1,0 +1,28 @@
+Function GetReserveCartSiteIDs(MyCartSession)
+
+    Dim cartSiteIDs
+    Set cartSiteIDs = CreateObject("System.Collections.ArrayList")
+
+    For Each obj In reserveCartSiteIDs
+        cartSiteIDs.Add obj.id ' add siteId to list
+    Next
+
+    Set GetReserveCartSiteIDs = cartSiteIDs
+
+End Function
+
+' ---------------------------------------------
+Dim JSONarr 
+Set JSONarr = New JSONarray
+
+Dim reserveCartSiteIDs
+Set reserveCartSiteIDs = GetReserveCartSiteIDs(Session("ShoppingCart"))
+Dim obj
+  For Each obj In reserveCartSiteIDs
+    JSONarr.Push obj
+    ' response.write(obj)
+  Next
+' ---------------------------------------------
+
+response.write(JSONarr.Write())
+response.end
