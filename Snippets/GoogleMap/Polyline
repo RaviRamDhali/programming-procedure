@@ -1,0 +1,57 @@
+function InitializeAndLoadLineString(lineStringCollection, isBuilder) {
+
+	var linestrings = lineStringCollection.features;
+
+	// Foreach -------------------------------------
+	linestrings.forEach(function(linestring) {
+		var this_coords 	= linestring.geometry.coordinates.toString();
+   		var paths_strArr	= this_coords.split(",");
+
+		var strokeColor 	= linestring.properties.strokeColor;
+		var strokeOpacity 	= linestring.properties.strokeOpacity;
+		var strokeWeight 	= GetStrokeWeightLineString(map.getZoom(), linestring.properties.strokeWeight);
+		var zlevel 			= linestring.properties.zlevel;
+		var locked 			= linestring.properties.locked;
+		
+		//give it a unique name then refer to it aftwareds with a known named variable!
+		var polylineIdNo = "linestring_" + linestring.idno;
+
+
+		
+		polylineIdNo = new google.maps.Polyline({
+			path: ParsePolygonCoordinates(paths_strArr),
+			// zIndex: zlevel,
+			zIndex: 100,
+			strokeColor: strokeColor,
+			strokeOpacity: strokeOpacity,
+			strokeWeight: strokeWeight,
+			draggable: isBuilder,
+			geodesic: true,
+		});
+
+		polylineIdNo.set('zIndex',(polylineIdNo.get('zIndex')||0)+1000);
+		polylineIdNo.setMap(map);
+
+		console.log('polylineIdNo.getZIndex()', polylineIdNo.get('zIndex'));
+		
+
+		
+		if(isBuilder && locked!='Y'){
+			
+			google.maps.event.addListener(polylineIdNo, 'click', function(event) {
+				setSelection (polylineIdNo)
+			});
+
+			google.maps.event.addListener(polylineIdNo, 'rightclick', function(event) {
+				open_item_editor(polylineIdNo,'polyline',linestring.idno)
+			});
+
+			// remove it so we can redraw it based on the new zoom
+			google.maps.event.addListener(map, 'zoom_changed', function() {
+				polylineIdNo.setMap(null)
+			});
+		}
+
+	}); //end foreach
+
+ }
