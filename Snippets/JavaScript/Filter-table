@@ -1,26 +1,34 @@
 Table filtering using just jquery 
 
+$(document).ready(function() {
+
+var allTRs = $('.trCases');
 var input = document.getElementById('quickFilter');
+
 input.addEventListener('input', function()
 {
-    var allTRs = $('.trCases');
-
     var userInput = input.value.toLowerCase();
-
-    if(userInput.length === 0){
+    
+    if (userInput.length === 0) {
         $(allTRs).show();
+        $('.filterCount').hide();
         return;
     }
      
     var found = $(allTRs).filter('[data-filter*="'+ userInput +'"]');
     var notFound = $(allTRs).filter('[data-filter!="'+ userInput +'"]');
 
-    $(notFound).each(function () {
-          $(this).hide();
+    $(notFound).each(function (i) {
+        $(this).hide();
     });
 
     $(found).each(function () {
+        $('.filterCount').html(' [' + found.size() + ' filtered]').show();
         $(this).show();
     });
-
+    
 });
+
+
+//-----------------------------------
+}); //jquery end
