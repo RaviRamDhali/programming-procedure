@@ -1,9 +1,9 @@
     // jquery.inputmask is a jQuery plugin which create an input mask.
     // https://github.com/RobinHerbots/Inputmask
     
-    <script type="text/javascript" src="/Scripts/jquery.inputmask/inputmask.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery.inputmask/jquery.inputmask.js"></script>
-    
+    **Use bundle version **
+    <script type="text/javascript" src="/js/jquery.inputmask/jquery.inputmask.bundle.js"></script>
+       
     $(".mask-phone").inputmask("mask", { "mask": "(999) 999-9999", "clearIncomplete": true });
     $(".mask-zip").inputmask("99999", { "clearIncomplete": true });
     $(".mask-ssn").inputmask("999-99-9999", { "clearIncomplete": true });
