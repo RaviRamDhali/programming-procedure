@@ -1,0 +1,56 @@
+** Using StringBuilder to construct SQL Query ASPX ** 
+
+public static DataTable GetEmployeeSearch(string locCode, string lastname, string firstname, string empGuid)
+{
+    string locationCode = locCode.ToStringOrDefault();
+    lastname = lastname.ToStringOrDefault().Trim().ToLower();
+    firstname = firstname.ToStringOrDefault().Trim().ToLower();
+    empGuid = empGuid.ToStringOrDefault().Trim().ToLower();
+    
+    if (locationCode.IsNullOrEmpty())
+        return null;
+
+    if (lastname.IsNullOrEmpty() && firstname.IsNullOrEmpty() && empGuid.IsNullOrEmpty())
+        return null;
+
+
+    StringBuilder sql = new StringBuilder();
+    sql.Append("SELECT empGuid, firstName, lastName from table_" + locationCode + " ");
+
+    if (ssn.IsNotNullOrEmpty())
+       sql.Append("WHERE locationCode LIKE '%' + @locationCode + '%'");
+    
+    if (lastname.IsNotNullOrEmpty())
+        sql.Append(AddANDforWhere(sql.ToString()) + " LOWER(lastName) LIKE '%' + @lastname + '%'");
+
+    if(firstname.IsNotNullOrEmpty())
+        sql.Append(AddANDforWhere(sql.ToString()) + " LOWER(firstName) LIKE '%' + @firstname + '%'");
+
+    if (empGuid.IsNotNullOrEmpty())
+        sql.Append(AddANDforWhere(sql.ToString()) + " LOWER(empGuid) LIKE '%' + @empGuid + '%'");
+    
+    SqlConnection dc = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["myConnStr"].ConnectionString);
+    SqlDataAdapter da = new SqlDataAdapter(sql.ToString(), dc);
+    da.SelectCommand.Parameters.AddWithValue("lastname", lastname);
+    da.SelectCommand.Parameters.AddWithValue("firstname", firstname);
+    da.SelectCommand.Parameters.AddWithValue("empGuid", empGuid);
+
+    DataTable dataTable = new DataTable();
+    da.Fill(dataTable);
+
+    if (dataTable.Rows.Count == 0)
+    {
+        return null;
+    }
+
+    return dataTable;
+
+}
+
+
+
+public static string AddANDforWhere(string sql)
+{
+
+    return (sql.ToLower().Contains("where")) ? "AND" : "WHERE";
+}
