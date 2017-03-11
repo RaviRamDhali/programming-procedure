@@ -17,7 +17,7 @@ public static DataTable GetEmployeeSearch(string locCode, string lastname, strin
     StringBuilder sql = new StringBuilder();
     sql.Append("SELECT empGuid, firstName, lastName from table_" + locationCode + " ");
 
-    if (ssn.IsNotNullOrEmpty())
+    if (locationCode.IsNotNullOrEmpty())
        sql.Append("WHERE locationCode LIKE '%' + @locationCode + '%'");
     
     if (lastname.IsNotNullOrEmpty())
