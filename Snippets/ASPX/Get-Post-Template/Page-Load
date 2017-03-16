@@ -11,12 +11,17 @@ protected void Page_Load(object sender, EventArgs e)
 {
     BLL.Services.Authorization.DoLogOut(false);
 
-    string ip = Request.ServerVariables["REMOTE_ADDR"].ToStringOrDefault();
+string ip = Request.ServerVariables["REMOTE_ADDR"].ToStringOrDefault();
 
+    // GET POST
     if (Request.HttpMethod == "POST")
-        Model = BLL.Services.Auth.ForgotPassword.Post(Request.Form, ip);
+       Model = IMSClasses.I9.Service.Create.Post(Request.Form);
+        
+    // GET METHOD
+       if (Request.HttpMethod == "GET")
+          Model = IMSClasses.I9.Service.Create.Get(Request);
 
-    if(Model.IsNull())
+if(Model.IsNull())
         Model = BLL.Services.Auth.ForgotPassword.Get(Request);
 }
 
