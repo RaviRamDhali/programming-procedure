@@ -48,6 +48,16 @@ allKeys = listOfData.Keys   'Get all the keys into an array
 For i = 0 To listOfData.Count - 1 'Iterate through the array
   myKey = allKeys(i)   'This is the key value
   Response.Write("The " & i & " value in the Dictionary is " & myKey & "<br />")
+  
+  	Dim data
+	set data = listOfSitePads.Item(site_idno)
+
+	Response.Write("park_name: " & data.park_name & "<br>")
+	Response.Write("park_idno: " & data.park_idno & "<br>")
+	Response.Write("site_name: " & data.site_name & "<br>")
+	Response.Write("site_idno: " & data.site_idno & "<br>")
+	Response.Write("reason_code: " & data.reason_code & "<br>")
+	
 Next
 
 
