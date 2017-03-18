@@ -38,3 +38,17 @@ Response.Write("name: " & dataR.name & "<br>")
 Response.Write("id: " & dataR.id & "<br>")
 
 
+
+TESTING: 
+
+Dim allKeys, allItems, myKey, myItem
+'retrieve all the keys and items from the Dictionary and print them out
+allKeys = listOfData.Keys   'Get all the keys into an array
+
+For i = 0 To listOfData.Count - 1 'Iterate through the array
+  myKey = allKeys(i)   'This is the key value
+  Response.Write("The " & i & " value in the Dictionary is " & myKey & "<br />")
+Next
+
+
+
