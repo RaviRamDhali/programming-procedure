@@ -1,0 +1,31 @@
+** Server.CreateObject("Scripting.Dictionary") **
+Using Server.CreateObject("Scripting.Dictionary") to create a List<objects> in classic asp.
+
+
+	public function initializeDictionary(rsList)
+
+		Dim dictionary
+		Set dictionary = Server.CreateObject("Scripting.Dictionary")
+
+		while not rsList.eof
+
+			call objSiteAvail.initialize(rsList)
+			
+			dictionary.Add objSiteAvail.site_idno, objSiteAvail
+			
+			Dim data
+			set data = dictionary.Item(objSiteAvail.site_idno)
+
+			Response.Write("park_name: " & data.park_name & "<br>")
+			Response.Write("park_idno: " & data.park_idno & "<br>")
+			Response.Write("site_name: " & data.site_name & "<br>")
+			Response.Write("site_idno: " & data.site_idno & "<br>")
+			Response.Write("reason_code: " & data.reason_code & "<br>")
+
+			rsList.MoveNext
+
+		wend
+
+		set initializeDictionary = dictionary
+
+	end function
