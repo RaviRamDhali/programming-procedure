@@ -27,3 +27,14 @@ Using Server.CreateObject("Scripting.Dictionary") to create a List<objects> in c
 		set initializeDictionary = dictionary
 
 	end function
+
+USAGE:
+set rs = getSomeRecordsFromDatabase()
+set listOfData = initializeDictionary(rs)
+
+Dim dataR
+set dataR = listOfData.Item(243)  <-- get single record
+Response.Write("name: " & dataR.name & "<br>")
+Response.Write("id: " & dataR.id & "<br>")
+
+
