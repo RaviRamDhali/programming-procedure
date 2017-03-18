@@ -30,14 +30,28 @@ https://www.w3schools.com/asp/asp_ref_dictionary.asp
 	end function
 
 USAGE:
-set rs = getSomeRecordsFromDatabase()
-set listOfData = initializeDictionary(rs)
+set listOfSitePads = objSiteAvail.initializeDictionary(dictSiteAvail)
 
-Dim dataR
-set dataR = listOfData.Item(243)  <-- get single record
-Response.Write("name: " & dataR.name & "<br>")
-Response.Write("id: " & dataR.id & "<br>")
+Response.Write("Count: " & listOfSitePads.Count & "<br>")
 
+Dim allKeys
+allKeys = listOfSitePads.Keys
+for i = 0 to listOfSitePads.Count-1
+
+Dim myKey
+	myKey = allKeys(i)   'This is the key value
+  	' Response.Write("The " & i & " value in the Dictionary is " & myKey & "<br />")
+
+	Dim sitePadId 
+	sitePadId = myKey
+
+	Dim dh
+	set dh = listOfSitePads.Item(sitePadId)
+	response.write("site_idno : " & dh.site_idno & "<br />")
+	response.write("site_name : " & dh.site_name & "<br />")
+	response.write("park_name : " & dh.park_name & "<br />")
+
+next
 
 
 TESTING: 
