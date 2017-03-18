@@ -1,30 +1,31 @@
 ** Server.CreateObject("Scripting.Dictionary") **
 Using Server.CreateObject("Scripting.Dictionary") to create a List<objects> in classic asp.
 
+https://www.w3schools.com/asp/asp_ref_dictionary.asp
+
 
 	// Pass in RS (list from database)
+	
 	public function initializeDictionary(rsList)
 
-		// Create empty VB Dictionary
 		Dim dictionary
 		Set dictionary = Server.CreateObject("Scripting.Dictionary")
 
 		while not rsList.eof
 
-			// Initialize Eeach Object
-			call objSiteAvail.initialize(rsList)
+			set obj = new SitesAvailability
 			
-			// Add each object to Dictionary List
-			dictionary.Add objSiteAvail.site_idno, objSiteAvail
-			
-			// ** objSiteAvail.site_idno <-- unquie ID for getting row later
-			// ** objSiteAvail  <-- entire row/object
-						
+			call obj.initialize(rsList)
+				dictionary.Add obj.site_idno, obj
 			rsList.MoveNext
+
+			set obj = nothing
 
 		wend
 
 		set initializeDictionary = dictionary
+
+		set dictionary = nothing
 
 	end function
 
