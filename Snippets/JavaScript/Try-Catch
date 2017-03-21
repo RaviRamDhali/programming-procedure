@@ -1,0 +1,10 @@
+jQuery.each(states, function(i, data) {
+    try {
+        console.log(data);
+        $("#ddl_states").append($("<option />").val(data.State).text(data.State));
+    }
+    catch (e) {
+        // statements to handle any exceptions
+        throw new Error("Stopped javascript here ... " + e);
+    }
+});
