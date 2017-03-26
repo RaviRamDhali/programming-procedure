@@ -1,7 +1,6 @@
 ** Example of a form post TO Object Creation with many fields ** 
 * TRIM and check LEN of value firstname,lastname,email
 
-
 <%
 
 Class attendee
@@ -43,13 +42,11 @@ Dim i
 For i = 0 to Ubound(arrFirstName)
 
 	Dim firstname, lastname, email
-	' TRIM
 	firstname = Trim(arrFirstName(i))
 	lastname = Trim(arrLastName(i))
 	email = Trim(arrEmail(i))
 
-		'IF HAS VALUE then contunie
-		if Len(firstname) > 0 AND Len(lastname) > 0 AND Len(email) > 0 then
+	if Len(firstname) > 0 AND Len(lastname) > 0 AND Len(email) > 0 then
 
 		Dim objAttendee
 		set objAttendee = initialize(firstname,lastname,email)
@@ -62,16 +59,43 @@ For i = 0 to Ubound(arrFirstName)
 		' response.write("objAttendee.email : " & objAttendee.email & "<br/>")
 		' response.write("</p>")
 
-		end if
+	end if
 
 
 Next
 
 Response.Write("Count: " & dictionary.Count & "<br>")
 
+
+'**************************************************************
+' USAGE 
+'**************************************************************
+
+Dim dicKeys, key
+'retrieve all the keys and items from the Dictionary and print them out
+dicKeys = dictionary.Keys   'Get all the keys into an array
+
+For i = 0 To dictionary.Count - 1 'Iterate through the array
+  key = dicKeys(i)   'This is the key value
+  Response.Write("The " & i & " value in the Dictionary is " & key & "<br />")
+
+	Dim data
+	set data = dictionary.Item(key)
+
+	response.write("<p>")
+	response.write("objAttendee.firstname : " & data.firstname & "<br/>")
+	response.write("objAttendee.lastname : " & data.lastname & "<br/>")
+	response.write("objAttendee.email : " & data.email & "<br/>")
+	response.write("</p>")
+
+
+ Next
+
+'**************************************************************
+'**************************************************************
+
+
 response.end
-
-
 
 
 
