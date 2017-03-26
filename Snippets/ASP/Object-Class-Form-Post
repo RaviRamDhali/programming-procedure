@@ -1,4 +1,5 @@
 ** Example of a form post TO Object Creation with many fields ** 
+* TRIM and check LEN of value firstname,lastname,email
 
 
 <%
@@ -35,22 +36,43 @@ arrLastName = Split(request("lastname"), ",")
 arrEmail = Split(request("email"), ",")
 
 
+Dim dictionary
+Set dictionary = Server.CreateObject("Scripting.Dictionary")
+
 Dim i
 For i = 0 to Ubound(arrFirstName)
 
+	Dim firstname, lastname, email
+	' TRIM
+	firstname = Trim(arrFirstName(i))
+	lastname = Trim(arrLastName(i))
+	email = Trim(arrEmail(i))
 
-	Dim objAttendee
-	set objAttendee = initialize(arrFirstName(i),arrLastName(i),arrEmail(i))
+		'IF HAS VALUE then contunie
+		if Len(firstname) > 0 AND Len(lastname) > 0 AND Len(email) > 0 then
 
-	response.write("<p>")
-	response.write("objAttendee.firstname : " & objAttendee.firstname & "<br/>")
-	response.write("objAttendee.lastname : " & objAttendee.lastname & "<br/>")
-	response.write("objAttendee.email : " & objAttendee.email & "<br/>")
-	response.write("</p>")
+		Dim objAttendee
+		set objAttendee = initialize(firstname,lastname,email)
+
+		dictionary.Add objAttendee.email, objAttendee
+
+		' response.write("<p>")
+		' response.write("objAttendee.firstname : " & objAttendee.firstname & "<br/>")
+		' response.write("objAttendee.lastname : " & objAttendee.lastname & "<br/>")
+		' response.write("objAttendee.email : " & objAttendee.email & "<br/>")
+		' response.write("</p>")
+
+		end if
+
 
 Next
 
+Response.Write("Count: " & dictionary.Count & "<br>")
+
 response.end
+
+
+
 
 
 %>
