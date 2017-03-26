@@ -1,0 +1,56 @@
+** Example of a form post TO Object Creation with many fields ** 
+
+
+<%
+
+Class attendee
+
+	public firstName
+	public lastName
+	public email
+
+End Class
+
+
+public function initialize(strFirstName,strLastName,strEmail)
+
+	Dim object
+	
+	set object = new attendee
+	
+	object.firstName = strFirstName
+	object.lastName = strLastName
+	object.email = strEmail
+
+	set initialize = object
+
+end function
+
+
+Dim  arrFirstName, arrLastName, arrEmail
+
+
+arrFirstName = Split(request("firstname"), ",")
+arrLastName = Split(request("lastname"), ",")
+arrEmail = Split(request("email"), ",")
+
+
+Dim i
+For i = 0 to Ubound(arrFirstName)
+
+
+	Dim objAttendee
+	set objAttendee = initialize(arrFirstName(i),arrLastName(i),arrEmail(i))
+
+	response.write("<p>")
+	response.write("objAttendee.firstname : " & objAttendee.firstname & "<br/>")
+	response.write("objAttendee.lastname : " & objAttendee.lastname & "<br/>")
+	response.write("objAttendee.email : " & objAttendee.email & "<br/>")
+	response.write("</p>")
+
+Next
+
+response.end
+
+
+%>
