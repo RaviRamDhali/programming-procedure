@@ -1,0 +1,75 @@
+ $(".file-download").click(function(e) {
+     e.preventDefault();
+     var url = $(this).attr("data-url");
+     var filename = $(this).attr("data-name");
+     $.post("/Handlers/Cases/CaseDocuments.ashx", { url: url, filename: filename, task: 'download' })
+         .done(function (data) {
+             console.log("handler download: ", data.url);
+             $("body").append("<iframe src='" + data.url + "' style='display: none;' ></iframe>");
+         });
+ });
+ 
+  <a href="#" class="file-download" data-url="<%=item.AwsKeyUrl%>" data-name="<%=item.CleanFileName%>" > AWS <%=item.CleanFileName%> </a>
+  
+// HANDLER ----------------------------  
+if (task == "download")
+{
+    string awsLink = BLL.Services.DownloadMedia.DownloadFileHandler(awsKeyUrl);
+    context.Response.Write(JsonConvert.SerializeObject(new { url = awsLink, name = filename }));
+    context.Response.End();
+}
+
+
+
+public static string DownloadFileHandler(string awsKeyUrl)
+{
+    var key = awsKeyUrl;
+    string bucketName = ConfigurationManager.AppSettings["AWSS3Bucket"];
+    string url = AWS.GetS3Object(bucketName, key);
+
+    return url;
+}
+
+
+        public static string GetS3Object(string bucketName, string key)
+        {
+            try
+            {
+
+                NameValueCollection appConfig = ConfigurationManager.AppSettings;
+                string accessKey = appConfig["AWSAccessKey"];
+                string secretKey = appConfig["AWSSecretKey"];
+                var credentials = new BasicAWSCredentials(accessKey, secretKey);
+                var s3Client = new AmazonS3Client(credentials, RegionEndpoint.USWest1);
+
+                // Build object to pass to S3
+                // S3 will return temp URL to download file
+                GetPreSignedUrlRequest request = new GetPreSignedUrlRequest()
+                {
+                    BucketName = bucketName,
+                    Key = key,
+                    Expires = DateTime.Now.AddMinutes(10)
+                };
+
+                //S3 Generating Temp file URL
+                string url = s3Client.GetPreSignedURL(request);
+
+                return url;
+            }
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                if (amazonS3Exception.ErrorCode != null &&
+                    (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") ||
+                    amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    throw new Exception("Please check the provided AWS Credentials.");
+                }
+                else
+                {
+                    throw new Exception(string.Format("An error occurred with the message '{0}' when reading an object", amazonS3Exception.Message));
+                }
+            }
+        }
+        
+        
+        
