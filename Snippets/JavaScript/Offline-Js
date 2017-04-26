@@ -1,0 +1,76 @@
+
+  <script src="offline.js"></script>
+  <script src="offline-simulate-ui.min.js"></script>
+
+<script>
+    $(function(){
+
+        var 
+            $online = $('.online'),
+            $offline = $('.offline');
+
+        Offline.on('confirmed-down', function () {
+            $online.fadeOut(function () {
+                $offline.fadeIn();
+                  console.log('Offline state: ',Offline.state);
+                  console.log('Offline remaining: ',Offline.reconnect.remaining);
+            });
+        });
+
+        Offline.on('confirmed-up', function () {
+            $offline.fadeOut(function () {
+                $online.fadeIn();
+                  console.log('Offline state: ',Offline.state);
+                  console.log('Offline remaining: ',Offline.reconnect.remaining);
+                  Offline.on('reconnect:tick', tick);
+            });
+        });
+
+        function tick(){
+            console.log('Offline remaining: ',Offline.reconnect.remaining);
+            console.log('Offline state: ',Offline.state);
+        }
+
+
+    });
+</script>
+
+
+
+
+        <div class="row online well">
+              <form class="form-horizontal">
+                <fieldset>
+
+                  <!-- Form Name -->
+                  <legend><div class="text-center h3">Have an account? Sign In</div></legend>
+
+                  <!-- Text input-->
+                  <div class="form-group">
+                    <label class="col-md-1 control-label" for="username"></label>  
+                    <div class="col-md-12">
+                      <input id="username" name="username" type="text" placeholder="Username" class="form-control input-md">
+                    </div>
+                  </div>
+
+                  <!-- Password input-->
+                  <div class="form-group">
+                    <label class="col-md-1 control-label" for="password"></label>
+                    <div class="col-md-12">
+                      <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md">
+                    </div>
+                  </div>
+
+                  <!-- Button (Double) -->
+                  <div class="form-group">
+                    <label class="col-md-1 control-label" for="login"></label>
+                  <div class="col-md-5">
+                    <a href="#" id="login" name="login" class="btn btn-block btn-success">Login</a>
+                  </div>
+                  <div class="col-md-5">
+                    <a href="#" id="forpass" name="forpass" class="btn btn-block btn-warning">I forgot my password</a></div>  
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            
