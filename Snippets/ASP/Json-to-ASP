@@ -1,0 +1,13 @@
+Using : https://github.com/rcdmk/aspJSON
+
+Dim jsonString
+jsonString = {"date":"4/28/2017","custType":"100","vehicle":"1"}
+
+Dim jsonObj, outputObj
+set jsonObj = new JSONobject
+set outputObj = jsonObj.parse(jsonString)
+
+response.write("<li> date :" & outputObj("date") & "</li>")
+response.write("<li> custType :" & outputObj("custType") & "</li>")
+response.write("<li> vehicle :" & outputObj("vehicle") & "</li>")
+
