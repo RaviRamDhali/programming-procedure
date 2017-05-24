@@ -1,0 +1,9 @@
+// Kick off the timer
+console.time('testForEach');
+
+// (Do some testing of a forEach, for example)
+
+// End the timer, get the elapsed time
+console.timeEnd('testForEach');
+
+// 4522.303ms (or whatever time elapsed)
