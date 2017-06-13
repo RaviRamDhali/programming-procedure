@@ -1,0 +1,8 @@
+Get several rows and create on TEXT STRING
+Place all rows into a single string variable
+
+Declare @someVar varchar(max)
+Select @someVar = stuff((select CHAR(13) + CHAR(10) +  m.someText
+       From dbo.someTables m
+       Where someCondition = something
+       For XML PATH ('')),1,1,'')
