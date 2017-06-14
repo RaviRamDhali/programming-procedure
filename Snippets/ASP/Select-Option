@@ -1,0 +1,16 @@
+<select class="form-control required" id="park_idno" name="park_idno">
+  <option value="">-- Select One --</option>
+  <%
+  rsParks.MoveFirst
+  while not rsParks.eof
+  %>
+    <option value='<%=rsParks("idno")%>' 
+      <%if rsParks("idno") = park_idno then response.write " selected"%>
+      >
+      <%=rsParks("name")%>
+    </option>
+  <%
+  rsParks.MoveNext
+  wend
+  %>
+</select>
