@@ -1,17 +1,17 @@
 Produce JSON strings from SQL Server queries via TSQL
 
-
-Declare @someVar varchar(max)
-SELECT @someVar = '[' +  STUFF(
-       (SELECT TOP 10 ',{"caseName":' 
-       + '"' + CAST(caseName AS VARCHAR(30)) + '"'
-       + ',"caseModDate":' 
-       + '"' + CAST(caseModDate AS VARCHAR(30)) + '"'
-       + '}'
-       FROM dbo.Cases AS c
-              JOIN dbo.CaseStatus AS s ON s.caseStatusID = c.caseStatusID
-       FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
-) + ']'
+ Declare @jsonDoc varchar(max)
+   SELECT @jsonDoc = '[' +  STUFF(
+		(SELECT TOP 5 
+		'{'
+		+ '"caseDocOriginalName":' + '"' + CAST(caseDocOriginalName AS VARCHAR(30)) + '"'
+		+ ',"caseDocCreatedDate":' + '"' + CAST(caseDocCreatedDate AS VARCHAR(30)) + '"'
+		+ '}'
+		FROM dbo.CaseDocuments 
+		WHERE caseID = @caseId
+		ORDER BY caseDocCreatedDate DESC
+		FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
+	) + ']'
 
 PRINT	 @someVar
 
