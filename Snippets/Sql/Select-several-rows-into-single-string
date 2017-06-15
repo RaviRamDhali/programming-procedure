@@ -1,3 +1,24 @@
+Produce JSON strings from SQL Server queries via TSQL
+
+
+Declare @someVar varchar(max)
+SELECT @someVar = '[' +  STUFF(
+       (SELECT TOP 10 ',{"caseName":' 
+       + '"' + CAST(caseName AS VARCHAR(30)) + '"'
+       + ',"caseModDate":' 
+       + '"' + CAST(caseModDate AS VARCHAR(30)) + '"'
+       + '}'
+       FROM dbo.Cases AS c
+              JOIN dbo.CaseStatus AS s ON s.caseStatusID = c.caseStatusID
+       FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
+) + ']'
+
+PRINT	 @someVar
+
+RESULTS: 
+[{"caseName":"George “Machine Gun” Kelly","caseModDate":"Apr 15 2017  5:18AM"},{"caseName":"23161 Apache Lane - Burglary","caseModDate":"Jul 11 2013 12:27PM"},{"caseName":"John G bad Guy","caseModDate":"Sep 21 2016 10:38AM"},{"caseName":"Aurora Kimberly","caseModDate":"Nov 30 2012 11:09AM"},{"caseName":"Priya Rithika","caseModDate":"Jun 17 2016  5:27PM"},{"caseName":"Michael Knight","caseModDate":"Jan 12 2016 10:08AM"},{"caseName":"T Rivera 100","caseModDate":"Feb 19 2014  1:35PM"},{"caseName":"TEST","caseModDate":"Mar 27 2013  3:06PM"},{"caseName":"CTI - Date change","caseModDate":"Aug 21 2016  8:46AM"},{"caseName":"405 spill","caseModDate":"Apr  9 2017  7:26AM"}]
+       
+  
 Get several rows and create on TEXT STRING
 Place all rows into a single string variable
 
