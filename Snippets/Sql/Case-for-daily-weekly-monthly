@@ -1,0 +1,14 @@
+--Date setup for daily,weekly,monthly
+DECLARE @inputFrequency NVARCHAR(100) = 'weekly'
+DECLARE @freqStartDate DATETIME
+DECLARE @freqEndDate DateTime = GETDATE()
+
+SELECT @freqEndDate = 
+CASE
+	WHEN @inputFrequency = 'daily' THEN dateadd(day,0,datediff(day, 0, getdate()))
+	WHEN @inputFrequency = 'weekly' THEN dateadd(day,-7,datediff(day, 0, getdate()))
+	WHEN @inputFrequency = 'monthly' THEN dateadd(day,-30,datediff(day, 0, getdate()))
+	ELSE dateadd(day,0,datediff(day, 0, getdate()))
+END
+
+SELECT @freqEndDate
