@@ -11,7 +11,7 @@ GO
 -- Create date: 2017-05-18
 -- Description:	Case Details with Json for each report type
 -- Param @inputClientId int : clientId default=0
--- Param @inputFrequency string : daily,weekly,monthly,yearly default=daily
+-- Param @inputFrequency string : daily,weekly,monthly,yearly,creation default=daily
 -- =============================================
 
 ALTER PROCEDURE [dbo].[NotificationReportBuilder]
@@ -34,10 +34,11 @@ CASE
 	WHEN @inputFrequency = 'weekly' THEN dateadd(day,-7,datediff(day, 0, getdate()))
 	WHEN @inputFrequency = 'monthly' THEN dateadd(day,-30,datediff(day, 0, getdate()))
 	WHEN @inputFrequency = 'yearly' THEN dateadd(yy, datediff(yy, 0, getdate()), 0)
+	WHEN @inputFrequency = 'creation' THEN convert(smalldatetime, 0)
 	ELSE dateadd(day,0,datediff(day, 1, getdate()))
 END
--- SELECT @freqStartDate
--- SELECT @freqEndDate
+ --SELECT @freqStartDate
+ --SELECT @freqEndDate
 ------------------------------------
 ------------------------------------
 
