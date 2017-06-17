@@ -103,8 +103,9 @@ FETCH NEXT FROM curr into @caseId
 	-- Uploads
 	-----------------------------------------------
 	Declare @jsonUpload varchar(max)
-	SELECT @jsonUpload = '[' +  STUFF(
-	(SELECT TOP 10 
+	SELECT 
+	@jsonUpload = '[' +  STUFF(
+	(SELECT 
 	+ ',{'
 	+ '"caseDocOriginalName":' + '"' + CAST(fileOriginalName AS VARCHAR(200)) + '"'
 	+ ',"caseDocCreatedDate":' + '"' + CAST(fileCreatedDate AS VARCHAR(200)) + '"'
@@ -120,8 +121,9 @@ FETCH NEXT FROM curr into @caseId
 	-- CaseDocuments
 	-----------------------------------------------
 	Declare @jsonDoc varchar(max)
-	SELECT @jsonDoc = '[' +  STUFF(
-	(SELECT TOP 10
+	SELECT 
+	@jsonDoc = '[' +  STUFF(
+	(SELECT
 	+ ',{'
 	+ '"caseDocOriginalName":' + '"' + CAST(caseDocOriginalName AS VARCHAR(200)) + '"'
 	+ ',"caseDocCreatedDate":' + '"' + CAST(caseDocCreatedDate AS VARCHAR(200)) + '"'
@@ -138,7 +140,7 @@ FETCH NEXT FROM curr into @caseId
 	-----------------------------------------------
 	Declare @jsonActivity varchar(max)
 	SELECT @jsonActivity = '[' +  STUFF(
-	(SELECT TOP 10
+	(SELECT
 	+ ',{'
 	+ '"caseActivityModDate":' + '"' + CAST(caseActivityModDate AS VARCHAR(30)) + '"'
 	+ ',"caseActivityHours":' + '"' + CAST(caseActivityHours AS VARCHAR(30)) + '"'
@@ -156,7 +158,7 @@ FETCH NEXT FROM curr into @caseId
 	-----------------------------------------------
 	DECLARE @jsonPerson varchar(max)
 	SELECT @jsonPerson = '[' +  STUFF(
-	(SELECT TOP 10 
+	(SELECT
 	+ ',{'
 	+ '"personDateMod":' + '"' + CAST(personDateMod AS VARCHAR(30)) + '"'
 	+ ',"personLastName":' + '"' + CAST(personLastName AS VARCHAR(100)) + '"'
