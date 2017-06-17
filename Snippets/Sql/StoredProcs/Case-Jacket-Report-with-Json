@@ -11,13 +11,29 @@ GO
 -- Description:	<Description,,>
 -- =============================================
 ALTER PROCEDURE [dbo].[NotificationReportBuilder]
-@inputClientId int = 0
+@inputClientId int = 0,
+@inputFrequency NVARCHAR(100) = 'daily' -- daily,weekly,monthly
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
     -- Insert statements for procedure here
+
+--Date setup for daily,weekly,monthly
+DECLARE @freqStartDate DATETIME
+DECLARE @freqEndDate DateTime = dateadd(day,+1,datediff(day, 0, getdate()))
+
+SELECT @freqStartDate = 
+CASE
+	WHEN @inputFrequency = 'daily' THEN dateadd(day,0,datediff(day, 0, getdate()))
+	WHEN @inputFrequency = 'weekly' THEN dateadd(day,-7,datediff(day, 0, getdate()))
+	WHEN @inputFrequency = 'monthly' THEN dateadd(day,-30,datediff(day, 0, getdate()))
+	ELSE dateadd(day,0,datediff(day, 1, getdate()))
+END
+
+SELECT @freqStartDate
+SELECT @freqEndDate
 
 
 create table #t (
@@ -27,7 +43,7 @@ clientName NVARCHAR(200),
  caseName NVARCHAR(MAX),
  modified DATETIME,
  status NVARCHAR(200),
- jsonUpload NVARCHAR(200),
+ jsonUpload NVARCHAR(MAX),
  jsonDoc NVARCHAR(MAX),
  jsonActivity NVARCHAR(MAX),
  jsonPerson NVARCHAR(MAX),
@@ -68,13 +84,15 @@ FETCH NEXT FROM curr into @caseId
 
    	   Declare @jsonUpload varchar(max)
 		 SELECT @jsonUpload = '[' +  STUFF(
-		(SELECT TOP 5 
-		'{'
+		(SELECT TOP 10 
+		+ ',{'
 		+ '"caseDocOriginalName":' + '"' + CAST(fileOriginalName AS VARCHAR(200)) + '"'
 		+ ',"caseDocCreatedDate":' + '"' + CAST(fileCreatedDate AS VARCHAR(200)) + '"'
 		+ '}'
 		FROM dbo.Uploads 
 		WHERE caseID = @caseId
+		AND fileCreatedDate > @freqStartDate
+		AND fileCreatedDate < @freqEndDate
 		ORDER BY fileCreatedDate DESC
 		FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
 	) + ']'
@@ -84,13 +102,15 @@ FETCH NEXT FROM curr into @caseId
 
    Declare @jsonDoc varchar(max)
    SELECT @jsonDoc = '[' +  STUFF(
-		(SELECT TOP 5 
-		'{'
+		(SELECT TOP 10
+		+ ',{'
 		+ '"caseDocOriginalName":' + '"' + CAST(caseDocOriginalName AS VARCHAR(200)) + '"'
 		+ ',"caseDocCreatedDate":' + '"' + CAST(caseDocCreatedDate AS VARCHAR(200)) + '"'
 		+ '}'
 		FROM dbo.CaseDocuments 
 		WHERE caseID = @caseId
+		AND caseDocCreatedDate > @freqStartDate
+		AND caseDocCreatedDate < @freqEndDate
 		ORDER BY caseDocCreatedDate DESC
 		FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
 	) + ']'
@@ -100,13 +120,16 @@ FETCH NEXT FROM curr into @caseId
 
 		   Declare @jsonActivity varchar(max)
 		SELECT @jsonActivity = '[' +  STUFF(
-		(SELECT TOP 5 ',{'
+		(SELECT TOP 10
+		+ ',{'
 		+ '"caseActivityModDate":' + '"' + CAST(caseActivityModDate AS VARCHAR(30)) + '"'
 		+ ',"caseActivityHours":' + '"' + CAST(caseActivityHours AS VARCHAR(30)) + '"'
 		+ ',"memID":' + '"' + CAST(memID AS VARCHAR(30)) + '"'
 		+ '}'
 		FROM dbo.CaseActivity
 		WHERE caseID = @caseId
+		AND caseActivityModDate > @freqStartDate
+		AND caseActivityModDate < @freqEndDate
 		ORDER BY caseActivityModDate DESC
 		FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
 	) + ']'
@@ -117,13 +140,16 @@ FETCH NEXT FROM curr into @caseId
 	
 			   Declare @jsonPerson varchar(max)
 		SELECT @jsonPerson = '[' +  STUFF(
-		(SELECT TOP 5 ',{'
+		(SELECT TOP 10 
+		+ ',{'
 		+ '"personDateMod":' + '"' + CAST(personDateMod AS VARCHAR(30)) + '"'
-		+ ',"personLastName":' + '"' + CAST(personLastName AS VARCHAR(30)) + '"'
-		+ ',"personFirstName":' + '"' + CAST(personFirstName AS VARCHAR(30)) + '"'
+		+ ',"personLastName":' + '"' + CAST(personLastName AS VARCHAR(100)) + '"'
+		+ ',"personFirstName":' + '"' + CAST(personFirstName AS VARCHAR(100)) + '"'
 		+ '}'
 		FROM dbo.CasePerson
 		WHERE caseID = @caseId
+		AND personDateMod > @freqStartDate
+		AND personDateMod < @freqEndDate
 		ORDER BY personDateMod DESC
 		FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
 	) + ']'
