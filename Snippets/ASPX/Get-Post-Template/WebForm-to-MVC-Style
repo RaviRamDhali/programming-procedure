@@ -1,6 +1,22 @@
 -------------------------------------------------------
 [System.Web.Services.WebMethod]
 -------------------------------------------------------
+
+[System.Web.Services.WebMethod]
+public static string UpdateFieldTask(string command, Guid id, string userInput)
+{
+    return command;
+}
+
+$.ajax({
+    type: "POST",
+    url: "/Manager/Person.aspx/UpdateFieldTask",
+    data: JSON.stringify({ command: command, id: id, userInput : userInput }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "text"
+});
+
+
 [System.Web.Services.WebMethod]
     public static string AddMembersToCase(List<MemberCaseAccessLevel> memberAccessLevels)
     {
