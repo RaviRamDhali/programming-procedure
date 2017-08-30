@@ -1,0 +1,141 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- USAGE: 
+-- =============================================
+Alter PROC places
+	-- Add the parameters for the stored procedure here
+AS
+BEGIN
+
+
+------------------------------------
+-- Setup temp table
+------------------------------------
+CREATE table #t (
+	idno INT,
+	category VARCHAR(50),
+	name  VARCHAR(50),
+	address NVARCHAR(50),
+	city NVARCHAR(50),
+	state NVARCHAR(2),
+	zip NVARCHAR(50),
+	phone NVARCHAR(50),
+	gps_lat FLOAT ,
+	gps_long FLOAT,
+	type_idno INT ,
+	type_name NVARCHAR(100),
+	type_url NVARCHAR(100),
+	 jsonActivity NVARCHAR(MAX)
+	)
+------------------------------------
+------------------------------------
+
+insert #t
+SELECT 
+	p.idno AS idno, 
+	'park' AS 'category',
+	p.name,
+	p.address, 
+	p.city ,
+	p.state ,
+	p.zip ,
+	p.phone ,
+	p.gps_lat ,
+	p.gps_long ,
+	p.park_type_idno AS type_idno ,
+	pt.name AS type_name,
+	
+	type_url = ( CASE pt.idno 
+					WHEN 1 THEN 'one' 
+					WHEN 2 THEN 'two'
+					ELSE 'one' 
+				END),
+	
+	jsonActivity = ''
+   FROM dbo.parks AS p
+JOIN dbo.park_types AS pt ON pt.idno = p.park_type_idno
+WHERE
+	p.active = 'Y'
+AND	p.online = 'Y'
+
+
+insert #t
+SELECT 
+	c.idno AS idno,
+	'center' AS 'category' ,
+	c.center_name AS name ,
+	c.address ,
+	c.city ,
+	c.state ,
+	c.zip ,
+	c.phone_1 AS phone,   
+	c.gps_lat ,
+	c.gps_long ,
+	c.center_type_idno AS type_idno,
+	ct.center_type_name AS type_name,
+	type_url = 'facility',
+	jsonActivity = ''
+	FROM dbo.centers AS c
+JOIN dbo.center_types AS ct ON ct.idno = c.center_type_idno
+WHERE
+	c.online = 'Y'
+
+------------------------------------
+-- Begin Cursor > Check If Activity Center
+------------------------------------
+
+	declare @idno int
+
+	DECLARE curr CURSOR
+	   FOR select #t.idno from #t WHERE #t.category = 'center'
+	OPEN curr
+	FETCH NEXT FROM curr into @idno
+	 WHILE @@FETCH_STATUS = 0
+	   BEGIN
+
+			-- Do we have activities for this center			
+			IF EXISTS (SELECT TOP 1 idno FROM dbo.programs WHERE center_idno = @idno AND active = 'Y')
+			BEGIN
+				DECLARE @jsonActivity  varchar(max)
+
+				-- Get json activity details
+				SELECT 
+					@jsonActivity = '[' +  STUFF(
+					(SELECT
+					+ ',{'
+					+ '"idno":' + '"' + CAST(idno AS VARCHAR(200)) + '"'
+					+ ',"program_name":' + '"' + CAST(program_name AS VARCHAR(200)) + '"'
+					+ '}'
+					FROM dbo.programs 
+					WHERE center_idno = @idno AND active = 'Y'
+					FOR XML PATH(''),TYPE).value('.','NVARCHAR(MAX)'),1,1,''
+					) + ']'
+
+				-- Update table with new 'activitycenter' and jsonActivity					
+			    UPDATE #t 
+				SET category = 'activitycenter', jsonActivity = @jsonActivity
+				WHERE idno = @idno AND #t.category = 'center'
+
+			END
+				
+							
+	  FETCH NEXT FROM curr into @idno
+	   end
+	CLOSE curr   
+DEALLOCATE curr  
+
+------------------------------------
+-- END > Check If Activity Center
+------------------------------------
+
+
+SELECT * FROM #t
+
+DROP TABLE #t
+
+
+END
+GO
