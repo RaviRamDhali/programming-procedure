@@ -1,1 +1,14 @@
+var sidekicks = [
+    { name: "Robin",     hero: "Batman"   },
+    { name: "Supergirl", hero: "Superman" },
+    { name: "Oracle",    hero: "Batman"   },
+    { name: "Krypto",    hero: "Superman" }
+];
+
+**FILTER**
+var batKicks = sidekicks.filter(function (el) {
+    return (el.hero === "Batman");
+});
+
+
 var result = ListOfSomeObjects.find(x => x.id === 250);
