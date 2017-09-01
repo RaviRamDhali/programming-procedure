@@ -1,0 +1,58 @@
+Label to Textbox logic
+
+
+function DoEditTitleTask(row) {
+
+	// Get row items to listen for
+	var itemsToCheck = $(row).find($('.edit-title-input, .save-title-link, .delete-title-link'));
+
+	// Put row in edit mode
+	EditTitle(row, itemsToCheck);
+
+	// Check if focus is lost
+	$(document).mouseup(function (event) {
+		var item = $(event.target); // element clicked on
+
+		if ($(item).attr('data-clicked')) {
+			console.log('HIT our target');
+
+			UpdateTitleDBandUI(row);
+
+		} else {
+			console.log('NOT our target');
+			ResetTitleRowUI(itemsToCheck);
+			$(document).unbind("mouseup");
+		}
+	});	
+}
+
+// Show textbox to edit title
+function EditTitle(row, itemsToCheck) {
+
+	// Hides title/edit link
+	$(row).find('.edit-title-link').hide();
+	$(row).find('.title').hide();
+
+	// get value of title and display input field
+	var value = $(row).find('.title').text();
+	$(row).find('.input-group').removeClass('hidden').addClass('active');
+	$(row).find('input[type="text"]').val(value);
+
+	// Sets data-clicked to true
+	$(itemsToCheck).attr('data-clicked', true);
+	$(itemsToCheck).find('span').attr('data-clicked', true);
+}
+
+function ResetTitleRowUI(itemsToCheck){
+	var row = $('.title-row');
+
+	// Update UI
+	$(row).find('.edit-title-link').show();
+	$(row).find('.title').show();
+	$(row).find('.input-group').addClass('hidden').removeClass('active');
+
+	// Reset data-clicked to false
+	$(itemsToCheck).attr('data-clicked', false);
+	$(itemsToCheck).find('span').attr('data-clicked', false);
+}
+
