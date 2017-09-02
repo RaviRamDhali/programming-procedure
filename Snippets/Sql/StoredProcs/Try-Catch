@@ -1,0 +1,39 @@
+BEGIN TRY
+    BEGIN TRANSACTION 
+        --////////////////////////////
+
+		--Prepare input values as an XML documnet
+		create table #r 
+		(
+			park_idno int, 
+			gps_lat float, 
+			gps_long float, 
+			map_icon_id INT
+		)
+		-- Some reason we need to do this:
+		delete map_icons
+
+    insert map_icons
+		SELECT * FROM ccc
+		with(
+			park_idno int,
+			gps_lat float,
+			gps_long float,
+			map_icon_id INT
+			)
+		
+		SELECT * FROM #r		
+		
+		DROP table #r
+
+		----//////////////////////////
+    COMMIT
+END TRY
+BEGIN CATCH
+
+    IF @@TRANCOUNT > 0
+        ROLLBACK
+		PRINT 'Rollbacked'
+
+END CATCH
+GO
