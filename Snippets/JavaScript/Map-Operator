@@ -1,0 +1,6 @@
+Get all text field value into Object List using MAP
+
+var texts= $(".test .text-field").map(function() {
+   return $(this).val();
+}).get();
+
