@@ -1,3 +1,10 @@
+if NOT rs.BOF then 
+	rs.MoveFirst()
+end if 
+
+while not rs.eof
+
+
 /// Build RS list
 
 <%
