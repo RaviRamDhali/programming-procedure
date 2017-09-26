@@ -5,10 +5,16 @@ var sidekicks = [
     { name: "Krypto",    hero: "Superman" }
 ];
 
-**FILTER**
+--------------------------------------
+--------------------------------------
+**FILTER** return LIST of results 
 var batKicks = sidekicks.filter(function (el) {
     return (el.hero === "Batman");
 });
+--------------------------------------
 
-
+--------------------------------------
+**FIND** return FIRST result <runs very fast)
 var result = ListOfSomeObjects.find(x => x.id === 250);
+--------------------------------------
+--------------------------------------
