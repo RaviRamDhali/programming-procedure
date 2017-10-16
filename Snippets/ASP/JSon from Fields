@@ -1,0 +1,22 @@
+	public function ParseFieldsIntoJson(data)
+
+		Dim json
+		
+		json = "[{" & _
+			"""length"":""" & data.length & _
+			"""," & _
+			"""width"":""" & data.width &_
+			"""," & _
+			"""isGreen"":""" & data.green &_
+			"""," & _
+			"""isPet"":""" & data.pets &_
+			"""," & _
+			"""id"":""" & data.id &_
+			"" & _
+		"""}]"
+
+		response.write("<li> json :" & json & "</li>")
+
+		ParseFieldsIntoJson = json
+
+	end function
