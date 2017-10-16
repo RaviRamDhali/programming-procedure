@@ -1,0 +1,11 @@
+ "%VISUALSVN_SERVER%\bin\VisualSVNServerHooks.exe" ^
+    commit-notification "%1" -r %2 ^
+    --from support@domainname.com --to "support@domainname.com" ^
+    --smtp-server mail.domainname.com ^
+    --no-diffs ^
+    --detailed-subject
+    --no-html
+
+set PWSH=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe
+%PWSH% -command $input ^| C:\ServerScripts\SVNScripts\post-commit-wp.ps1 %1 %2
+if errorlevel 1 exit %errorlevel%
