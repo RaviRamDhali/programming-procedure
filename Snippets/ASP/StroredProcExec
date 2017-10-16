@@ -1,0 +1,19 @@
+	public function getIcons(data)
+		Dim json
+		json = ParseFieldsIntoJson(data)  
+    ** --- see: https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/ASP/JSon-from-Fields
+	
+		dim sql
+		sql = "EXEC get_asset " _ 
+		& "'" & data.id _
+		& "', '" & data.date _
+		& "', " & data.custId _
+		& ", " & data.isAdmin _
+		& ", '" & data.apiurl & "'"_
+		& ", '" & json & "'"
+		
+		dim rs            
+		set rs = conn.execute(sql)
+		set getIcons = rs
+
+	end function
