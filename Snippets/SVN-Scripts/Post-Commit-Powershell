@@ -1,3 +1,5 @@
+https://stackoverflow.com/questions/11540298/how-to-export-revision-on-commit-with-a-post-commit-hook
+
 #Server Variables
 #$pathtowebistesWP = "c:\websites-wp\"
 $pathtowebistesWP = "c:\_temp\"
