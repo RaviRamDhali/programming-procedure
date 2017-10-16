@@ -1,0 +1,27 @@
+#Server Variables
+#$pathtowebistesWP = "c:\websites-wp\"
+$pathtowebistesWP = "c:\_temp\"
+
+# Store hook arguments into friendly names
+$serverpathwithrep = $args[0]
+$revision   = $args[1]
+
+# Get dir name only example: c:\repositories\devhooktest
+# returns 'devhooktest'
+$dirname = ($serverpathwithrep -split '\\')[-1]
+
+# Some testing scripts
+$name = -join($pathtowebistesWP, "AnEmptyFile.txt");
+#New-Item $name -ItemType file
+#Add-Content $name $serverpathwithrep
+Add-Content $name $dirname
+
+# Build path to svn.exe
+$svn = "C:\Program Files\VisualSVN Server\bin\svn.exe"
+
+# Build url to repository
+$urepos = $serverpathwithrep -replace "\\", "/"
+$url = "file:///$urepos/"
+
+# Export repository revision $revision to the C:\test folder
+&"$svn" export -r $revision --force "$url" c:\_temp\devhooktest
