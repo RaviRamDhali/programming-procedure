@@ -35,6 +35,9 @@ Add-Content $name $exportpath
 
 # --------------------------------
 
-
-# DO EXPORT REPOSITORY REVISION $REVISION TO THE ExportPath
+# DO EXPORT REPOSITORY REVISION $REVISION TO THE C:\TEST FOLDER
 &"$svn" export -r $revision --force "$url" $exportpath
+
+# COPY CONFIG FILE
+Copy-Item -Path C:\ServerScripts\SVNScripts\web.config -Destination $exportpath
+
