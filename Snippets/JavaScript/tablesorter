@@ -1,0 +1,18 @@
+https://stackoverflow.com/questions/9550354/jquery-tablesorter-plugin-secondary-hidden-sorting
+
+
+I am using 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.0/js/jquery.tablesorter.min.js"></script>
+
+**Working** with data-text
+
+    <td data-text="42">Answer to the question</td>
+
+**Not Working** with data-sort-value
+
+    <td data-sort-value="42">Answer to the question</td>
