@@ -1,0 +1,20 @@
+
+
+RemoveCountyWideMarkers(arryMarkers);
+
+function RemoveCountyWideMarkers(arryMarkers){
+
+  for(var i=0; i < arryMarkers.length; i++){
+        var marker = arryMarkers[i];
+        google.maps.event.trigger(marker, "removeMarker");
+       }
+       
+}
+
+
+//Custom Listener
+
+google.maps.event.addListener(marker, 'removeMarker', function() {
+  marker.setMap(null);
+});
+
