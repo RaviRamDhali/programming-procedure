@@ -34,6 +34,12 @@ function InitializeAndLoadLineString(lineStringCollection, isBuilder) {
 
 		console.log('polylineIdNo.getZIndex()', polylineIdNo.get('zIndex'));
 		
+		
+		google.maps.event.addListener(map, 'zoom_changed', function() {			
+			var updateStrokeWeight	= GetStrokeWeightLineString(map.getZoom(), linestring.properties.strokeWeight);	
+			polylineIdNo.setOptions({strokeWeight: updateStrokeWeight});
+		});
+		
 
 		
 		if(isBuilder && locked!='Y'){
@@ -55,3 +61,34 @@ function InitializeAndLoadLineString(lineStringCollection, isBuilder) {
 	}); //end foreach
 
  }
+
+
+
+function GetStrokeWeightLineString(zoomLevel, strokeWeight){
+		
+		switch(zoomLevel){
+			case  20:
+				strokeWeight = parseInt(strokeWeight * 2);
+				break;
+			case  19:
+				strokeWeight = parseInt(strokeWeight * 1.75);
+				break;
+			case  18:
+				strokeWeight = strokeWeight;
+				break;
+			case  17:
+				strokeWeight = parseInt(strokeWeight * .60);
+				break;
+			case  16:
+				strokeWeight = parseInt(strokeWeight * .40);
+				break;
+			case  15:
+				strokeWeight = parseInt(strokeWeight * .25);
+				break;
+			default:
+				strokeWeight = 0;
+		}
+		
+		return strokeWeight;
+
+}
