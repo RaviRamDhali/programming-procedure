@@ -58,3 +58,55 @@ private static void MoveDocumentToAWS(CaseDocument doc, Common.IdGuidPair client
 			}
 		}
 	}
+
+
+ private static void MoveImageToAWS(CaseImage image, Common.IdGuidPair clientIds)
+	    {
+		    Common.CaseIds caseIds = BLL.Presenters.CasePresenter.GetCaseIdsbyImageGuid(image.caseImgGUID);
+
+		    string caseDir = ConfigurationManager.AppSettings["CaseFileDirectory"].ToString() + caseIds.Guid;
+
+			// string pathFile = string.Format(ConfigurationManager.AppSettings["CaseImagePath"],caseIds.Guid, image.caseImgGUID, "{0}", image.caseImgGUID, image.caseImgExt);
+
+			string pathFile = (caseDir + @"\p\" + image.caseImgGUID +  @"\o\" + image.caseImgGUID + image.caseImgExt).Replace("\\", @"\");
+
+		    // Get IO File Info
+		    //var savedFileInfo = new FileInfo(pathFile);
+		    //string cleanFileName = BLL.Tools.Utilities.MakeFriendlyUrl(doc.caseDocOriginalName);
+
+		    string contentType = MimeMapping.GetMimeMapping(pathFile);
+			string awsUploadLocationPath = clientIds.Guid + "/" + caseIds.Guid + "/" + image.caseImgGUID + image.caseImgExt;
+			string awsEtag = BLL.Services.UploadMedia.SaveToAWS(awsUploadLocationPath, pathFile, contentType);
+
+			if (awsEtag.IsNullOrEmpty())
+				return;
+
+			//Save Details to database
+			Upload data = InitializeImageUploadModel(image, caseIds.Id, awsEtag);
+
+		    Common.IdGuidPair uploadData = UploadsController.AddFileEntry(data);
+		    // --------------------------------------
+	    }
+		private static void MoveDocumentToAWS(CaseDocument doc, Common.IdGuidPair clientIds)
+	    {
+		    Common.CaseIds caseIds = BLL.Presenters.CasePresenter.GetCaseIdsbyCaseDocGuid(doc.caseDocGUID);
+		    string caseDir = ConfigurationManager.AppSettings["CaseFileDirectory"].ToString() + caseIds.Guid;
+		    string pathFile = (caseDir + @"\d\" + doc.caseDocGUID + doc.caseDocExt).Replace("\\", @"\");
+
+		    // Get IO File Info
+		    //var savedFileInfo = new FileInfo(pathFile);
+		    //string cleanFileName = BLL.Tools.Utilities.MakeFriendlyUrl(doc.caseDocOriginalName);
+
+		    string contentType = MimeMapping.GetMimeMapping(pathFile);
+			string awsUploadLocationPath = clientIds.Guid + "/" + caseIds.Guid + "/" + doc.caseDocGUID + doc.caseDocExt;
+		    string awsEtag = BLL.Services.UploadMedia.SaveToAWS(awsUploadLocationPath, pathFile, contentType);
+
+			if (awsEtag.IsNullOrEmpty())
+				return;
+
+			//Save Details to database
+			Upload data = InitializeUploadModel(doc, caseIds.Id, awsEtag);
+
+		    Common.IdGuidPair uploadData = UploadsController.AddFileEntry(data);
+		    // --------------------------------------
+	    }
