@@ -110,3 +110,31 @@ private static void MoveDocumentToAWS(CaseDocument doc, Common.IdGuidPair client
 		    Common.IdGuidPair uploadData = UploadsController.AddFileEntry(data);
 		    // --------------------------------------
 	    }
+
+
+ private static Upload InitializeImageUploadModel(CaseImage image, int caseId, string awsEtag)
+	    {
+		    Upload data = new Upload();
+		    data.caseId = caseId;
+		    data.fileGuid = image.caseImgGUID;
+		    data.memId = image.memID;
+		    data.fileOriginalName = image.caseImgOriginalName;
+		    data.fileExt = image.caseImgExt;
+		    data.fileComments = image.caseImgText;
+		    data.fileSize = image.fileSize;
+		    data.awsEtag = awsEtag;
+		    return data;
+	    }
+		private static Upload InitializeUploadModel(CaseDocument doc, int caseId, string awsEtag)
+	    {
+		    Upload data = new Upload();
+			data.caseId = caseId;
+			data.fileGuid = doc.caseDocGUID;
+		    data.memId = doc.memID;
+		    data.fileOriginalName = doc.caseDocOriginalName;
+		    data.fileExt = doc.caseDocExt;
+		    data.fileComments = doc.caseDocText;
+		    data.fileSize = doc.fileSize;
+			data.awsEtag = awsEtag;
+		    return data;
+	    }
