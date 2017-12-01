@@ -1,0 +1,23 @@
+Write-Host "Hello, World!"
+
+$rootdir = 'D:\stark'
+
+$dirs = Get-ChildItem $rootdir | foreach-object -process { $_.FullName }
+
+Foreach ($d in $dirs)
+{	
+	Write-Host $d
+
+	$logfiles = $d + "\logfiles"
+	$deleteme = $d + "\delete me"
+
+	# Delete newly added /delete me/ folder
+	$fso = New-Object -ComObject scripting.filesystemobject
+
+	$fso.CreateFolder($logfiles)
+	$fso.CreateFolder($deleteme)
+
+	$fso.DeleteFolder($logfiles)
+	$fso.DeleteFolder($deleteme)
+
+}
