@@ -1,0 +1,26 @@
+Create a new folder and set permissions with PowerShell
+
+Write-Host "Hello, World!"
+
+$rootdir = 'D:\stark'
+
+$dirs = Get-ChildItem $rootdir | foreach-object -process { $_.FullName }
+
+$HomeFolders = Get-ChildItem $rootdir -Directory
+
+foreach ($HomeFolder in $HomeFolders) {
+    $Path = $HomeFolder.FullName
+    $Acl = (Get-Item $Path).GetAccessControl('Access')
+    $Username = 'IIS_IUSRS'
+
+    #DHALI-RR\IIS_IUSRS
+
+    Write-Host $Path
+    Write-Host $Acl
+    Write-Host $Username
+    
+    $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($Username, 'Modify','ContainerInherit,ObjectInherit', 'None', 'Allow')
+    #$Acl.SetAccessRule($Ar)
+    $Acl.RemoveAccessRule($Ar)
+    Set-Acl -path $Path -AclObject $Acl
+}
