@@ -1,11 +1,10 @@
-Create a new folder and set permissions with PowerShell
+Write-Host 'Hello, World!'
 
-Write-Host "Hello, World!"
-
+#---------------------------------------------------
+# All Dirs Update Access Control
+#---------------------------------------------------
 $rootdir = 'D:\stark'
-
 $dirs = Get-ChildItem $rootdir | foreach-object -process { $_.FullName }
-
 $HomeFolders = Get-ChildItem $rootdir -Directory
 
 foreach ($HomeFolder in $HomeFolders) {
@@ -15,12 +14,41 @@ foreach ($HomeFolder in $HomeFolders) {
 
     #DHALI-RR\IIS_IUSRS
 
-    Write-Host $Path
-    Write-Host $Acl
-    Write-Host $Username
+    #Write-Host $Path
+    #Write-Host $Acl
+    #Write-Host $Username
     
     $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($Username, 'Modify','ContainerInherit,ObjectInherit', 'None', 'Allow')
     #$Acl.SetAccessRule($Ar)
     $Acl.RemoveAccessRule($Ar)
     Set-Acl -path $Path -AclObject $Acl
 }
+
+#---------------------------------------------------
+#---------------------------------------------------
+
+
+#---------------------------------------------------
+# Single Dir Access Control
+#---------------------------------------------------
+$Username = 'IIS_IUSRS'
+$mariodir = 'D:\stark\mario'
+$objDir = Get-Item $mariodir
+
+$Path = $objDir.FullName
+$Acl = (Get-Item $Path).GetAccessControl('Access')
+$Username = 'IIS_IUSRS'
+
+#DHALI-RR\IIS_IUSRS
+
+Write-Host $Path
+Write-Host $Acl
+Write-Host $Username
+
+$Ar = New-Object System.Security.AccessControl.FileSystemAccessRule($Username, 'Modify','ContainerInherit,ObjectInherit', 'None', 'Allow')
+$Acl.SetAccessRule($Ar)
+#$Acl.RemoveAccessRule($Ar)
+Set-Acl -path $Path -AclObject $Acl
+
+#---------------------------------------------------
+#---------------------------------------------------
