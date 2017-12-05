@@ -1,3 +1,6 @@
+**NOTE:  $Acl.RemoveAccessRule($Ar)  Then  $Acl.SetAccessRule($Ar) ** 
+
+
 Write-Host 'Hello, World!'
 
 #---------------------------------------------------
