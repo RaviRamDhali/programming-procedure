@@ -1,0 +1,19 @@
+$('.reservable-filter').click( function(e){
+    e.preventDefault;
+
+    $('#reservable_content').show();
+
+    var usetype = $(this).data('usetype');
+    var reservableTrs = $('tr.reservable_tr');
+    $(reservableTrs).show();
+
+    if(usetype === 'all')
+      return;
+
+    var reservableTrHide = $(reservableTrs).filter("[data-usetype !=" + usetype + "]");
+    var reservableTrsShow = $(reservableTrs).filter("[data-usetype =" + usetype + "]");
+
+    $(reservableTrHide).hide();
+    $(reservableTrsShow).show();
+
+});
