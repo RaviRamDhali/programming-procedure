@@ -1,0 +1,13 @@
+' ---------------------------
+	' avoid re-execute the query on a MoveFirst
+	' ---------------------------
+	Const adOpenStatic = 3
+	Const adUseClient = 3
+	Const adLockOptimistic = 3
+
+	Dim rs
+	Set rs = Server.CreateObject("ADODB.Recordset")
+	rs.CursorLocation = adUseClient
+	rs.Open sql, conn, adOpenStatic, adLockOptimistic
+	Set rs.ActiveConnection = Nothing
+	' ----------------------------
