@@ -1,0 +1,39 @@
+
+
+
+public function FilterRSUser(rs)
+
+	response.write("<li> FilterRSUser :" & rs.RecordCount & "</li>")
+
+	Dim objUser
+	set objUser = new user
+
+	if NOT rs.BOF then
+			rs.MoveFirst
+	end if
+
+	Do While Not rs.EOF
+
+		
+		objUser.initialize rs
+		
+		Dim showUser
+		showUser = FilterSiteCards(objUser)
+
+		response.write("<li> showUser :" & showUser & "</li>")
+
+		if showUser = "N" then
+			rs.Delete
+			rs.MoveFirst 
+		else
+			rs.MoveNext
+		end if
+
+	Loop
+
+	response.write("<li> After FilterRSUser :" & rs.RecordCount & "</li>")
+
+
+	Set FilterRSUser = rs
+
+end function
