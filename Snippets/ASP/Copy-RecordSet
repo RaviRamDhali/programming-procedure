@@ -1,0 +1,46 @@
+Copy RS into new RS
+
+https://stackoverflow.com/questions/4165015/copy-records-to-another-recordset-using-active-server-page
+
+Usage:
+
+Dim rsTemp
+Set rsTemp = CopyRecordset(rsPadicon)
+Update Code
+
+Public Function CopyRecordset(rs)
+
+    Dim rsTemp, iRecordsShown, objFields, intFieldsCount, intPageSize
+    Set rsTemp = CopyRecordsetStructure(rs)
+    rsTemp.Open
+    iRecordsShown = 0
+    Set objFields = rs.Fields
+    intFieldsCount = objFields.Count-1 
+    Do While iRecordsShown < intPageSize And Not rs.EOF
+    rsTemp.AddNew
+    For Idx = 0 To intFieldsCount
+    rsTemp.Fields(Idx).Value = rs.Fields(Idx).Value
+    Next
+    rsTemp.Update
+    iRecordsShown = iRecordsShown + 1
+    rs.MoveNext
+    Loop
+
+    Set CopyRecordset = rsTemp
+
+
+End Function
+
+
+Public Function CopyRecordsetStructure(ByVal rs)
+     Dim rsTemp, objFields, intFieldCount, Idx
+     Set rsTemp = CreateObject("ADODB.Recordset")
+     Set objFields = rs.Fields
+     intFieldCount = objFields.Count - 1
+     For Idx = 0 To intFieldCount
+      rsTemp.Fields.Append objFields(Idx).Name, _
+            objFields(Idx).Type, _
+            objFields(Idx).DefinedSize
+     Next
+     Set CopyRecordsetStructure = rsTemp
+End Function
