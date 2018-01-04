@@ -11,3 +11,14 @@
 	rs.Open sql, conn, adOpenStatic, adLockOptimistic
 	Set rs.ActiveConnection = Nothing
 	' ----------------------------
+
+
+Dim objUser, rsUser
+set objUser = new user
+
+'Sometimes js json needs a empty rs.
+set rsUser = GetEmptyRSUser()
+if formdata.userId <> "N" then set rsUser = GetUsers(formdata)
+
+response.write("<li> rs.Count() :" & rsUser.RecordCount & "</li>")
+	
