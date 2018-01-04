@@ -4,43 +4,57 @@ https://stackoverflow.com/questions/4165015/copy-records-to-another-recordset-us
 
 Usage:
 
-Dim rsTemp
-Set rsTemp = CopyRecordset(rsPadicon)
-Update Code
+<% 
+	Public Function CopyRecordset(rs)
 
-Public Function CopyRecordset(rs)
+		Dim rsTemp, objFields, intFieldsCount, intPageSize
+		Set rsTemp = CopyRecordsetStructure(rs)
+		rsTemp.Open
 
-    Dim rsTemp, iRecordsShown, objFields, intFieldsCount, intPageSize
-    Set rsTemp = CopyRecordsetStructure(rs)
-    rsTemp.Open
-    iRecordsShown = 0
-    Set objFields = rs.Fields
-    intFieldsCount = objFields.Count-1 
-    Do While iRecordsShown < intPageSize And Not rs.EOF
-    rsTemp.AddNew
-    For Idx = 0 To intFieldsCount
-    rsTemp.Fields(Idx).Value = rs.Fields(Idx).Value
-    Next
-    rsTemp.Update
-    iRecordsShown = iRecordsShown + 1
-    rs.MoveNext
-    Loop
+		Set objFields = rs.Fields
+		intFieldsCount = objFields.Count-1 
 
-    Set CopyRecordset = rsTemp
+		' response.write("<li> rs.RecordCount  :" & rs.RecordCount  & "</li>")
+		' response.write("<li> intFieldsCount  :" & intFieldsCount & "</li>")
+
+		
+		if NOT rs.BOF then
+			rs.MoveFirst
+		end if
+
+		Do While Not rs.EOF
+			rsTemp.AddNew
+
+			Dim i
+			For i = 0 to intFieldsCount 'use i as a counter
+				' response.write("<li> Name :" & rs.Fields(i).Name & "</li>")
+				' response.write("<li> Value :" & rs.Fields(i).Value & "</li>")
+				if Not IsNull(rs.Fields(i).Value) then 
+					rsTemp.Fields(i).Value = rs.Fields(i).Value
+				End if
+			Next
+
+			rsTemp.Update
+
+			rs.MoveNext
+		Loop
+
+		Set CopyRecordset = rsTemp
 
 
-End Function
+	End Function
 
 
-Public Function CopyRecordsetStructure(ByVal rs)
-     Dim rsTemp, objFields, intFieldCount, Idx
-     Set rsTemp = CreateObject("ADODB.Recordset")
-     Set objFields = rs.Fields
-     intFieldCount = objFields.Count - 1
-     For Idx = 0 To intFieldCount
-      rsTemp.Fields.Append objFields(Idx).Name, _
-            objFields(Idx).Type, _
-            objFields(Idx).DefinedSize
-     Next
-     Set CopyRecordsetStructure = rsTemp
-End Function
+	Public Function CopyRecordsetStructure(ByVal rs)
+		 Dim rsTemp, objFields, intFieldCount, Idx
+		 Set rsTemp = CreateObject("ADODB.Recordset")
+		 Set objFields = rs.Fields
+		 intFieldCount = objFields.Count - 1
+		 For Idx = 0 To intFieldCount
+		  rsTemp.Fields.Append objFields(Idx).Name, _
+		        objFields(Idx).Type, _
+		        objFields(Idx).DefinedSize
+		 Next
+		 Set CopyRecordsetStructure = rsTemp
+	End Function
+%>
