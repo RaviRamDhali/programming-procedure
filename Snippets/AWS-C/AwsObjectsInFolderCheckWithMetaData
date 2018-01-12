@@ -1,0 +1,48 @@
+public static void AwsObjectsInFolderCheckWithMetaData(string bucketName, string clientGuid)
+		{
+			using (AmazonS3Client s3Client = Credentials())
+			{
+				{
+					try
+					{
+						clientGuid = "45000000-0000-0000-0000-000000f0000/4000000-46cf-0000-b4da-0dab70700000/";
+
+						ListObjectsRequest findFolderRequest = new ListObjectsRequest();
+						findFolderRequest.BucketName = bucketName;
+						// findFolderRequest.Delimiter = "/";
+						findFolderRequest.Prefix = clientGuid;
+						ListObjectsResponse clientFolder = s3Client.ListObjects(findFolderRequest);
+
+						foreach (S3Object file in clientFolder.S3Objects)
+						{
+							GetObjectMetadataResponse objMeta = s3Client.GetObjectMetadata(file.BucketName, file.Key);
+
+							foreach (string key in objMeta.Metadata.Keys)
+							{
+								Console.Out.WriteLine("   key: " + key + ", value: " + objMeta.Metadata[key]);
+							}
+
+							foreach (var meta in objMeta.Metadata.Keys)
+							{
+								if (meta.Equals("x-amz-meta-fileguid"))
+								{
+									Guid fileGuid = objMeta.Metadata[meta].ToGuidOrDefault();
+									//s3Client.DeleteObject(file.BucketName, file.Key);
+								}
+
+								Console.WriteLine(meta);
+							}
+						}
+
+						List<String> commonPrefixes = clientFolder.CommonPrefixes;
+						Boolean folderExists = commonPrefixes.Any();
+					}
+					catch (AmazonS3Exception e)
+					{
+						Console.WriteLine("Folder existence check has failed.");
+						Console.WriteLine("Amazon error code: {0}",
+							string.IsNullOrEmpty(e.ErrorCode) ? "None" : e.ErrorCode);
+						Console.WriteLine("Exception message: {0}", e.Message);
+					}
+				}
+			}
