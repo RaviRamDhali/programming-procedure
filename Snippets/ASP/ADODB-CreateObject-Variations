@@ -1,0 +1,26 @@
+Function ReturnRecords(strSql)
+
+	
+	Set connection = Server.CreateObject("ADODB.Connection")
+	connection.Open connString
+	
+	Set rs = Server.CreateObject("ADODB.Recordset") 
+	rs.Open strSql, connection, adOpenForwardOnly
+	Set ReturnRecords = rs
+
+	' Set rs = Server.CreateObject("ADODB.Command")
+	' rs.ActiveConnection = connString
+	' rs.CommandText = strSql
+	' rs.Prepared = true
+	' Set ReturnRecords = rs.Execute
+
+	' ADODB.Command allows parameters
+	'sql = "select * from Tracking where memID=? and trackMemo=?"
+	'cmd.commandText = sql
+	'cmd.commandType = adcmdtext
+	'cmd.parameters.append cmd.createparameter("memID", adInteger, adparaminput, memID)
+	'cmd.parameters.append cmd.createparameter("trackMemo", adChar, adparaminput, trackMemo)
+
+
+	
+End Function
