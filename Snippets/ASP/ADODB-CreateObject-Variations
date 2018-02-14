@@ -1,3 +1,16 @@
+'---- CursorTypeEnum Values ----
+Const adOpenForwardOnly = 0 'default > fast > cannot call count
+Const adOpenKeyset = 1
+Const adOpenDynamic = 2
+Const adOpenStatic = 3
+
+'---- LockTypeEnum Values ----
+Const adLockReadOnly = 1
+Const adLockPessimistic = 2
+Const adLockOptimistic = 3
+Const adLockBatchOptimistic = 4
+
+
 Function ReturnRecords(strSql)
 
 	
