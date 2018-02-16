@@ -76,4 +76,8 @@ For i = 0 To listOfData.Count - 1 'Iterate through the array
 Next
 
 
-
+'///////////////////////////////////////////////
+Dim findDictionary
+findDictionary = dictionary.Exists(57)
+response.write("<li> findDictionary :" & findDictionary & "</li>")
+'///////////////////////////////////////////////
