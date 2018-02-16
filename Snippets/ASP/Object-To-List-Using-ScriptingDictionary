@@ -82,4 +82,12 @@ Dim existsInDictionary
 existsInDictionary = dictionary.Exists(57)
 response.write("<li> existsInDictionary :" & existsInDictionary & "</li>")
 
+isSelect = ""
+Dim existsInDictionary
+existsInDictionary = dictionary.Exists(clng(memClassID))
+
+if existsInDictionary then
+	isSelect = "selected='selected'"
+end if
+		
 '///////////////////////////////////////////////
