@@ -1,0 +1,48 @@
+--/////////////////////////////////////////////////////
+--//Generate Classic ASP Class and Initialize RS template //
+--/////////////////////////////////////////////////////
+
+DECLARE @ScriptClass NVARCHAR(MAX) = ''
+DECLARE @t NVARCHAR(max) = 'cs_questions'
+DECLARE @e NVARCHAR(max) = 'ICMSEntities'
+-- DECLARE @e NVARCHAR(max) = 'GroupProxyEntities'
+DECLARE @abr NVARCHAR(max) = LOWER(LEFT(@t,1))
+
+PRINT '<%'
+PRINT ''
+PRINT 'Class ' + @t
+SELECT @ScriptClass = @ScriptClass + '
+	public ' + ' ' + COLUMN_NAME 
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+
+PRINT @ScriptClass
+
+PRINT ''
+PRINT 'End Class'
+PRINT ''
+PRINT ''
+PRINT ''
+
+PRINT 'Public Function initialize_' + @t + '(rs)'
+-- PRINT 'public static ' + @t + 'View Basic(' + @t + ' data)'
+-- PRINT '{'
+PRINT ''
+PRINT '	Dim obj'
+PRINT '	SET obj = new ' + @t 
+-- PRINT 'var view = new ' + @t + 'View();'
+DECLARE @ScriptCView NVARCHAR(MAX) = ''
+SELECT @ScriptCView = @ScriptCView + '
+	obj.' + COLUMN_NAME + ' = '+ 'rs("' + COLUMN_NAME + '")'
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = @t
+PRINT @ScriptCView
+PRINT ''
+PRINT '	Set initialize_' + @t + ' = ' + 'obj'
+PRINT ''
+PRINT 'End Function'
+PRINT '-------------------------------------'
+PRINT '-------------------------------------'
+PRINT ''
+PRINT '%>'
+--/////////////////////////////////////////////////////
