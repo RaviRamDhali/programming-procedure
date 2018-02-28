@@ -15,11 +15,11 @@ string ip = Request.ServerVariables["REMOTE_ADDR"].ToStringOrDefault();
 
     // GET POST
     if (Request.HttpMethod == "POST")
-       Model = IMSClasses.I9.Service.Create.Post(Request.Form);
+       Model = Service.Create.Post(Request.Form);
         
     // GET METHOD
        if (Request.HttpMethod == "GET")
-          Model = IMSClasses.I9.Service.Create.Get(Request);
+          Model = Service.Create.Get(Request);
 
 if(Model.IsNull())
         Model = BLL.Services.Auth.ForgotPassword.Get(Request);
