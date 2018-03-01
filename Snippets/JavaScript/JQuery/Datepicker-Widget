@@ -1,0 +1,15 @@
+Datepicker Widget
+
+// JDate block out depart dates dynamically based on arrival date
+  var minDateRepresentor = addDays(arriveDate, 1);
+  var maxDateRepresentor = addDays(arriveDate, max_consecutive_nights);
+  $("#depart_date.jdate").datepicker("option","minDate",minDateRepresentor);
+  $("#depart_date.jdate").datepicker("option","maxDate",maxDateRepresentor);
+  // JDate block out depart dates dynamically based on arrival date
+  
+  
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return new Date(result);
+}
