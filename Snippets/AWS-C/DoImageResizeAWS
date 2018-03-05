@@ -1,0 +1,44 @@
+public static List<BLL.Views.Common.GuidTitlePair> DoImageResizeAWS(int clientId)
+		{
+			List<BLL.Views.Common.GuidTitlePair> errorList = new List<Common.GuidTitlePair>();
+
+			var client = ClientsPresenter.GetClient(clientId);
+			if (client.IsNull())
+				return errorList;
+
+			List<int> caseIntIds = CasePresenter.GetCaseIdsByClient(clientId);
+
+			List<DAL.Upload> uploads = UploadsPresenter.GetUploadedImageByCaseIdsForSysAdminAWS(caseIntIds);
+
+			foreach (var upload in uploads)
+			{
+
+				if (!BLL.Tools.Utilities.isImage(upload.fileExt))
+					continue;
+
+				var caseGuid = BLL.Queries.Case.Case.GetGuidById(upload.caseId);
+				Common.CaseIds caseIds = BLL.Queries.Case.Case.GetCaseIds(caseGuid);
+
+				string awsKeyUrl =
+					STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+						upload.fileExt);
+
+				string failedAwsKeyUrl = STORAGE.Service.OneTimeImageResizeTask(client.clientGUID, caseGuid, upload.fileGuid, upload.fileExt, awsKeyUrl);
+
+				if (failedAwsKeyUrl.IsNotNullOrEmpty())
+					errorList.Add(new Common.GuidTitlePair { Guid = upload.fileGuid, Title = failedAwsKeyUrl });
+
+			}
+
+			//Error Tracking - Upload in DB but not in AWS
+			if (errorList.Any())
+			{
+				string jsonUploadError = JsonConvert.SerializeObject(errorList);
+				jsonUploadError = errorList.Count + " Records in Upload table but not in AWS " + jsonUploadError;
+				EmailServices.SendQuickSysAdminEmail("Error Tracking - DoImageResizeAWS " + errorList.Count, jsonUploadError);
+				Tracker.Track(eTrackingState.Warning, jsonUploadError, "Upload DoImageResizeAWS", 0, 0);
+				Tracker.Track(eTrackingState.Warning, jsonUploadError, "AWS DoImageResizeAWS", 0, 0);
+			}
+
+			return errorList;
+}
