@@ -1,5 +1,37 @@
 freegeoip.net provides a public HTTP API
 
+$(form).submit(function () {
+  obj = GetIpDetails();
+
+  if (!$(formMain).valid()) {
+    return false;
+  }
+
+});
+        
+
+function GetIpDetails() {
+  var obj = [];
+  $.getJSON('//freegeoip.net/json/?callback=?',  function(data) {
+    var str = JSON.stringify(data);
+    obj = JSON.parse(str);
+    console.log(obj.city);
+    console.log(obj.country_code);
+    console.log(obj.country_name);
+    console.log(obj.ip);
+    console.log(obj.latitude);
+    console.log(obj.longitude);
+    console.log(obj.metro_code);
+    console.log(obj.region_code);
+    console.log(obj.region_name);
+    console.log(obj.time_zone);
+    console.log(obj.zip_code);
+    console.log(obj.country_code);
+  });
+  return obj;
+}
+    
+
 $.getJSON('//freegeoip.net/json/?callback=?', function(data) {
   var str = JSON.stringify(data);
   obj = JSON.parse(str);
