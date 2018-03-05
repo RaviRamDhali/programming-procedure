@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BLL.Email;
+using BLL.Presenters;
+using BLL.Tools;
+using BLL.Views;
+using Newtonsoft.Json;
+
+namespace BLL.Services
+{
+	public class AWS
+	{
+		public static List<BLL.Views.Common.GuidTitlePair> CheckUploadToS3(int clientId)
+		{
+			List<BLL.Views.Common.GuidTitlePair> errorList = new List<Common.GuidTitlePair>();
+
+			var client = ClientsPresenter.GetClient(clientId);
+			if (client.IsNull())
+				return errorList;
+
+			List<int> caseIntIds = CasePresenter.GetCaseIdsByClient(clientId);
+
+
+			List<DAL.Upload> uploads = UploadsPresenter.GetByCaseIds(caseIntIds);
+			foreach (var upload in uploads)
+			{
+
+				var caseGuid = BLL.Queries.Case.Case.GetGuidById(upload.caseId);
+				Common.CaseIds caseIds = BLL.Queries.Case.Case.GetCaseIds(caseGuid);
+
+				string awsKeyUrl =
+					STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+						upload.fileExt);
+
+				string failedAwsKeyUrl = STORAGE.Service.CheckUploadToS3(upload.fileGuid, awsKeyUrl);
+
+				if (failedAwsKeyUrl.IsNotNullOrEmpty())
+					errorList.Add(new Common.GuidTitlePair { Guid = upload.fileGuid, Title = failedAwsKeyUrl });
+
+			}
+
+			//Error Tracking - Upload in DB but not in AWS
+			if (errorList.Any())
+			{
+				string jsonUploadError = JsonConvert.SerializeObject(errorList);
+				jsonUploadError = errorList.Count + " Records in Upload table but not in AWS " + jsonUploadError;
+				EmailServices.SendQuickSysAdminEmail("Error Tracking - CheckUploadToS3 " + errorList.Count, jsonUploadError);
+				Tracker.Track(eTrackingState.Warning, jsonUploadError, "Upload CheckUploadToS3", 0, 0);
+				Tracker.Track(eTrackingState.Warning, jsonUploadError, "AWS CheckUploadToS3", 0, 0);
+			}
+
+			return errorList;
+
+		}
+	}
+}
