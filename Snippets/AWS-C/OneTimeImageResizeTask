@@ -1,0 +1,203 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+using Amazon.Internal;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.IO;
+using Amazon.S3.Model;
+using ImageProcessor.Imaging;
+using ImageProcessor.Imaging.Formats;
+
+namespace STORAGE
+{
+	public class Service
+	{
+
+		public static string OneTimeImageResizeTask(Guid clientGuid, Guid caseGuid, Guid fileGuid, string fileExt,
+			string awsKeyUrl)
+		{
+			using (AmazonS3Client s3Client = AWS.Credentials())
+			{
+				// Create dir for each image
+				string downloadDirectory;
+				string filepath;
+
+				// Download Image
+				var bucketName = ConfigurationManager.AppSettings["AWSS3Bucket"];
+				GetObjectRequest requestGet = new GetObjectRequest
+				{
+					BucketName = bucketName,
+					Key = awsKeyUrl
+				};
+
+				try
+				{
+					using (GetObjectResponse response = s3Client.GetObject(requestGet))
+					{
+						downloadDirectory = STORAGE.Local.CreateTempDirectory(fileGuid);
+						filepath = (downloadDirectory + "\\" + fileGuid + fileExt);
+
+						response.WriteResponseStreamToFile(filepath);
+					}
+				}
+				catch (Exception exception)
+				{
+					STORAGE.Local.DeleteTempDirectory(fileGuid);
+					return "Upload in DB was Not find in AWS UploadGuid: " + fileGuid + " Exception:" + exception.Message;
+				}
+
+
+				// ReUpload ORIGINAL with Metadata
+
+				string awspathandfilenameOg = (clientGuid + "/" + caseGuid + "/" + fileGuid + fileExt);
+				var mimetypeOg = System.Web.MimeMapping.GetMimeMapping(filepath);
+
+				List<KeyValuePair<string, string>> metaDataListOg = new List<KeyValuePair<string, string>>();
+				metaDataListOg.Add(new KeyValuePair<string, string>("fileguid", fileGuid.ToStringOrDefault()));
+				metaDataListOg.Add(new KeyValuePair<string, string>("task", "original"));
+				metaDataListOg.Add(new KeyValuePair<string, string>("type", "image"));
+				
+				// Upload Image
+				S3File s3FileOg = new S3File();
+				s3FileOg.AWSProfileName = ConfigurationManager.AppSettings["AWSProfileName"];
+				s3FileOg.BucketName = ConfigurationManager.AppSettings["AWSS3Bucket"];
+				s3FileOg.ContentType = MimeMapping.GetMimeMapping(mimetypeOg);
+				s3FileOg.FilePath = filepath;
+				s3FileOg.Key = awspathandfilenameOg;
+				s3FileOg.Metadata = metaDataListOg;
+
+				PutObjectRequest requestPutOg = new PutObjectRequest()
+				{
+					BucketName = s3FileOg.BucketName,
+					Key = s3FileOg.Key,
+					//TagSet = s3File.Tags,
+					FilePath = s3FileOg.FilePath,
+					ContentType = s3FileOg.ContentType,
+					ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256,
+					StorageClass = S3StorageClass.Standard
+				};
+
+				if (s3FileOg.Metadata != null)
+				{
+					foreach (KeyValuePair<string, string> element in s3FileOg.Metadata)
+					{
+						requestPutOg.Metadata.Add(element.Key, element.Value);
+					}
+				}
+
+				PutObjectResponse responseOg = s3Client.PutObject(requestPutOg);
+
+
+				// Rezise Image and Upload
+
+				// string filepath = Path.Combine(downloadDirectory + fileGuid + fileExt);
+				byte[] photoBytes = File.ReadAllBytes(filepath);
+
+
+				// Format is automatically detected though can be changed.
+				ISupportedImageFormat format = new JpegFormat {Quality = 70};
+
+				using (MemoryStream inStream = new MemoryStream(photoBytes))
+				{
+					var mimetype = System.Web.MimeMapping.GetMimeMapping(filepath);
+					List<Constant.ImageDimensionsModel> dimensions = Constant.ImageDimensions();
+
+
+					foreach (var dimension in dimensions)
+					{
+						string size = (dimension.width.ToStringOrDefault() + "x" + dimension.height.ToStringOrDefault());
+
+						var resizelocalpathandfilename = (downloadDirectory + "\\" + fileGuid + "-" + size + fileExt);
+
+						//Resizes the image to the given dimensions. If the set dimensions do not match the aspect ratio of the original image then the output is cropped to match the new aspect ratio.
+						ResizeMode resizeMode = ResizeMode.Crop;
+						Size drawingSizeSize = new System.Drawing.Size(dimension.width, dimension.height);
+						ResizeLayer resizeLayer = new ResizeLayer(drawingSizeSize, resizeMode);
+
+						// Initialize the ImageFactory using the overload to preserve EXIF metadata.
+						using (ImageProcessor.ImageFactory imageFactory = new ImageProcessor.ImageFactory(preserveExifData: true))
+						{
+
+							// Load, resize, set the format and quality and save an image.
+							imageFactory.Load(inStream)
+								.Resize(resizeLayer)
+								.Format(format)
+								.Save(resizelocalpathandfilename);
+						}
+
+						// string awspathandfilename = STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileNameResize(clientGuid, caseGuid, fileGuid, fileExt, size);
+
+						string awspathandfilename = (clientGuid + "/" + caseGuid + "/" + fileGuid + "-" + size + fileExt);
+
+
+						List<KeyValuePair<string, string>> metaDataList = new List<KeyValuePair<string, string>>();
+						metaDataList.Add(new KeyValuePair<string, string>("fileguid", fileGuid.ToStringOrDefault()));
+						metaDataList.Add(new KeyValuePair<string, string>("task", "resize"));
+						metaDataList.Add(new KeyValuePair<string, string>("type", "image"));
+
+
+						// Upload Image
+						S3File s3File = new S3File();
+						s3File.AWSProfileName = ConfigurationManager.AppSettings["AWSProfileName"];
+						s3File.BucketName = ConfigurationManager.AppSettings["AWSS3Bucket"];
+						s3File.ContentType = MimeMapping.GetMimeMapping(mimetype);
+						s3File.FilePath = resizelocalpathandfilename;
+						s3File.Key = awspathandfilename;
+						s3File.Metadata = metaDataList;
+
+						PutObjectRequest requestPut = new PutObjectRequest()
+						{
+							BucketName = s3File.BucketName,
+							Key = s3File.Key,
+							//TagSet = s3File.Tags,
+							FilePath = s3File.FilePath,
+							ContentType = s3File.ContentType,
+							ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256,
+							StorageClass = S3StorageClass.Standard
+						};
+
+						if (s3File.Metadata != null)
+						{
+							foreach (KeyValuePair<string, string> element in s3File.Metadata)
+							{
+								requestPut.Metadata.Add(element.Key, element.Value);
+							}
+						}
+
+						PutObjectResponse response = s3Client.PutObject(requestPut);
+
+
+					}
+
+				}
+
+				return string.Empty;
+			}
+
+		}
+
+		public static string CheckUploadToS3(Guid fileGuid, string awsKeyUrl)
+		{
+			using (AmazonS3Client s3Client = AWS.Credentials())
+			{
+				// Download Image
+				var bucketName = ConfigurationManager.AppSettings["AWSS3Bucket"];
+
+				S3FileInfo request = new S3FileInfo(s3Client, bucketName, awsKeyUrl);
+				if (!request.Exists)
+					return "Upload in DB was Not find in AWS UploadGuid: " + fileGuid;
+
+				return string.Empty;
+			}
+
+		}
+	}
+}
