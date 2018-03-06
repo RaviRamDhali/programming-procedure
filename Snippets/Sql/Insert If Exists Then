@@ -1,0 +1,32 @@
+DECLARE @id NVARCHAR(50)
+DECLARE @uploadId NVARCHAR(50)
+DECLARE sku CURSOR FOR
+
+SELECT uploadId FROM Uploads ORDER BY uploadId
+OPEN sku
+FETCH NEXT FROM sku
+INTO @id
+WHILE @@FETCH_STATUS = 0
+   BEGIN
+		-- PRINT @id + ' INSERT'
+				
+		IF NOT EXISTS(SELECT * FROM UploadConfiguration WHERE uploadId = @id)
+		BEGIN
+			PRINT @id + ' Needs to be Inserted '
+			
+			PRINT @id + ' Do Insert '
+			
+			INSERT INTO dbo.UploadConfiguration (uploadId,config,modDate,resized,aws_s3)
+			VALUES (@id,NULL,GETDATE(),0,0)
+
+		END
+
+      FETCH NEXT FROM sku
+      INTO @id
+      
+   END
+CLOSE sku
+DEALLOCATE sku
+GO
+
+SELECT * FROM dbo.UploadConfiguration
