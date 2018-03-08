@@ -1,3 +1,9 @@
+if Request.ServerVariables("request_method") = "POST" then
+    postEditor()
+end if
+
+
+
 ------ FORM FIELDS OUTPUT TO SCREEN -------
 
 <% 
