@@ -1,0 +1,56 @@
+' --------------------------------------
+' --------------------------------------
+' 1 = ForReading - Open a file for reading only.
+' 2 = ForWriting - Open a file for writing.
+' 8 = ForAppending - Open a file and append to end of the file.
+' --------------------------------------
+' --------------------------------------
+
+Public Function OpenTextFile(pathandName)
+
+	Dim strFileBody
+
+	Dim localPath, fullPath
+	localPath = (Server.MapPath("/"))
+	fullPath = localPath & pathandName
+	
+	Dim fs, f
+	Set fs=Server.CreateObject("Scripting.FileSystemObject")
+	Set f=fs.OpenTextFile(fullPath, 1)
+	
+	strFileBody = (f.ReadAll)
+	
+	f.Close
+	Set f=Nothing
+	Set fs=Nothing
+
+	OpenTextFile = strFileBody
+
+End Function
+
+
+Public Function SaveTextFile(pathandName, data)
+
+	Dim strFileBody
+
+	Dim localPath, fullPath
+	localPath = (Server.MapPath("/"))
+	fullPath = localPath & pathandName
+
+	response.write("<li> fullPath :" & fullPath & "</li>")
+	' response.end
+	
+	
+	Dim fs, f
+	Set fs=Server.CreateObject("Scripting.FileSystemObject")
+	Set f=fs.OpenTextFile(fullPath, 2)
+		
+	'Display the contents of the text file
+	f.Write ""
+	
+		
+	f.Close
+	Set f=Nothing
+	Set fs=Nothing
+
+End Function
