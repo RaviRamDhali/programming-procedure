@@ -1,0 +1,89 @@
+public class ImageFactory
+	{
+		public static void MultiDimensionImageProcesser(string originalfilepath, Guid clientGuid, Guid caseGuid, Guid fileGuid)
+		{
+			string fileExt = Path.GetExtension(originalfilepath).ToStringOrDefault().ToLower();
+
+			List<string> resizelocalpathandfilenames = SaveRawImagesToTempDir(originalfilepath, fileExt, caseGuid, fileGuid);
+
+			List<KeyValuePair<string, string>> metaDataList = new List<KeyValuePair<string, string>>();
+			metaDataList.Add(new KeyValuePair<string, string>("fileguid", fileGuid.ToStringOrDefault()));
+
+			byte[] photoBytes = File.ReadAllBytes(originalfilepath);
+			// Format is automatically detected though can be changed.
+			ISupportedImageFormat format = new JpegFormat { Quality = 70 };
+			
+			using (MemoryStream inStream = new MemoryStream(photoBytes))
+			{
+				var mimetype = System.Web.MimeMapping.GetMimeMapping(originalfilepath);
+				List<Constant.ImageDimensionsModel> dimensions = Constant.ImageDimensions();
+				foreach (var dimension in dimensions)
+				{
+					string size = (dimension.width.ToStringOrDefault() + "x" + dimension.height.ToStringOrDefault());
+					var resizelocalpathandfilename = Local.BuildTempLocalPathWithFileNameResize(caseGuid, fileGuid, fileExt, size);
+
+					//Resizes the image to the given dimensions. If the set dimensions do not match the aspect ratio of the original image then the output is cropped to match the new aspect ratio.
+					ResizeMode resizeMode = ResizeMode.Crop;
+					Size drawingSizeSize = new System.Drawing.Size(dimension.width, dimension.height);
+					ResizeLayer resizeLayer = new ResizeLayer(drawingSizeSize, resizeMode);
+
+					// Initialize the ImageFactory using the overload to preserve EXIF metadata.
+					using (ImageProcessor.ImageFactory imageFactory = new ImageProcessor.ImageFactory(preserveExifData: true))
+					{
+						
+						// Load, resize, set the format and quality and save an image.
+						imageFactory.Load(inStream)
+							.Resize(resizeLayer)
+							.Format(format)
+							.Save(resizelocalpathandfilename);
+					}
+
+					string awspathandfilename = STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileNameResize(fileGuid, fileExt, size);
+
+					metaDataList.Add(new KeyValuePair<string, string>("task", "resize"));
+					metaDataList.Add(new KeyValuePair<string, string>("type", "image"));
+
+					string awsTag = STORAGE.Cloud.AmazonWebServices.SaveToAWS(awspathandfilename, resizelocalpathandfilename, mimetype, metaDataList);
+					
+					// Do something with the stream.
+				}
+			}
+
+		}
+
+		/// <summary>
+		///	Make copies of the original image, rename each with dimensions, and save to disk.
+		/// </summary>
+		/// <param name="originalfilepath"></param>
+		/// <param name="fileExt"></param>
+		/// <param name="caseGuid"></param>
+		/// <param name="fileGuid"></param>
+		/// <returns></returns>
+		private static List<string> SaveRawImagesToTempDir(string originalfilepath, string fileExt, Guid caseGuid, Guid fileGuid)
+		{
+			List<string> resizelocalpathandfilenames = new List<string>();
+
+			List<Constant.ImageDimensionsModel> dimensions = Constant.ImageDimensions();
+			foreach (var dimension in dimensions)
+			{
+				string size = (dimension.width.ToStringOrDefault() + "x" + dimension.height.ToStringOrDefault());
+				var resizelocalpathandfilename = Local.BuildTempLocalPathWithFileNameResize(fileGuid, fileExt, size);
+				resizelocalpathandfilenames.Add(resizelocalpathandfilename);
+			}
+
+			FileStream fs = File.OpenRead(originalfilepath);
+			MemoryStream inMemoryCopy = new MemoryStream();
+
+				fs.CopyTo(inMemoryCopy);
+				fs.Position = 0;
+				foreach (var resizelocalpathandfilename in resizelocalpathandfilenames)
+				{
+					File.WriteAllBytes(resizelocalpathandfilename, inMemoryCopy.ToArray());
+				}
+
+			inMemoryCopy.Close();
+			fs.Close();
+			
+			return resizelocalpathandfilenames;
+		}
+	}
