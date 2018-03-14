@@ -1,0 +1,38 @@
+public static List<Upload> GetUploadsWithNoImageDimensions(List<Upload> uploads, Guid clientGuid)
+	    {
+		    List<DAL.Upload> UploadsWithNoImageDimensions = new List<Upload>();
+
+		    foreach (var upload in uploads)
+		    {
+			    var imgExtString = ConfigurationManager.AppSettings["ImageFileFormats"].ToStringOrDefault();
+			    List<string> imgExt = imgExtString.Split(',').ToList();
+			    string cleanFileExt = upload.fileExt.Replace(".", "");
+
+			    if (imgExt.Contains(cleanFileExt))
+			    {
+				    var caseGuid = BLL.Presenters.CasePresenter.GetCaseGuidbyId(upload.caseId);
+				    var guidClientAndCase = clientGuid + "/" + caseGuid + "/";
+				    string metakeyname = "x-amz-meta-fileguid";
+
+				    int metakeyInFileMatchCount =
+					    STORAGE.AWS.GetAWSFilesMatchMetaValueCount(guidClientAndCase, metakeyname, upload.fileGuid);
+
+				    BLL.Views.Common.IdGuidPair pair = new Common.IdGuidPair();
+				    pair.Guid = upload.fileGuid;
+				    pair.Id = metakeyInFileMatchCount;
+					//imageNameandCount.Add(pair);
+
+				    if (metakeyInFileMatchCount == 0)
+				    {
+						//File in DB but not in AWS
+
+				    }
+
+				    if (metakeyInFileMatchCount < 2)
+					    UploadsWithNoImageDimensions.Add(upload);
+			    }
+
+		    }
+
+		    return UploadsWithNoImageDimensions;
+	    }
