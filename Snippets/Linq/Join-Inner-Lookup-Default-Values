@@ -1,0 +1,35 @@
+var data = (
+from n in Notes
+join u in AspNetUsers on n.StaffId equals u.Id
+join t in NoteTypes on n.NoteTypeId equals t.Id
+
+join a in Actions on n.ActionId equals a.Id into actionJoin
+from rsAction in actionJoin.DefaultIfEmpty()
+
+join at in ActionTypes on rsAction.ActionTypeId equals at.Id into atJoin
+from rsActionType in atJoin.DefaultIfEmpty()
+
+join pt in PriorityTypes on rsAction.PriorityTypeId equals pt.Id into ptJoin
+from rsPriorityTypes in ptJoin.DefaultIfEmpty()
+
+join nts in NotificationMethodTypes on rsAction.NotificationMethodTypeId_Staff equals nts.Id into ntsJoin
+from rsNotificationMethodTypesStaff in ntsJoin.DefaultIfEmpty()
+
+join ntc in NotificationMethodTypes on rsAction.NotificationMethodTypeId_Customer equals ntc.Id into ntcJoin
+from rsNotificationMethodTypesCustomer in ntcJoin.DefaultIfEmpty()
+
+select new {
+n.Message,
+n.Timestamp,
+TypeRef = n.NoteTypeReferenceId,
+Staff = u.FullName, 
+Due = (rsAction == null ? DateTime.Now : rsAction.Due),
+Type = (rsActionType == null ? string.Empty : rsActionType.Description),
+Priority = (rsPriorityTypes == null ? string.Empty : rsPriorityTypes.Description),
+NotifyStaffBy = (rsNotificationMethodTypesStaff == null ? string.Empty : rsNotificationMethodTypesStaff.Description),
+NotifyCustomerBy = (rsNotificationMethodTypesCustomer == null ? string.Empty : rsNotificationMethodTypesCustomer.Description)
+}
+).ToList();
+
+
+data.Dump();
