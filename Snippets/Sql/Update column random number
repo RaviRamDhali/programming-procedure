@@ -1,0 +1,24 @@
+DECLARE @id NVARCHAR(50)
+DECLARE sku CURSOR FOR
+
+SELECT t.idno FROM transactions AS t
+
+OPEN sku
+FETCH NEXT FROM sku
+INTO @id
+WHILE @@FETCH_STATUS = 0
+   BEGIN
+   
+   DECLARE @maxRandomValue INT = 9999, @minRandomValue INT = 1000;
+      
+		UPDATE dbo.transactions
+		SET cc_idno_temp = (SELECT CAST(((@maxRandomValue + 1) - @minRandomValue) * RAND() + @minRandomValue AS INT) AS 'randomNumber')
+		WHERE idno = @id
+			
+      FETCH NEXT FROM sku
+      INTO @id
+      
+   END
+CLOSE sku
+DEALLOCATE sku
+GO
