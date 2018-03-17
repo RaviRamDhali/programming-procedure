@@ -1,5 +1,6 @@
 https://stackoverflow.com/questions/9550354/jquery-tablesorter-plugin-secondary-hidden-sorting
 
+$('table').tablesorter();
 
 I am using 
 
