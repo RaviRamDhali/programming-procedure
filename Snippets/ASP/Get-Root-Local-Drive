@@ -1,0 +1,13 @@
+Dim ToRootedVirtual
+
+Dim relativePath: relativePath = Server.MapPath("/")
+
+Dim applicationMetaPath : applicationMetaPath = Request.ServerVariables("APPL_MD_PATH")
+
+Dim instanceMetaPath : instanceMetaPath = Request.ServerVariables("INSTANCE_META_PATH")
+
+Dim rootPath : rootPath = Mid(applicationMetaPath, Len(instanceMetaPath) + Len("/ROOT/"))
+
+ToRootedVirtual = rootPath + relativePath
+
+response.write("<li> ToRootedVirtual :" & ToRootedVirtual & "</li>")
