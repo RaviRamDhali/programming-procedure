@@ -1,0 +1,12 @@
+if Request.ServerVariables("request_method") = "POST" then
+ 
+    Dim LocalUploadDir, Upload, Count
+    LocalUploadDir = "e:\web\icouldbe\standard\images\courseroom\cms_uploads"
+    Set Upload = Server.CreateObject("Persits.Upload")
+    Count = Upload.Save(LocalUploadDir)
+    Response.Write Count & " file(s) uploaded to " & LocalUploadDir
+
+    Dim Jpeg
+    Set Jpeg = Server.CreateObject("Persits.Jpeg")
+
+end if
