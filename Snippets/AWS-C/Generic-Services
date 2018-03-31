@@ -1,0 +1,247 @@
+public static List<BLL.Views.Common.MessageResult> DoImageResizeAWS(int clientId)
+{
+	List<BLL.Views.Common.MessageResult> errorList = new List<Common.MessageResult>();
+
+	var client = ClientsPresenter.GetClient(clientId);
+	if (client.IsNull())
+		return errorList;
+
+	List<int> caseIntIds = CasePresenter.GetCaseIdsByClient(clientId);
+
+	List<DAL.Upload> uploads = UploadsPresenter.GetUploadsImagesNotResziedByCaseIdsForSysAdminAWS(caseIntIds);
+
+	foreach (var upload in uploads)
+	{
+
+		if (!BLL.Tools.Utilities.isImage(upload.fileExt))
+			continue;
+
+		var caseGuid = BLL.Queries.Case.Case.GetGuidById(upload.caseId);
+		Common.CaseIds caseIds = BLL.Queries.Case.Case.GetCaseIds(caseGuid);
+
+		string awsKeyUrl =
+			STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+				upload.fileExt);
+
+		bool inAws = STORAGE.Service.inAwsS3(awsKeyUrl);
+		if (!inAws)
+		{
+			BLL.Controllers.UploadsController.UpdateConfig(upload,null, false);
+			STORAGE.Local.DeleteTempDirectory(upload.fileGuid);
+			errorList.Add(new Common.MessageResult { success = false, message = upload.fileGuid.ToStringOrDefault() });
+			continue;
+		}
+		
+		bool imageResized = STORAGE.Service.OneTimeImageResizeTask(client.clientGUID, caseGuid, upload.fileGuid, upload.fileExt, awsKeyUrl);
+		BLL.Controllers.UploadsController.UpdateConfig(upload, true, true);
+
+		errorList.Add(new Common.MessageResult { success  = imageResized, message = upload.fileGuid.ToStringOrDefault()});
+
+	}
+
+	var processed = (from u in errorList where u.success select u).ToList();
+	var failed = (from u in errorList where !u.success select u).ToList();
+
+	//Error Tracking - Upload in DB but not in AWS
+	return processed;
+
+}
+public static List<Common.GuidTitlePair> RenamingInS3(int clientId)
+{
+
+	List<BLL.Views.Common.GuidTitlePair> errorList = new List<Common.GuidTitlePair>();
+	List<int> caseIntIds = CasePresenter.GetCaseIdsByClient(clientId);
+
+	List<DAL.Upload> uploads = UploadsPresenter.GetUploadsNotRenamedByCaseIdsForSysAdminAWS(caseIntIds);
+	
+	foreach (var upload in uploads)
+	{
+		//bool renamed = Presenters.UploadsPresenter.ConfigRenamed(upload.uploadId);
+		//if (renamed)
+		//	continue;
+		
+		var caseGuid = BLL.Queries.Case.Case.GetGuidById(upload.caseId);
+		Common.CaseIds caseIds = BLL.Queries.Case.Case.GetCaseIds(caseGuid);
+
+		bool success = CopyParentFileNewFriendly(upload, caseIds);
+		if (!success)
+		{
+			errorList.Add(new Common.GuidTitlePair{
+				Guid = upload.fileGuid,
+				Title = upload.fileGuid.ToStringOrDefault()
+			});
+
+			UploadsController.UpdateConfig(upload,false,false);
+			continue;
+		}
+
+		// reprocess and save with new dimension names
+		if (BLL.Tools.Utilities.isImage(upload.fileExt))
+		{
+			var dimensionErrorList = CopyImageDimensionsNewFriendly(upload, caseIds);
+			errorList.AddRange(dimensionErrorList);
+		}
+		
+		// ------------------------------------------
+		// Delete Original Source AND if image delete thumnails
+		// ------------------------------------------
+
+		DeleteParentFileNameGuid(upload, caseIds);
+
+		if (BLL.Tools.Utilities.isImage(upload.fileExt))
+			DeleteImageDimensionsnamedGuid(upload, caseIds);
+		
+		// ------------------------------------------
+		// ------------------------------------------
+
+	}
+
+	//Error Tracking - Upload in DB but not in AWS
+	if (errorList.Any())
+	{
+		string jsonUploadError = JsonConvert.SerializeObject(errorList);
+		jsonUploadError = errorList.Count + " Records in Upload table but not in AWS " + jsonUploadError;
+		EmailServices.SendQuickSysAdminEmail("Error Tracking - CheckUploadToS3 " + errorList.Count, jsonUploadError);
+		Tracker.Track(eTrackingState.Warning, jsonUploadError, "Upload CheckUploadToS3", 0, 0);
+		Tracker.Track(eTrackingState.Warning, jsonUploadError, "AWS CheckUploadToS3", 0, 0);
+	}
+
+	return errorList;
+}
+private static void DeleteImageDimensionsnamedGuid(Upload upload, Common.CaseIds caseIds)
+{
+	List<Constant.ImageDimensionsModel> dimensions = Constant.ImageDimensions();
+
+	foreach (var dimension in dimensions)
+	{
+		string size = (dimension.width.ToStringOrDefault() + "x" + dimension.height.ToStringOrDefault());
+
+		string sourceAwsFile = (caseIds.ClientGuid + "/" + caseIds.Guid + "/" + upload.fileGuid + "-" + size + upload.fileExt);
+
+		STORAGE.AWS.DeletingAnObject(sourceAwsFile);
+	}
+}
+private static void DeleteParentFileNameGuid(Upload upload, Common.CaseIds caseIds)
+{
+	string awsKeyUrl =
+		STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+			upload.fileExt);
+
+	STORAGE.AWS.DeletingAnObject(awsKeyUrl);
+}
+private static bool CopyParentFileNewFriendly(Upload upload, Common.CaseIds caseIds)
+{
+	string awsKeyUrl =
+		STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+			upload.fileExt);
+
+	var friendlyNameFull = BLL.Presenters.UploadsPresenter.GetFriendlyNameWithExt(upload.fileOriginalName, upload.fileExt);
+
+	string friendlyNameKey =
+		STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFriendlyFilename(caseIds.ClientGuid, caseIds.Guid,
+			friendlyNameFull);
+	
+	bool success = STORAGE.Service.CopyFileinAwsS3(awsKeyUrl, friendlyNameKey);
+
+	if (success)
+	{
+		BLL.Controllers.UploadsController.UpdateConfig(upload, null, true);
+		UploadsController.UpdateFriendlyName(upload);
+		UploadsController.UpdateConfigRenamed(upload);
+	}
+
+	return success;
+}
+private static List<BLL.Views.Common.GuidTitlePair> CopyImageDimensionsNewFriendly(Upload upload, Common.CaseIds caseIds)
+{
+
+	List<BLL.Views.Common.GuidTitlePair> errorList = new List<Common.GuidTitlePair>();
+
+	List<Constant.ImageDimensionsModel> dimensions = Constant.ImageDimensions();
+
+	foreach (var dimension in dimensions)
+	{
+		string size = (dimension.width.ToStringOrDefault() + "x" + dimension.height.ToStringOrDefault());
+
+		string sourceAwsFile = (caseIds.ClientGuid + "/" + caseIds.Guid + "/" + upload.fileGuid + "-" + size + upload.fileExt);
+
+		var friendlyNameNoExt = BLL.Presenters.UploadsPresenter.GetFriendlyNameNoExt(upload.fileOriginalName);
+
+		string destNameKey = Cloud.AmazonWebServices.BuildAWSPathWithFriendlyFileResize(caseIds.ClientGuid,caseIds.Guid,friendlyNameNoExt,size,upload.fileExt);
+		
+		var success = STORAGE.Service.CopyFileinAwsS3(sourceAwsFile, destNameKey);
+
+		if (!success)
+			errorList.Add(new Common.GuidTitlePair { Guid = upload.fileGuid, Title = sourceAwsFile });
+	}
+
+	return errorList;
+}
+public static List<BLL.Views.Common.GuidTitlePair> CheckUploadToS3(int clientId, bool forceReCheck = false, bool imageOnly = false)
+{
+	List<BLL.Views.Common.GuidTitlePair> errorList = new List<Common.GuidTitlePair>();
+
+	var client = ClientsPresenter.GetClient(clientId);
+	if (client.IsNull())
+		return errorList;
+
+	List<int> caseIntIds = CasePresenter.GetCaseIdsByClient(clientId);
+
+
+	List<DAL.Upload> uploads = UploadsPresenter.GetByCaseIds(caseIntIds);
+	foreach (var upload in uploads)
+	{
+		bool alreadyInAws = false;
+		if (!forceReCheck)
+			alreadyInAws = BLL.Presenters.UploadsPresenter.ConfigInAwsS3(upload.uploadId);
+
+		if (alreadyInAws)
+			continue;
+
+		bool isImage = BLL.Tools.Utilities.isImage(upload.fileExt);
+		if(imageOnly && !isImage)
+			continue;
+
+		var caseGuid = BLL.Queries.Case.Case.GetGuidById(upload.caseId);
+		Common.CaseIds caseIds = BLL.Queries.Case.Case.GetCaseIds(caseGuid);
+
+		string awsKeyUrl =
+			STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFileName(caseIds.ClientGuid, caseIds.Guid, upload.fileGuid,
+				upload.fileExt);
+
+		var friendlyNameFull = BLL.Presenters.UploadsPresenter.GetFriendlyNameWithExt(upload.fileOriginalName, upload.fileExt);
+		string awsFriendlyNameKeyUrl =
+			STORAGE.Cloud.AmazonWebServices.BuildAWSPathWithFriendlyFilename(caseIds.ClientGuid, caseIds.Guid,friendlyNameFull);
+		
+		bool inAwsByFileGuid = STORAGE.Service.inAwsS3(awsKeyUrl);
+		bool inAwsFriendlyName = STORAGE.Service.inAwsS3(awsFriendlyNameKeyUrl);
+		bool inAws = (inAwsByFileGuid || inAwsFriendlyName);
+
+		BLL.Controllers.UploadsController.UpdateConfig(upload, null, inAws);
+		if (!inAws)
+		{
+			string msg = "Upload in DB was Not find in AWS UploadGuid: " + upload.fileGuid;
+			errorList.Add(new Common.GuidTitlePair { Guid = upload.fileGuid, Title = msg});
+		}
+
+		if (inAwsByFileGuid)
+		{
+			var msg =  "Upload in AWS as GUID " + awsKeyUrl;
+			Tracker.Track(eTrackingState.Warning, msg, "Upload Need to Rename", upload.uploadId, 0);
+		}
+
+	}
+
+	//Error Tracking - Upload in DB but not in AWS
+	if (errorList.Any())
+	{
+		string jsonUploadError = JsonConvert.SerializeObject(errorList);
+		jsonUploadError = errorList.Count + " Records in Upload table but not in AWS " + jsonUploadError;
+		EmailServices.SendQuickSysAdminEmail("Error Tracking - CheckUploadToS3 " + errorList.Count, jsonUploadError);
+		Tracker.Track(eTrackingState.Warning, jsonUploadError, "Upload CheckUploadToS3", 0, 0);
+		Tracker.Track(eTrackingState.Warning, jsonUploadError, "AWS CheckUploadToS3", 0, 0);
+	}
+
+	return errorList;
+
+}
