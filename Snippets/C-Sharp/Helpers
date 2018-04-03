@@ -1,0 +1,4 @@
+@foreach (var park in Model.Parks)
+{
+  <option value="@park.Id" @(Model.SelectedParkId == park.Id ? "selected" : "")>@park.Title</option>
+}
