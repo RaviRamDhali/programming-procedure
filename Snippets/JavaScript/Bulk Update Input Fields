@@ -1,0 +1,25 @@
+  Bulk Update Input Fields
+  
+  $('.shove-down').click(function (e){
+
+    var row = $(this).closest('td');
+    var target = $(row).attr('target-id');
+    var value = $(row).find('input').val();
+    var allSpanTarget = $("span[data-target='" + target + "']");
+          $(allSpanTarget).html(value);
+
+    var allInputTarget = $("input[data-target='" + target + "']");
+    $(allInputTarget).attr('value', value);
+    console.log('allInputTarget', allInputTarget);
+
+          DataDirty();
+  });
+  
+  
+function DataDirty()
+{
+  var dirty = $('#dataDirty').data('dirty');
+  if (!dirty)
+      $('#dataDirty').data('dirty', true);
+
+}
