@@ -1,0 +1,15 @@
+
+$(".watch-replace-space").on("keyup change", function(e) {
+    var str = $(this).val();
+    var sanitizeStr = SanitizeAlphanumericOnly(str);
+    $(this).val(sanitizeStr);
+});
+
+
+function SanitizeAlphanumericOnly(str)
+{
+	// Replace non-alphanumeric character
+    var key = str;
+    key = key.replace(/[^a-zA-Z0-9]/g, '_');
+    return key;
+}
