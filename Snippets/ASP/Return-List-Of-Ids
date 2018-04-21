@@ -1,0 +1,23 @@
+Public Function GetUnitIdsbyBlockId(rsList)
+
+		Dim arrIds
+		Set arrIds = CreateObject("System.Collections.ArrayList") 
+
+		While (NOT rsList.EOF)
+
+			if NOT arrIds.contains(Cint(rsList("unit_id"))) then 
+				arrIds.add Cint(rsList("unit_id"))
+			end if
+			
+			rsList.MoveNext
+		wend
+
+
+		dim str
+		for each str in arrIds
+		  response.write str & "<br />"
+		next
+
+		set GetUnitIdsbyBlockId = arrIds
+
+End Function
