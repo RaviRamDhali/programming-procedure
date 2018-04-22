@@ -1,0 +1,61 @@
+https://docs.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-2017
+
+
+CREATE MASTER KEY ENCRYPTION BY   
+PASSWORD = 'GF6CGZZILNWPAT3EH5K50NESURDZ6SST';
+
+CREATE CERTIFICATE CategoryName
+   WITH SUBJECT = 'Category Credit Card Numbers';  
+GO  
+
+
+CREATE SYMMETRIC KEY CategoryName_Key
+    WITH ALGORITHM = AES_256  
+    ENCRYPTION BY CERTIFICATE CategoryName;  
+GO
+
+
+-- Create a temp column 
+ALTER TABLE Category ADD tempName VARBINARY(128);
+-- Copy and casts the data from the old column to the new one
+UPDATE Category SET tempName = CAST(Name AS VARBINARY(MAX));
+
+
+-- Delete the old column
+ALTER TABLE Category DROP COLUMN Name;
+-- Rename the new one to match the same name as the old one.
+EXEC sp_RENAME 'Category.tempName' , 'Name', 'COLUMN'
+
+
+-- Create a column in which to store the encrypted data. 
+ALTER TABLE dbo.Category
+    ALTER COLUMN Name varbinary(max);   
+GO
+
+
+-- Open the symmetric key with which to encrypt the data.  
+OPEN SYMMETRIC KEY CategoryName_Key  
+   DECRYPTION BY CERTIFICATE CategoryName;  
+
+-- Encrypt the value in column NationalIDNumber with symmetric   
+-- key SSN_Key_01. Save the result in column EncryptedNationalIDNumber.  
+UPDATE Category
+SET Name = EncryptByKey(Key_GUID('CategoryName_Key'), Name);  
+GO  
+
+
+-- Verify the encryption.  
+-- First, open the symmetric key with which to decrypt the data.  
+OPEN SYMMETRIC KEY CategoryName_Key  
+   DECRYPTION BY CERTIFICATE CategoryName;  
+GO  
+
+
+SELECT Name AS 'Encrypted ID Number',  
+    CONVERT(nvarchar, DecryptByKey(Name))   
+    AS 'Decrypted ID Number'  
+    FROM Category;  
+GO  
+
+CLOSE SYMMETRIC KEY CategoryName_Key;  
+GO  
