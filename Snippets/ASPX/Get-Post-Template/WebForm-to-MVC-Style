@@ -8,13 +8,41 @@ public static string UpdateFieldTask(string command, Guid id, string userInput)
     return command;
 }
 
+*******************************
+--- Ajax example
+*******************************
 $.ajax({
     type: "POST",
-    url: "/Manager/Person.aspx/UpdateFieldTask",
-    data: JSON.stringify({ command: command, id: id, userInput : userInput }),
+    url: url,
+    data: data,
     contentType: "application/json; charset=utf-8",
     dataType: "text"
 });
+
+$.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    dataType: 'json',
+    contentType: 'application/json',
+    })
+    .done(function(data){
+    obj = data;console.log(obj);
+});
+
+$.ajax({
+    url: url,
+    dataType: 'json',
+    type: 'post',
+    contentType: 'application/json',
+    data: data,
+    success: function(data) {
+        console.log('casenumbercheck:', data);
+        }
+});
+
+*******************************
+*******************************
 
 
 [System.Web.Services.WebMethod]
