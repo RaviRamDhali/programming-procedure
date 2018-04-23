@@ -1,0 +1,32 @@
+  var url = "/api/page.aspx/SetPrimaryImage";
+  var data = JSON.stringify({ caseId: caseId, uploadId: uploadId });
+
+  console.log('data', data);
+
+***********************************
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    dataType: 'json',
+    contentType: 'application/json',
+  })
+    .done(function(data){
+        obj = data;console.log(obj);
+    });
+***********************************
+
+***********************************
+    $.ajax({
+    url: url,
+    dataType: 'json',
+    type: 'post',
+    contentType: 'application/json',
+    data: data,
+    success: function(data) {
+      console.log('casenumbercheck:', data);
+      }
+    });
+***********************************    
+    
+    
