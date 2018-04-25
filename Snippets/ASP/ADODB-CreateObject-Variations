@@ -35,5 +35,33 @@ Function ReturnRecords(strSql)
 	'cmd.parameters.append cmd.createparameter("trackMemo", adChar, adparaminput, trackMemo)
 
 
+Dim adParamInput
+	adParamInput = 1
+	Dim adVarChar
+	adVarChar = 201
+	Dim adInteger
+	adInteger = 3
+	Dim adCmdText
+	adCmdText = 1
+
+	Dim strCmd, objCommand, param1, param2
+
+	strCmd = "UPDATE dbo.quest SET questtext = ? WHERE questId = ?"
 	
-End Function
+	set objCommand = Server.CreateObject("ADODB.Command")
+	Set objCommand.ActiveConnection = connection
+	objCommand.CommandText = strCmd
+	objCommand.CommandType = adCmdText
+	
+	Set param1 = objCommand.CreateParameter ("data", adVarChar, adParamInput, Len(data))
+	param1.value = data
+	
+	Set param2 = objCommand.CreateParameter ("question_id", adInteger, adParamInput, Len(question_id))
+	param2.value = question_id
+
+	objCommand.Parameters.Append param1
+	objCommand.Parameters.Append param2
+
+	objCommand.Execute()
+
+
