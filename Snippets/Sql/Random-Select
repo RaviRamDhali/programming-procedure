@@ -1,0 +1,5 @@
+SELECT * FROM Customer
+WHERE (ABS(CAST(
+(BINARY_CHECKSUM
+(CustomerID, NEWID())) as int))
+% 100) < .25
