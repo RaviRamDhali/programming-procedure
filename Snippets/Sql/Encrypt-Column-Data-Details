@@ -1,0 +1,126 @@
+-- DROP TABLE dbo.CustomerInfo
+-- DROP INDEX IDX_Customer_CustomerID
+
+-- *********************************************
+-- Create table to store encrypted data
+-- *********************************************
+CREATE table [dbo].[CustomerInfo](
+		[CustomerID] [int] primary key not null,
+		[SSN] VARBINARY(MAX) null,
+		[DOB] VARBINARY(MAX) null,
+		[Password] VARBINARY(MAX) NULL,
+		[tempSSN] NVARCHAR(MAX),
+		[tempDob] DATETIME NULL,
+		[tempPassword] NVARCHAR(MAX)
+		
+		FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+)
+
+-- *********************************************
+-- Copy data from Customer table
+INSERT INTO dbo.CustomerInfo(CustomerID,tempSSN,tempDob,tempPassword)
+SELECT CustomerID, SSN,DOB,Password
+FROM dbo.Customer
+SELECT TOP 100 * FROM dbo.CustomerInfo
+SELECT TOP 100  * FROM dbo.Customer 
+
+-- *********************************************
+-- Create SQL Masterkey 
+CREATE MASTER KEY ENCRYPTION BY   
+PASSWORD = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
+-- *********************************************
+-- Create Secure Cert for Customer data only
+CREATE CERTIFICATE Customer
+   WITH SUBJECT = 'Customer Data Secure';  
+GO  
+
+-- *********************************************
+-- Create access key name as Customer_Key for Customer Secure Cert
+CREATE SYMMETRIC KEY Customer_Key
+    WITH ALGORITHM = AES_256  
+    ENCRYPTION BY CERTIFICATE Customer;  
+GO
+
+
+-- *******************************************************************
+-- Open the symmetric key with which to encrypt the data.  
+-- *******************************************************************
+OPEN SYMMETRIC KEY Customer_Key  
+   DECRYPTION BY CERTIFICATE Customer;  
+
+-- *******************************************************************
+-- Encrypt the value in column NationalIDNumber with symmetric   
+-- key SSN_Key_01. Save the result in column EncryptedNationalIDNumber.  
+-- *******************************************************************
+UPDATE dbo.CustomerInfo
+SET
+SSN = EncryptByKey(Key_GUID('Customer_Key'), tempSSN),
+DOB = EncryptByKey(Key_GUID('Customer_Key'), CAST(tempDob AS VARBINARY(MAX))),
+Password = ENCRYPTBYKEY(Key_GUID('Customer_Key'), tempPassword)
+GO  
+
+
+-- Verify the encryption.  
+-- First, open the symmetric key with which to decrypt the data.  
+OPEN SYMMETRIC KEY Customer_Key  
+   DECRYPTION BY CERTIFICATE Customer;  
+GO  
+
+SELECT TOP 100 SSN AS 'Encrypted',  
+    CONVERT(nvarchar, DecryptByKey(SSN))   
+    AS 'Decrypted',
+	tempSSN  
+    FROM dbo.CustomerInfo;  
+GO  
+
+
+SELECT TOP 100 DOB AS 'Encrypted',  
+    CONVERT(DATETIME, DecryptByKey(DOB))   
+    AS 'Decrypted',
+	tempDob  
+    FROM dbo.CustomerInfo;  
+GO   
+
+SELECT TOP 100 Password AS 'Encrypted',  
+    CONVERT(nvarchar, DecryptByKey(Password))   
+    AS 'Decrypted',
+	tempPassword
+    FROM dbo.CustomerInfo;  
+GO  
+
+
+-- ******************************************
+-- Obfuscation Logic
+-- ******************************************
+
+
+
+-- Set empty to NULL
+-- ******************************************
+ --UPDATE dbo.CustomerInfo
+--SET	obscureSSN = NULL 
+--WHERE obscureSSN IS NULL  OR obscureSSN LIKE ''
+
+
+-- Copy Last 4 to obscureSSN4 (if 0-9 only)
+UPDATE dbo.CustomerInfo
+SET	obscureSSN4 = RIGHT(obscureSSN,4)
+WHERE LEFT(RIGHT(obscureSSN,4), 1) IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+
+-- Check for weird occurrences
+select obscureSSN4 from CustomerInfo
+WHERE obscureSSN4 IS NOT NULL
+AND isnumeric (obscureSSN4)<>1 ----not numeric
+OR obscureSSN4 not like '[0-9][0-9][0-9][0-9]';
+
+-- Set NULL weird occurrences as needed
+UPDATE dbo.CustomerInfo
+SET obscureSSN4 = NULL
+WHERE obscureSSN4 IS NOT NULL
+AND isnumeric (obscureSSN4)<>1 ----not numeric
+OR obscureSSN4 not like '[0-9][0-9][0-9][0-9]';
+
+
+
+
