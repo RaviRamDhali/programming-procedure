@@ -4,6 +4,13 @@ $(document).ready(function () {
 
 //////////////Keep Session Live///////////////////////////
 function KeepSessionAlive() {
+   	$.get( "/keepalive.asp");
+}      
+//******************************************************//
+
+
+//////////////Keep Session Live///////////////////////////
+function KeepSessionAlive() {
     $.post("/api/KeepSessionAlive", null, function () {
         //$("body").prepend("<p>Session is alive and kicking!<p/>");        
     });
