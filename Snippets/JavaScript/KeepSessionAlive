@@ -1,0 +1,12 @@
+$(document).ready(function () {
+    setInterval(KeepSessionAlive, 600000); // 10 mins * 60 * 1000
+});
+
+//////////////Keep Session Live///////////////////////////
+function KeepSessionAlive() {
+    $.post("/api/KeepSessionAlive", null, function () {
+        //$("body").prepend("<p>Session is alive and kicking!<p/>");        
+    });
+}      
+
+//******************************************************//
