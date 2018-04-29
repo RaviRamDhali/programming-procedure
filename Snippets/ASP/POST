@@ -1,0 +1,3 @@
+if Request.ServerVariables("request_method") = "POST" then
+    editorPOST(cssFile)
+end if
