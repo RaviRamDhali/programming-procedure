@@ -1,0 +1,20 @@
+	ALTER DATABASE GroupProxy SET COMPATIBILITY_LEVEL = 130
+
+SELECT * FROM OPENJSON('[{"id":"14","value":"157"},{"id":"9","value":"127"}]')
+
+-- CREATE TEMP TABLE 
+Create Table #MyTempTable (
+    id INT,
+	value int
+);
+
+Insert Into #MyTempTable
+Select id, value
+from   OPENJSON('[{"id":"14","value":"157"},{"id":"9","value":"127"}]')
+with
+(
+    id nvarchar(100),
+	value nvarchar(100)
+) as Projects
+
+SELECT * FROM #MyTempTable
