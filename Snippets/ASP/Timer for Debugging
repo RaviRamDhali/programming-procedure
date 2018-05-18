@@ -1,7 +1,7 @@
 Dim t0
 t0 = timer
 Response.Write("<li>-------------------------------------</li>")
-Response.Write("<li>Start padicon initializeJson :" & now & "</li>")
+Response.Write("<li>Start :" & now & "</li>")
 
 JSONarr.LoadRecordset rs
 set initializeJson = JSONarr
@@ -9,5 +9,5 @@ set initializeJson = JSONarr
 set JSONarr = nothing
 
 Response.Write("<li>[Duration : " & FormatNumber(timer - t0, 3, -1) & "]</li>")
-Response.Write("<li>END  padicon initializeJson :" & now & "</li>")
+Response.Write("<li>END :" & now & "</li>")
 Response.Write("<li>-------------------------------------</li>")
