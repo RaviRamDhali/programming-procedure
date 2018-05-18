@@ -1,3 +1,6 @@
+If Mid(json , Len(json ), 1) = "," Then  json = Mid(json , 1, Len(json ) - 1)
+
+
 strchars = strSKU
 If Mid(strchars , Len(strchars ), 1) = "," Then 
     strchars = Mid(strchars , 1, Len(strchars ) - 1) 
