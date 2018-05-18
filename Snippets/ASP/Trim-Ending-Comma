@@ -1,3 +1,17 @@
+Function deleteLastComma(jsonRow)
+	if Len(jsonRow) = 0 then
+		 Exit Function
+	end if
+	If Mid(jsonRow , Len(jsonRow ), 1) = "," Then  jsonRow = Mid(jsonRow , 1, Len(jsonRow ) - 1)
+End function
+
+deleteLastComma(jsonRow)
+
+// ---------------------------
+// Older code, no error checking
+// ---------------------------
+
+
 If Mid(json , Len(json ), 1) = "," Then  json = Mid(json , 1, Len(json ) - 1)
 
 
