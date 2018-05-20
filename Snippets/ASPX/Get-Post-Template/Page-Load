@@ -35,6 +35,12 @@ public class ForgotPassword
 
     public static Common.MessageResultURL Post(NameValueCollection form, string ip)
     {
+    
+    foreach (string name in Request.Form.AllKeys) {
+        string value = Request.Form[name];
+        // Do something with (name, value).
+    }
+
         return InitializePasswordRequestNotFound();
     }
 }
