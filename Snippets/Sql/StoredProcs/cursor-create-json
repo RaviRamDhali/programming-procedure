@@ -1,0 +1,55 @@
+-- Return mini columns  ----
+	-- Sitepad Map Icons Only --
+	if @minimumColumn = 1
+	begin
+
+		--SELECT DISTINCT
+		--gps_lat,
+		--gps_long,
+		--id,
+        --name
+		--FROM #t
+		--order by name
+
+		DECLARE @returnJSON VARCHAR(max)
+		SET @returnJSON = ''
+		DECLARE @row VARCHAR(max)
+
+
+		DECLARE @gps_lat FLOAT
+		DECLARE @gps_long FLOAT
+		DECLARE @id int
+		DECLARE @name VARCHAR(4000)
+		
+		DECLARE sku CURSOR FOR
+		SELECT gps_lat,gps_long,id,name
+		OPEN sku
+		FETCH NEXT FROM sku
+		INTO @gps_lat,@gps_long,@id,@name
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+
+		SET @row = '{'
+		SET @row = @row + '"gps_lat":' + '' + RTRIM(CONVERT(NVARCHAR(MAX), @gps_lat)) + ',' 
+		SET @row = @row + '"gps_long":' + '' + RTRIM(CONVERT(NVARCHAR(MAX), @gps_long)) + ',' 
+		SET @row = @row + '"idno":' + '' + RTRIM(CONVERT(NVARCHAR(MAX),  @id)) + ',' 
+        SET @row = @row + '"name":' + '' + RTRIM(CONVERT(NVARCHAR(MAX),  @name)) + ',' 
+		SET @row = @row + '},'
+		SET @returnJSON = @returnJSON +  @row
+
+		FETCH NEXT FROM sku
+		INTO @gps_lat,@gps_long,@id,@name
+
+		END
+		CLOSE sku
+		DEALLOCATE sku
+
+		--Remove the trailing comma and space
+		SET @returnJSON = SUBSTRING(@returnJSON,1, DATALENGTH(@returnJSON)-1)
+		SET @returnJSON = '[' + @returnJSON +  ']'
+
+		-- SSMS only shows MAX 43600 characters
+		-- LEN will give you true count
+		-- PRINT LEN(@returnJSON)
+		SELECT @returnJSON AS result
