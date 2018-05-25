@@ -1,0 +1,28 @@
+	Public Function CopyRecordsetStructurePadiconMap(ByVal rs)
+		 Dim rsTemp, objFields, intFieldCount, Idx
+		 Set rsTemp = CreateObject("ADODB.Recordset")
+		 Set objFields = rs.Fields
+		 intFieldCount = objFields.Count - 1
+		 ' Response.Write("<li> intFieldCount: " & intFieldCount  & "</li>")
+
+		 For Idx = 0 To intFieldCount
+
+			Dim iArray
+			iArray = Array("depart_date", "disable_access", "gps_lat", "gps_long", "icon_idno", "icon_rotation", "idno", "name", "reason_code", "reservable", "short_label", "site_in_cart", "site_type_idno", "walkuponly")
+
+			Dim idxProp
+			for idxProp = 0 to ubound(iArray)
+				if iArray(idxProp) = lcase(objFields(Idx).Name) then
+					' Response.Write("<li> objFields(Idx).Name: " & objFields(Idx).Name  & "</li>")
+					rsTemp.Fields.Append objFields(Idx).Name, _
+					objFields(Idx).Type, _
+					objFields(Idx).DefinedSize
+
+				end if
+			next
+
+		 Next
+
+		 Set CopyRecordsetStructurePadiconMap = rsTemp
+
+	End Function
