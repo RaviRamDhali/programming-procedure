@@ -1,0 +1,85 @@
+/****** Object:  StoredProcedure [dbo].[JSON_Map_icons]    Script Date: 5/27/2018 7:25:18 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROC [dbo].[JSON_Map_icons]
+ @input_park_idno INT = 0
+  ,@output  VARCHAR(max) output
+AS
+
+BEGIN
+
+DECLARE @returnJSON VARCHAR(max)
+SET @returnJSON = ''
+DECLARE @row VARCHAR(max)
+DECLARE @park_idno INT = 0
+
+
+DECLARE @iconsJSON VARCHAR(max)
+SET @iconsJSON = ''
+
+-- -------------------------------------------------
+-- -------------------------------------------------
+
+DECLARE @idno int
+DECLARE @gps_lat FLOAT
+DECLARE @gps_long FLOAT
+DECLARE @map_icon_id INT
+DECLARE cur CURSOR FOR
+SELECT idno ,
+       park_idno ,
+       gps_lat ,
+       gps_long ,
+       map_icon_id
+	   FROM map_icons
+WHERE (@input_park_idno = 0 OR park_idno = @input_park_idno)
+
+OPEN cur
+FETCH NEXT FROM cur
+INTO @idno,@park_idno,@gps_lat,@gps_long,@map_icon_id
+
+WHILE @@FETCH_STATUS = 0
+    BEGIN
+
+	PRINT RTRIM(CONVERT(VARCHAR(MAX), @gps_lat,128))
+
+    SET @row = '{'
+    SET @row = @row + '"idno":' + '' + RTRIM(CONVERT(NVARCHAR(MAX),@idno)) + ','
+	SET @row = @row + '"park_idno":' + '' + RTRIM(CONVERT(NVARCHAR(MAX),@park_idno)) + ','
+    SET @row = @row + '"gps_lat":' + '' + RTRIM(CONVERT(VARCHAR(MAX), @gps_lat,128)) + ','
+    SET @row = @row + '"gps_long":' + '' + RTRIM(CONVERT(VARCHAR(MAX), @gps_long,128)) + ','
+    SET @row = @row + '"map_icon_id":' + '' + RTRIM(CONVERT(NVARCHAR(MAX),@map_icon_id)) + ''
+    SET @row = @row + '},'
+	SET @iconsJSON = @iconsJSON + @row
+
+    FETCH NEXT FROM cur
+    INTO @idno,@park_idno,@gps_lat,@gps_long,@map_icon_id
+
+END
+CLOSE cur
+DEALLOCATE cur
+
+-- -------------------------------------------------
+-- -------------------------------------------------
+
+--Remove the trailing comma and space
+IF DATALENGTH(@iconsJSON) > 0
+Begin
+	SET @iconsJSON = SUBSTRING(@iconsJSON,1, DATALENGTH(@iconsJSON)-1)
+End
+SET @iconsJSON = '[' + @iconsJSON +  ']'
+
+
+SET @returnJSON = '"icon":' +@iconsJSON
+
+-- SSMS only shows MAX 43600 characters
+-- LEN will give you true count
+-- PRINT LEN(@returnJSON)
+
+--SELECT @returnJSON AS result
+SELECT @output = @returnJSON
+
+
+END
