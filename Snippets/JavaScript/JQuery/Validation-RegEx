@@ -1,0 +1,11 @@
+JQuery Validation RegEx
+
+$.validator.addMethod("checkcasenameChar", function (value, element)
+{
+    return this.optional(element) || /^[a-zA-Z0-9\[\]\(\)\-\s?]*$/i.test(value);
+}, "Alpha, Numeric, Brackets and Dashes only");
+
+
+$("#caseName").rules("add", {
+  checkcasenameChar: true
+});
