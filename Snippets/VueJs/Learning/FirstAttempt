@@ -17,15 +17,9 @@
             <p>I am {{age}} years old and have {{cars.length}} cars.</p>
             <ul>
                 <li v-for="item in cars">
-                    {{ item.name }} <input type="text" v-model="item.name"> <button-counter></button-counter>
+                    {{ item.name }} <input type="text" v-model="item.name"> <button-counter v-bind:key="item.id" v-bind:car="item"></button-counter>
                 </li>
             </ul>
-                        <ul>
-                            <li v-for="item in cars">
-                                {{ item.name }}
-                                <input type="text" v-model="item.name">
-                            </li>
-                        </ul>
         </div>
 
     </div>
@@ -34,23 +28,15 @@
 
     <script>
 
-    Vue.component('button-counter',{
-        data: function () {
-            return {
-                count: 0
-            }
-        },
-        template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
-    });
-
      new Vue({
             el: "#app",
             data: {
+                    "id": 100,
                     "name": "Mickey",
                     "age": 45,
                     "cars": [
-                        { "name": "Ford", "models": ["Fiesta", "Focus", "Mustang"] },
-                        { "name": "Honda", "models": ["Civic", "Accord"] }
+                        { "id": 654654, "name": "Ford", "models": ["Fiesta", "Focus", "Mustang"] },
+                        { "id": 654655, "name": "Honda", "models": ["Civic", "Accord"] }
                     ]
             }
         })
