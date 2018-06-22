@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+    <!-- Page content -->
+    <div class="container" id="app">
+
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <ul class="thumbnails">
+                        <li class="span5 clearfix" v-for="item in users">
+                            <div class="thumbnail clearfix">
+                                <img src="http://placehold.it/320x200" alt="ALT NAME" class="pull-left span2 clearfix" style='margin-right:10px'>
+                                <div class="caption" class="pull-left">
+                                    <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Select</a>
+                                    <h4>
+                                        <a href="#"> {{ item.name }}</a>
+                                    </h4>
+                                    <small>
+                                        <b>Gender: {{item.gender}}</small>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+    <script>
+    var url = "https://swapi.co/api/people/";
+     new Vue({
+            el: "#app",
+            data: {
+                users: [],
+            },
+            created() {
+             var vm = this
+                axios.get(url)
+                 .then(function (response) {
+                    vm.users = response.data.results
+                    console.log('vm.data',vm.users);
+                 })
+         }
+        })
+    </script>
+
+</html>
