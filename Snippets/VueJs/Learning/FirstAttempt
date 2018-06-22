@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+    <!-- Page content -->
+    <div class="container" id="app">
+        <div class="page-header">
+            <h1>Hi, my name is {{name}}</h1>
+            <p>I am {{age}} years old and have {{cars.length}} cars.</p>
+            <ul>
+                <li v-for="item in cars">
+                    {{ item.name }} <input type="text" v-model="item.name"> <button-counter></button-counter>
+                </li>
+            </ul>
+                        <ul>
+                            <li v-for="item in cars">
+                                {{ item.name }}
+                                <input type="text" v-model="item.name">
+                            </li>
+                        </ul>
+        </div>
+
+    </div>
+
+</body>
+
+    <script>
+
+    Vue.component('button-counter',{
+        data: function () {
+            return {
+                count: 0
+            }
+        },
+        template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+    });
+
+     new Vue({
+            el: "#app",
+            data: {
+                    "name": "Mickey",
+                    "age": 45,
+                    "cars": [
+                        { "name": "Ford", "models": ["Fiesta", "Focus", "Mustang"] },
+                        { "name": "Honda", "models": ["Civic", "Accord"] }
+                    ]
+            }
+        })
+    </script>
+
+</html>
