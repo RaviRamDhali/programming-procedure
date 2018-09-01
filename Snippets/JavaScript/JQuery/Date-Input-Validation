@@ -8,6 +8,14 @@
                 }
             }
         });//validate()
+        
+        
+*********************************************
+$('#due,#recurringEnd').rules("add", {
+    reccuringdate: { beginDate: $('#due').val(), endDate: $('#recurringEnd').val() }
+});
+
+
 
         jQuery.validator.addMethod("areEqualDates", function (value, element, params)
         {
@@ -30,3 +38,4 @@
 
     });
 </script>
+
