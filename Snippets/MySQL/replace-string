@@ -2,3 +2,15 @@ SELECT * FROM wp_postmeta WHERE meta_value LIKE "%Walter%"
 
 UPDATE wp_postmeta SET meta_value = REPLACE(meta_value, 'Walter', 'Lauren') WHERE meta_value LIKE "%Walter%"
 
+
+
+SELECT * FROM  wp_yv3q3u_options WHERE  option_value LIKE '%us-placeholder-landscape.jpg%';
+
+SELECT * FROM  wp_yv3q3u_posts WHERE  guid LIKE '%us-placeholder-landscape.jpg%';
+
+SELECT * FROM  wp_yv3q3u_posts WHERE  post_content  LIKE '%https:http:%';
+
+SELECT * FROM  wp_yv3q3u_postmeta WHERE  meta_value LIKE '%us-placeholder-landscape.jpg%';
+
+-- UPDATE wp_yv3q3u_posts SET guid = REPLACE(guid, 'https:http://', 'http://') WHERE guid LIKE '%https:http://%'
+
