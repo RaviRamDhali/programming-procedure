@@ -1,0 +1,4 @@
+SELECT * FROM wp_postmeta WHERE meta_value LIKE "%Walter%"
+
+UPDATE wp_postmeta SET meta_value = REPLACE(meta_value, 'Walter', 'Lauren') WHERE meta_value LIKE "%Walter%"
+
