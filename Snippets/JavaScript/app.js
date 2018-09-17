@@ -1,5 +1,10 @@
 //---------------------------------------
 $(document).ready(function () {
+    
+$(this).attr("data-id") // will return the string "123"
+$(this).data("id") // will return the number 123
+    
+    
     //---------------------------------------
     //--- jquery.dataTables ---
     var oTable = $('table.dataTable').dataTable({
