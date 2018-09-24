@@ -3,7 +3,7 @@ http://www.petefreitag.com/tools/sql_reserved_words_checker/
 http://www.reservedwordsearch.com/
 
 Database Standard Operating Procedures
-- Use lowercase naming
+- Use First Char Uppercase Naming (for Linq)
 
 - Use singular naming for tables: Account NOT Accounts
 [http://stackoverflow.com/a/5841297/665387]
@@ -30,50 +30,86 @@ guid = exteral use for querystrings, api calls
 DateTime:   (getdate())
 GUID:  (newid())
 
-CREATE TABLE [dbo].[account](
-	[id] [int] identity(1,1) primary key not null,
-	[guid] [uniqueidentifier] not null default ((newid())),
-	[lastName] [nvarchar](50) NOT NULL default ('0'),
-	[firstName] [nvarchar](50) NOT NULL default ('0'),
-	[email] [nvarchar](200) not null default ('0'),
-	[password] [nvarchar](max) NOT NULL,
-	[passwordSalt] [nvarchar](max) NOT NULL,
-	[administrator] [bit] not null default ((0))	
-	[lastLogin] [datetime] NULL,
-	[created] [datetime] not null default (getdate()),
-	[modified] [datetime] not null default (getdate()),
-	[active] [bit] not null default ((1))	
-)
+
+	CREATE TABLE [dbo].[account](
+		[Id] [int] identity(1,1) primary key not null,
+		[Guid] [uniqueidentifier] not null default ((newid())),
+		[LastName] [nvarchar](50) NOT NULL default ('0'),
+		[FirstName] [nvarchar](50) NOT NULL default ('0'),
+		[Email] [nvarchar](200) not null default ('0'),
+		[Password] [nvarchar](max) NOT NULL,
+		[PasswordSalt] [nvarchar](max) NOT NULL,
+		[Administrator] [bit] not null default ((0))	
+		[LastLogin] [datetime] NULL,
+		[Created] [datetime] not null default (getdate()),
+		[Modified] [datetime] not null default (getdate()),
+		[Active] [bit] not null default ((1))	
+	)
 
 
-create table [dbo].[hr_app_employment](
-	[id] [int] identity(1,1) primary key not null,
-	[guid] [uniqueidentifier] not null default ((newid())),
-	[title] [nvarchar](150) not null default ('0'),
-	[email] [nvarchar](200) not null default ('0'),
-	[password] [nvarchar](max) not null default ('0'),
-	[passwordsalt] [nvarchar](max) not null default ('0'),
-	[ismoderator] [bit] not null default ((0)),
-	[isadministrator] [bit] not null default ((0)),
-	[lastlogin] [datetime] null,
-	[created] [datetime] not null default (getdate()),
-	[modified] [datetime] not null default (getdate()),
-	[sort] [int] not null default ((0)),
-	[active] [bit] not null default ((1))	
+	create table [dbo].[hr_app_employment](
+		[Id] [int] identity(1,1) primary key not null,
+		[Guid] [uniqueidentifier] not null default ((newid())),
+		[Title] [nvarchar](150) not null default ('0'),
+		[Email] [nvarchar](200) not null default ('0'),
+		[Password] [nvarchar](max) not null default ('0'),
+		[Passwordsalt] [nvarchar](max) not null default ('0'),
+		[Ismoderator] [bit] not null default ((0)),
+		[Isadministrator] [bit] not null default ((0)),
+		[Lastlogin] [datetime] null,
+		[Created] [datetime] not null default (getdate()),
+		[Modified] [datetime] not null default (getdate()),
+		[Sort] [int] not null default ((0)),
+		[Active] [bit] not null default ((1))	
 	)
 ok
-CREATE TABLE [dbo].[exceptionLog](
-	[id] [int] identity(1,1) not null primary key,
-	[exceptionStack] [nvarchar](max) not null default ('0'),
-	[errorState] [nvarchar](50) not null default ('0'),
-	[customInfo] [nvarchar](max) null,
-	[created] [datetime] not null default (getdate()),
-	[exceptionMessage] [nvarchar](max) not null default ('0'),
-	[exceptionSource] [nvarchar](max) not null default ('0'),
-	[exceptionTargetsite] [nvarchar](max) not null default ('0'),
-	[exceptionData] [nvarchar](max) null
+	CREATE TABLE [dbo].[exceptionLog](
+		[Id] [int] identity(1,1) not null primary key,
+		[ExceptionStack] [nvarchar](max) not null default ('0'),
+		[ErrorState] [nvarchar](50) not null default ('0'),
+		[CustomInfo] [nvarchar](max) null,
+		[Created] [datetime] not null default (getdate()),
+		[ExceptionMessage] [nvarchar](max) not null default ('0'),
+		[ExceptionSource] [nvarchar](max) not null default ('0'),
+		[ExceptionTargetsite] [nvarchar](max) not null default ('0'),
+		[ExceptionData] [nvarchar](max) null
 	)
+	
 
+
+create table [dbo].[Customer](
+	[Id] [int] identity(1,1) primary key not null,
+	[Guid] [uniqueidentifier] not null default ((newid())),
+	[ClientId] [int] NOT NULL default (0),
+    	[Name] [nvarchar](150) NOT NULL default('0'),
+	[Address1] [nvarchar](150) NOT NULL default ('0'),
+	[Address2] [nvarchar](150) NOT NULL default ('0'),
+	[City] [nvarchar](150) NOT NULL default ('0'),
+	[State] [nvarchar](2) NOT NULL default ('0'),
+	[Zip] [nvarchar](10) NOT NULL default ('0'),
+	[Modified] [datetime] NOT NULL default (getdate()),
+	[Active] [bit] NOT NULL default ((1)),
+)
+
+create table [dbo].[CustomerContact]
+(
+    [Id] [int] identity(1,1) primary key not null,
+    [Guid] [uniqueidentifier] not null default ((newid())),
+    [CustomerId] [int] NOT NULL default (0),
+    [LastName] [nvarchar](50) NOT NULL default ('0'),
+    [FirstName] [nvarchar](50) NOT NULL default ('0'),
+    [MiddleName] [nvarchar](50) NOT NULL default ('0'),
+    [Address1] [nvarchar](150) NOT NULL default ('0'),
+    [Address2] [nvarchar](150) NOT NULL default ('0'),
+    [City] [nvarchar](150) NOT NULL default ('0'),
+    [State] [nvarchar](2) NOT NULL default ('0'),
+    [Zip] [nvarchar](10) NOT NULL default ('0'),
+    [Phone] [nvarchar](10) NOT NULL default ('0'),
+    [Cell] [nvarchar](10) NOT NULL default ('0'),
+    [Email] [nvarchar](200) not null default ('0'),
+    [Modified] [datetime] NOT NULL default (getdate()),
+    [Active] [bit] NOT NULL default ((1)),
+)
 
 
 
