@@ -1,0 +1,12 @@
+Timepicker Option > Dynamically change endtime based on starttime 
+
+
+$('#check_in_time').change(function(){
+
+$('#startTimeLabel').removeClass('ghost_title');
+  $('#endTimeLabel').addClass('ghost_title');
+
+  var nexttime = $('li.ui-timepicker-selected').next('li').text();
+  $('#check_out_time').timepicker('option','minTime',nexttime);
+  
+});
