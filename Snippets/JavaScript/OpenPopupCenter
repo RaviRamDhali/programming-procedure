@@ -14,7 +14,14 @@
             left: (window.screen.availLeft + (window.screen.availWidth / 2)) - (windowSize.width / 2),
             top: (window.screen.availTop + (window.screen.availHeight / 2)) - (windowSize.height / 2)
         };
-        window.open('modal.html', '_blank', 'width=' + windowSize.width + ', height=' + windowSize.height + ', left=' + windowLocation.left + ', top=' + windowLocation.top);
+        
+        // window.open('modal.html', '_blank', 'width=' + windowSize.width + ', height=' + windowSize.height + ', left=' + windowLocation.left + ', top=' + windowLocation.top);
+        
+        // Close window onblur
+        var newwindow = window.open('modal.html', '_blank', 'width=' + windowSize.width + ', height=' + windowSize.height + ', left=' + windowLocation.left + ', top=' + windowLocation.top);
+        newwindow.onblur = function () { this.close(); };
+
+
 
         console.log(windowLocation);
     }
