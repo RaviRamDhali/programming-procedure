@@ -1,11 +1,16 @@
 
-<a onclick="OpenPopupCenter();">
-    Share Page
+<h1>
+    Page to test the model
+</h1>
+
+<a onclick="OpenPopupCenter(event);" href="#">
+    Update License Information
 </a>
 
 
 <script type="text/javascript">
- function OpenPopupCenter() {
+ function OpenPopupCenter(e) {
+          e.preventDefault();
         var windowSize = {
             width: 850,
             height: 500,
@@ -15,13 +20,8 @@
             top: (window.screen.availTop + (window.screen.availHeight / 2)) - (windowSize.height / 2)
         };
         
-        // window.open('modal.html', '_blank', 'width=' + windowSize.width + ', height=' + windowSize.height + ', left=' + windowLocation.left + ', top=' + windowLocation.top);
-        
-        // Close window onblur
         var newwindow = window.open('modal.html', '_blank', 'width=' + windowSize.width + ', height=' + windowSize.height + ', left=' + windowLocation.left + ', top=' + windowLocation.top);
         newwindow.onblur = function () { this.close(); };
-
-
 
         console.log(windowLocation);
     }
