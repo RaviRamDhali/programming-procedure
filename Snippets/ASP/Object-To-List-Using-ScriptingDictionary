@@ -34,7 +34,7 @@ set listOfSitePads = objSiteAvail.initializeDictionary(dictSiteAvail)
 
 Response.Write("Count: " & listOfSitePads.Count & "<br>")
 
-Dim allKeys
+Dim i, allKeys
 allKeys = listOfSitePads.Keys
 for i = 0 to listOfSitePads.Count-1
 
