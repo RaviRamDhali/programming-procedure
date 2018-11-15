@@ -1,3 +1,13 @@
+/-----------------------------------------/
+/ Search All StrodProcs for a phrase
+/-----------------------------------------/
+SELECT name
+FROM   sys.procedures
+WHERE  Object_definition(object_id) LIKE '%@Password%' ORDER BY name
+/-----------------------------------------/
+
+
+
 /* Reto Egeter, fullparam.wordpress.com */
 
 DECLARE @SearchStrTableName nvarchar(255), @SearchStrColumnName nvarchar(255), @SearchStrColumnValue nvarchar(255), @SearchStrInXML bit, @FullRowResult bit, @FullRowResultRows int
