@@ -1,3 +1,19 @@
+https://stackoverflow.com/questions/3571347/how-to-add-a-not-equal-to-rule-in-jquery-validation
+
+    $(document).ready(function () {      
+        $("form").validate(
+            {
+                rules: {
+                    //passwordNewConfirm: {equalTo: "#passwordNew"},
+                    //passwordNew: { notEqualTo: "#password" },
+                    password: { notEqualTo: ['#passwordNew', '#passwordNewConfirm'] }
+                },
+            });
+
+    });
+    
+    
+    
 /*=====================================================*/
 /* Jquery Valiation addMethod*/
 /* Usage:  password: {notEqualTo: ['#lastname', '#firstname', '#email']} */
@@ -7,10 +23,17 @@ jQuery.validator.addMethod("notEqualTo",
         var notEqual = true;
         value = $.trim(value);
         for (i = 0; i < param.length; i++) {
-            if (value == $.trim($(param[i]).val())) { notEqual = false; }
+
+            var checkElement = $(param[i]);
+            var success = !$.validator.methods.equalTo.call(this, value, element, checkElement);
+            // console.log('success', success);
+            if(!success)
+                notEqual = success;
         }
+
         return this.optional(element) || notEqual;
     },
     "Please enter a diferent value."
 );
+/*=====================================================*/
 /*=====================================================*/
