@@ -1,0 +1,10 @@
+Default value Select not exist
+
+
+
+DECLARE @defaultdatetime DATETIME
+SET @defaultdatetime = convert(datetime, '01/01/1900')
+
+SELECT @defaultdatetime WHERE NOT EXISTS (SELECT top 1 created FROM dbo.Expense WHERE caseID = 308 ORDER BY created DESC)
+
+
