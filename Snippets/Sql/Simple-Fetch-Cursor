@@ -1,10 +1,10 @@
 DECLARE @id NVARCHAR(50)
-DECLARE sku CURSOR FOR
+DECLARE cur CURSOR FOR
 
-SELECT p.prodStyleID FROM dbo.Product AS p
+SELECT p.caseID FROM dbo.Cases AS p
 
-OPEN sku
-FETCH NEXT FROM sku
+OPEN cur
+FETCH NEXT FROM cur
 INTO @id
 WHILE @@FETCH_STATUS = 0
    BEGIN
@@ -19,10 +19,10 @@ WHILE @@FETCH_STATUS = 0
 		--VALUES (@skuV,@skuV + '_sm.jpg','goText')
 		
 		
-      FETCH NEXT FROM sku
+      FETCH NEXT FROM cur
       INTO @id
       
    END
-CLOSE sku
-DEALLOCATE sku
+CLOSE cur
+DEALLOCATE cur
 GO
