@@ -1,0 +1,8 @@
+
+	The Timer function returns the number of seconds since 12:00 AM.
+  
+  <%
+		Dim tick
+		tick = Timer
+		Response.Write("<h1>tick :" & tick & "</h1>")
+	%>
