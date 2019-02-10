@@ -1,0 +1,15 @@
+
+https://daneden.github.io/animate.css/
+
+$(this).addClass('animated tada').delay(1000).queue(function (next) {
+  $(this).removeClass("animated tada");
+  next();
+});
+
+
+** SPAN needs style="display:inline-block;" ** 
+
+<span style="display:inline-block;" class="dotask label label-success" data-task="authorize-client" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Client" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing">
+  Activate <i class="fa fa-hand-o-up spanSpaceLeft"></i>
+</span>
+
