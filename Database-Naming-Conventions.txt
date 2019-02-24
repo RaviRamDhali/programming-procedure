@@ -177,16 +177,16 @@ create table [dbo].[notes](
 		[exceptionData] [nvarchar](max) NULL default ('0'),
 	)
 
-	create table [dbo].[trackingLog](
-		[id] [int] identity(1,1) primary key not null,
-		[created] [datetime] NOT NULL default (getdate()),
-		[clientId] [int] NOT NULL default (0),
-		[memberId] [int] NOT NULL default (0),
-		[recordId] [int] NOT NULL default (0),
-		[recordTable] [nvarchar] (150) not null default ('0'),
-		[memo] [nvarchar](max) NOT NULL default ('0'),
-		[ipAddress] [nvarchar](50) NOT NULL default ('0'),
-		[trackingState] [int] NOT NULL default (0),
+	create table [dbo].[TrackingLog](
+		[Id] [int] identity(1,1) primary key not null,
+		[Created] [datetime] NOT NULL default (getdate()),
+		[Memo] [nvarchar](max) NOT NULL default ('0'),
+        	[Tags] [nvarchar](max) NOT NULL default ('0'),
+        	[CustomerId] [int] NOT NULL default (0),
+		[RecordId] [int] NOT NULL default (0),
+		[RecordTable] [nvarchar] (150) not null default ('0'),
+		[IpAddress] [nvarchar](50) NOT NULL default ('0'),
+		[Priority] [int] NOT NULL default (0),
 	)
 
 	create table [dbo].[roles](
