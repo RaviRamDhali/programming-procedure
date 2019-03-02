@@ -8,10 +8,12 @@ if (Request.HttpMethod == "POST")
 
 
 using Ionic.Zip;
-public class MultipleFileProcessor
-	{
-		public static UploadFileModel Post(HttpFileCollectionBase postedFiles)
+public static UploadFileModel Post(HttpFileCollectionBase postedFiles, string jobName)
 		{
+			UploadFileModel result = new UploadFileModel();
+			byte[] zipFileByes = new byte[] { };
+
+
 			using (var zip = new ZipFile())
 			{
 				foreach (var objFile in postedFiles.AllKeys)
@@ -19,10 +21,11 @@ public class MultipleFileProcessor
 					HttpPostedFileBase file = postedFiles[objFile];
 
 					//// Get file info
-					var fileName = Path.GetFileName(file.FileName);
-					var contentLength = file.ContentLength;
-					var contentType = file.ContentType;
+					var fileName = Path.GetFileName(file.FileName).ToStringOrDefault();
 
+					if (fileName.IsEmpty() || file.ContentLength == 0)
+						continue;
+					
 					//// Get file data
 					byte[] data = new byte[] { };
 					using (var binaryReader = new BinaryReader(file.InputStream))
@@ -32,13 +35,25 @@ public class MultipleFileProcessor
 					}
 				}
 
-				zip.Count();
-				zip.Save("J:\\_temp/ZipFile.zip");
-			}
+				// zip.Count();
+				// zip.Save("J:\\_temp/ZipFile.zip");
 
-			var uploadFileModel = new UploadFileModel();
-			return uploadFileModel;
+				MemoryStream memoryStream = new MemoryStream();
+				zip.Save(memoryStream);
+				
+				result = new UploadFileModel
+				{
+					FileStore = memoryStream.ToArray(),
+					FileName = jobName + ".zip",
+					ContentType = "application/zip",
+					ContentLength = memoryStream.Length.ToInt32OrDefault(),
+					CreatedDate = DateTime.Now,
+
+				};
+
+
+			}
+			
+			return result;
 
 		}
-
-	}
