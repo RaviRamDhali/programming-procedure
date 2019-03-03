@@ -34,7 +34,7 @@ DateTime:   (getdate())
 GUID:  (newid())
 
 
-	CREATE TABLE [dbo].[account](
+	CREATE TABLE [dbo].[User](
 		[Id] [int] identity(1,1) primary key not null,
 		[Guid] [uniqueidentifier] not null default ((newid())),
 		[LastName] [varchar](50) NOT NULL default ('0'),
@@ -42,7 +42,7 @@ GUID:  (newid())
 		[Email] [varchar](200) not null default ('0'),
 		[Password] [varchar](max) NOT NULL,
 		[PasswordSalt] [varchar](max) NOT NULL,
-		[Administrator] [bit] not null default ((0))	
+		[Administrator] [bit] not null default ((0)),
 		[LastLogin] [datetime] NULL,
 		[Created] [datetime] not null default (getdate()),
 		[Modified] [datetime] not null default (getdate()),
