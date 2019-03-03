@@ -26,6 +26,9 @@ guid = exteral use for querystrings, api calls
 ** Dont use MONEY ***
 [FaceValue] DECIMAL(19,4) NOT NULL DEFAULT ((0)),
 
+** Using varchar **
+allowing only simple char. not allowing characters from languages (needs nvarchar) **
+
 
 DateTime:   (getdate())
 GUID:  (newid())
