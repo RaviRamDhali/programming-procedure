@@ -261,14 +261,13 @@ create table [dbo].[contact_type](
 		[active] [bit] NOT NULL default ((1)),
 	)
 
-create table [dbo].[contactTypes](
-		[id] [int] identity(1,1) primary key not null,
-		[title] [varchar](150) NOT NULL default ('0'),
-		[description] [varchar](max) NOT NULL default ('0'),
-		[active] [bit] NOT NULL default ((1)),
-		[alert] [bit] NOT NULL default ((0)),
-)	
-	
+create table [dbo].[ConfigurationTypes](
+		[Id] [int] identity(1,1) primary key not null,
+		[Title] [varchar](150) NOT NULL default ('0'),
+		[Description] [varchar](max) NOT NULL default ('0'),
+		[Image] [varchar](150) NOT NULL default ('0'),
+		[Active] [bit] NOT NULL default ((1)),
+)
 
 
 
