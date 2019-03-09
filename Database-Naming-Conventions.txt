@@ -114,7 +114,34 @@ create table [dbo].[CustomerContact]
     [Active] [bit] NOT NULL default ((1)),
 )
 
+create table [dbo].[Diagram](
+		[Id] [int] identity(1,1) primary key not null,
+		[Guid] [uniqueidentifier] not null default ((newid())),
+		[SiteId] [int] NOT NULL default (0),
+		[UserId] [int] NOT NULL default (0),
+		[Title] [varchar](150) NOT NULL default ('0'),
+		[Description] [varchar](max) NOT NULL default ('0'),
+		[Created] [datetime] not null default (getdate()),
+		[Modified] [datetime] not null default (getdate()),
+		[Active] [bit] not null default ((1))	
+)
 
+
+
+create table [dbo].[DiagramElement](
+		[Id] [int] identity(1,1) primary key not null,
+		[Guid] [uniqueidentifier] not null default ((newid())),
+		[DiagramId] [int] NOT NULL default (0),
+		[ConfigurationId] [int] NOT NULL default (0),
+		[ParentDiagramElementId] [int] NOT NULL default (0),
+
+		[CoorX] DECIMAL(10,2) NOT NULL DEFAULT ((0)),
+		[CoorY] DECIMAL(10,2) NOT NULL DEFAULT ((0)),
+
+		[Created] [datetime] not null default (getdate()),
+		[Modified] [datetime] not null default (getdate()),
+		[Active] [bit] not null default ((1))	
+)
 
 CREATE TABLE [dbo].[product](
 	[id] [int] identity(1,1) primary key not null,
