@@ -1,6 +1,9 @@
 
 https://daneden.github.io/animate.css/
 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+
 $(this).addClass('animated tada').delay(1000).queue(function (next) {
   $(this).removeClass("animated tada");
   next();
