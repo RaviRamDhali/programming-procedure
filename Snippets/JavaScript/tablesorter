@@ -17,3 +17,25 @@ I am using
 **Not Working** with data-sort-value
 
     <td data-sort-value="42">Answer to the question</td>
+
+
+
+$('.instant-slide').change(function () {    
+        var bulkLoad = $('#bulkLoad').val();
+        if (bulkLoad === "false") {
+            var accessObject = BuildMemberCaseObject(this, true);
+
+            var isChecked = $(this).prop('checked');
+            console.log(isChecked);
+            console.log($(this).parents('td').attr('data-text', isChecked));
+
+            // PostMemberCase(accessObject);
+        }
+});
+
+$(document).on( "click", "thead th", function() {
+    $('#userTable').trigger("update");
+    $('#userTable').trigger("appendCache");
+});
+            
+            
