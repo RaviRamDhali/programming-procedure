@@ -1,35 +1,58 @@
 <div id="app" class="m-b-20">
-  <select id="ddSite" name="ddSite" class="form-control" v-model="selected">
-    <option :value="null">-- Select a Site --</option>
-    <option v-for="option in sites" v-bind:value="option.SiteId">
-      {{ option.SiteName }}
-    </option>
-  </select>
-  <span v-cloak>Selected: {{ selected }}</span>
+			<select id="ddSite" name="ddSite" class="form-control" v-model="selectedSite" v-on:change="onChangeSite($event)">
+				<option :value="null">-- Select a Site --</option>
+				<option v-for="option in sites" v-bind:value="option.SiteId">
+					{{ option.SiteName }}
+				</option>
+			</select>
+			<span v-cloak>Selected: {{ selectedSite }}</span>
 
-  <select id="ddSite" name="ddSite" class="form-control">
-    <option value="">-- Select a Site --</option>
-    @foreach (var m in Model.Sites)
-    {
-      <option value="@m.Value">@m.Text</option>
-    }
-  </select>
-</div>
+			<select id="ddDiagram" name="ddDiagram" class="form-control">
+				<option value="">-- Select a Department/Floor --</option>
+				<option v-for="diagram in diagrams" v-bind:value="diagram.Value">
+					{{ diagram.Text }}
+				</option>
+			</select>
+		</div>
+
 
 
 <script type="text/javascript">
-  new Vue({
-      el: '#app',
-      data: { selected: null, sites : [], hello:"Its me"},
-      mounted(){
-          axios.get("/api/sites/" + companyGuid)
-          .then(response => {this.sites = response.data})
-      }
-  })
-  
-  Vue.config.devtools = true;
-  
+	new Vue({
+		el: '#app',
+		data: {
+			selectedSite: null,
+			sites: [],
+			diagrams: [],
+			hello: "Its me"
+		},
+		mounted() {
+			axios.get("/api/sites/" + companyGuid)
+				.then(response => {
+					this.sites = response.data
+				})
+		},
+		methods:{
+			onChangeSite: function(e){
+				var self = this;
+				self.diagrams = [];
+				var siteId = e.target.value;
+
+				if(!siteId)
+					return
+
+				var filterDiagrams = this.filterDiagrams(siteId);
+				self.diagrams = filterDiagrams[0].Diagrams;
+			},
+			 filterDiagrams: function (siteId) {
+				 return this.sites.filter(function (site) {  return site.SiteId === siteId});
+		  },
+		}
+	});
+
+	Vue.config.devtools = true;
 </script>
+
 
 
 //CSS//
