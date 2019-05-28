@@ -27,3 +27,47 @@ exports.handler = (event, context, callback) => {
     req.on('error', callback);
     req.end();
 };
+
+//---------------------------------------------------------//
+//---------------------------------------------------------//
+
+const http = require("https");
+
+exports.handler = async(event, context, callback) => {
+
+  var options = {
+    "method": "GET",
+    "hostname": "app.casejacket.com",
+    "port": null,
+    "path": "/api/",
+    "headers": {
+      "cache-control": "no-cache",
+      "Content-Type": "application/json"
+    }
+  };
+
+  await new Promise((resolve, reject) => {
+    console.log('Promise.. ');
+
+    var req = http.request(options, function (res) {
+      var chunks = [];
+    
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+    
+      res.on("end", function () {
+        var body = Buffer.concat(chunks);
+        let result = JSON.parse(body.toString());
+        console.log(body.toString());
+        resolve(body.toString());
+        callback(null, result)
+      });
+    });
+    
+    req.end();
+  });
+
+  callback();
+
+};
