@@ -1,0 +1,35 @@
+function SendSMSViaLambda(ORGANIZATION_NAME, toNumber,body)
+
+    dim org_name
+    org_name = ORGANIZATION_NAME
+
+    body =  "[" & ORGANIZATION_NAME & "] " & body
+
+    Dim endpoint
+    endpoint = "https://xxxxxxxxxxxxxxxxxxxx.execute-api.us-xxxxxxxxxxxx.amazonaws.com/prod/send-sms"
+
+    Dim jsonData
+    jsonData = "{"
+    jsonData = jsonData + SurroundWithQuotes("recipient") & ":" &  SurroundWithQuotes(toNumber) & ","
+    jsonData = jsonData + SurroundWithQuotes("body") & ":" &  SurroundWithQuotes(body) & ","
+    jsonData = jsonData + SurroundWithQuotes("client") & ":" &  SurroundWithQuotes(org_name)
+    jsonData = jsonData + "}"
+
+
+    Dim http
+    Set http = Server.CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    http.open "POST", endpoint
+    http.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+
+    ' send the POST data
+    http.send jsonData
+    ' -------------------------------------
+    ' -------------------------------------
+
+    Dim result
+    result = http.responseText
+    Set http = Nothing
+
+    SendSMSViaLambda  = result
+
+end function
