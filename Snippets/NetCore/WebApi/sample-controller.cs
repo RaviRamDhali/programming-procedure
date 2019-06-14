@@ -37,6 +37,29 @@ namespace anaxisoft.Controllers.WebAPI
 			var json = diagrams.ListForDrawingCanvas();
 			return Newtonsoft.Json.JsonConvert.SerializeObject(json);
 		}
+		
+		[HttpPost]
+		public IEnumerable<string> Auth([FromForm] string email, string password)
+		{
+			var auth = new BLL.Services.Authentication.Login(email,password);
+
+			int userId = auth.GetUser();
+
+			return new string[] { "userId", userId.ToStringOrDefault() };
+
+		}
+		
+		[HttpPost]
+		public IEnumerable<string> Auth([FromForm] BLL.ViewModels.Common.Auth data)
+		{
+			var auth = new BLL.Services.Authentication.Login(data.email,data.password);
+
+			int userId = auth.GetUser();
+
+			return new string[] { "userId", userId.ToStringOrDefault() };
+
+		}
+		
 
 		// POST: api/Diagram
 		[HttpPost]
