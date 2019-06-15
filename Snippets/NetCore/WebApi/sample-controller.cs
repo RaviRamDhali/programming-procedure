@@ -38,6 +38,28 @@ namespace anaxisoft.Controllers.WebAPI
 			return Newtonsoft.Json.JsonConvert.SerializeObject(json);
 		}
 		
+		
+		// https://stackoverflow.com/questions/42360139/asp-net-core-return-json-with-status-code
+		
+		[HttpGet]
+		public ActionResult<string> Get()
+		{
+			var customer = new BLL.Services.Customer.Customer(975433);
+			return Ok(customer);
+		}
+		
+		
+		[HttpGet("{id}")]
+		public ActionResult Get(int id)
+		{
+			var customer = new BLL.Services.Customer.Customer(975433);
+			return Ok(customer);
+			//return Newtonsoft.Json.JsonConvert.SerializeObject(customer);
+		}
+		
+		
+		
+		
 		[HttpPost]
 		public IEnumerable<string> Auth([FromForm] string email, string password)
 		{
