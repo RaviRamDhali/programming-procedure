@@ -1,3 +1,10 @@
+/// There can be at most one parameter per action decorated with [FromBody]. 
+/// The ASP.NET Core MVC run-time delegates the responsibility of reading 
+/// the request stream to the formatter. 
+/// Once the request stream is read for a parameter, 
+/// it's generally not possible to read the request stream again for binding other [FromBody] parameters.
+	
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,9 +68,10 @@ namespace anaxisoft.Controllers.WebAPI
 		
 		
 		[HttpPost]
-		public IEnumerable<string> Auth([FromForm] string email, string password)
+		// NOT VALID public IEnumerable<string> Auth([FromForm] string email, string password)
+		public IEnumerable<string> Auth([FromForm] ObjectHere obj)
 		{
-			var auth = new BLL.Services.Authentication.Login(email,password);
+			var auth = new BLL.Services.Authentication.Login(obj.email,obj.password);
 
 			int userId = auth.GetUser();
 
