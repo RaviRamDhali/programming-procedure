@@ -1,15 +1,20 @@
- Declare @s varchar(100),@result varchar(100)
-    set @s='as4khd0939sdf78' 
-    set @result=''
+Declare @strRawPhone varchar(100)
+Declare @strResultPhone varchar(100)
+
+    set @strRawPhone = '444ABC-222*1111XYZ'
+    set @strResultPhone = ''
+
+	print 'input: ' + @strRawPhone
 
     select
-        @result=@result+
+        @strResultPhone = @strResultPhone +
                 case when number like '[0-9]' then number else '' end from 
         (
-             select substring(@s,number,1) as number from 
+             select substring(@strRawPhone,number,1) as number from 
             (
                 select number from master..spt_values 
-                where type='p' and number between 1 and len(@s)
+                where type='p' and number between 1 and len(@strRawPhone)
             ) as t
-        ) as t 
-    select @result as only_numbers 
+        ) as t
+
+select @strResultPhone as only_numbers
