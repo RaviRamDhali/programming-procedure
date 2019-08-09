@@ -1,5 +1,3 @@
-USE [TestEncrypt]
-GO
 
 -- To allow advanced options to be changed.
 EXEC sp_configure 'show advanced options', 1
