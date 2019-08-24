@@ -1,0 +1,9 @@
+# C:\Applications\Reporting\CLIENTNAME\CLIENTNAME-import-daily-step1b.ps1
+
+Write-Output "Process started ... "
+
+Write-Output "START cleaning and parsing CUSTOMER FILE"
+Import-Csv "C:\FTP\CLIENTNAME\target\temp_CLIENTNAME_agt.txt" -header("ID","NPNNUMBER","FIRSTNAME","LASTNAME","SSN","EMAIL","STATE") | Select-Object -Skip 1 | Where-Object { $_.CUSTOMERID -match '^[a-zA-Z0-9]' } | Export-Csv "C:\FTP\CLIENTNAME\target\temp_CLIENTNAME_agt_a.txt" -notypeinfo -Delimiter "," 
+Write-Output "DONE cleaning and parsing CUSTOMER FILE"
+
+Write-Output "Process finished ... "
