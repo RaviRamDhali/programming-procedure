@@ -15,3 +15,23 @@ public string Get(Guid companyId, Guid diagramId)
   var json = diagrams.ListForDrawingCanvas();
   return Newtonsoft.Json.JsonConvert.SerializeObject(json);
 }
+
+
+
+// https://localhost:44324/api/Configuration/Types
+[HttpGet("Types", Name = "GetConfigurationTypes")]
+ public ActionResult GetTypes()
+ {
+  var configuration = new BLL.Services.Configuration.Selections();
+  var obj = configuration.GetTypes();
+  return Ok(obj);
+ }
+
+https://localhost:44324/api/Configuration/Status
+[HttpGet("Status", Name = "GetConfigurationStatusTypes")]
+public ActionResult GetStatusTypes()
+{
+ var configuration = new BLL.Services.Configuration.Selections();
+ var obj = configuration.GetStatusTypes();
+ return Ok(obj);
+}
