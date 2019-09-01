@@ -1,0 +1,40 @@
+ // Define a new component called button-counter
+ Vue.component('dropdown-configuration', {
+         //template: '<option :value="item.Value">{{item.Key}}</option>',
+         name: 'dropdown-configuration',
+         template: '<select name="ddConfgfiType" id="ddConfgfiType"><option value="">Choose</option><option v-for="(item, index) in items" :key="index" :value="item.Value">{{item.Key}}</option></select>',
+         props: ['items'],
+         // data: function () {},
+         methods: {}
+     });
+
+
+new Vue({
+     el: '#app',
+     data: {
+         diagrams: [],
+         companyid: null,
+         configType:[],
+         statusType: [],
+    },
+     mounted: function () {
+         var vdata = this;
+         axios.get("/api/test")
+             .then(function (response) {
+                vdata.configType = response.data;
+                console.log('response', vdata.configType);
+             })
+        //  axios.get("/api/test")
+        //      .then(function (response) {
+        //          console.log(response.data)
+        //          this.statusType = response.data
+        //      });
+     },
+     methods: {
+
+     }
+ });
+
+ Vue.config.devtools = true;
+
+
