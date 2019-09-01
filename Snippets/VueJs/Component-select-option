@@ -1,9 +1,19 @@
+ // HTML -----------------------------
+ <div class="form-group row">
+   <label class="col-md-2 control-label">Type</label>
+   <div class="col-md-10">
+      <dropdown-configuration-type :items="configType" :selectedvalue="@Model.TypeId"></dropdown-configuration-type>
+   </div>
+ </div>
+ 
+
+// -----------------------------
  // Define a new component called button-counter
- Vue.component('dropdown-configuration', {
+ Vue.component('dropdown-configuration-type', {
          //template: '<option :value="item.Value">{{item.Key}}</option>',
-         name: 'dropdown-configuration',
-         template: '<select name="ddConfgfiType" id="ddConfgfiType"><option value="">Choose</option><option v-for="(item, index) in items" :key="index" :value="item.Value">{{item.Key}}</option></select>',
-         props: ['items'],
+         name: 'dropdown-configuration-type',
+         template: '<select name="TypeGuid" id="TypeGuid" class="form-control" required><option value="">Choose</option><option v-for="(item, index) in items" :key="index" :value="item.Value" :selected="item.Value == selectedvalue">{{item.Key}}{{item.Value}}</option></select>',
+         props: ['items', 'selectedvalue'],
          // data: function () {},
          methods: {}
      });
