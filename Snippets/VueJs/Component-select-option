@@ -1,4 +1,15 @@
  // HTML -----------------------------
+ *** Using/Passing GUID  @Model.TypeGuid
+ use back-tick  `xxxxxx`
+ 
+  <div class="form-group row">
+   <label class="col-md-2 control-label">Type</label>
+   <div class="col-md-10">
+      <dropdown-configuration-type :items="configType" :selectedvalue="`@Model.TypeGuid`"></dropdown-configuration-type>
+   </div>
+ </div>
+ 
+ 
  <div class="form-group row">
    <label class="col-md-2 control-label">Type</label>
    <div class="col-md-10">
