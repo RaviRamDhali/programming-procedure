@@ -1,7 +1,6 @@
  // HTML -----------------------------
- *** Using/Passing GUID  @Model.TypeGuid
- use back-tick  `xxxxxx`
- 
+ *** Using/Passing GUID  @Model.TypeGuid   use back-tick  `xxxxxx`  ***
+  
   <div class="form-group row">
    <label class="col-md-2 control-label">Type</label>
    <div class="col-md-10">
