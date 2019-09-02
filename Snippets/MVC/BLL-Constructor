@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using BLL.Mappings;
+using BLL.ViewModels;
+using Microsoft.EntityFrameworkCore.Design;
+
+namespace BLL.Services.Configuration
+{
+
+	public class Selections
+	{
+
+		public List<Common.GuidTextPair> Dropdown;
+
+		public Selections()
+		{
+			Dropdown = new List<Common.GuidTextPair>();
+		}
+
+		public void InitializeTypes()
+		{
+			var data = DAL.Repositories.ConfigurationSelection.GetTypes();
+
+			if (data.IsNullOrEmpty())
+				return;
+
+			this.FromDB(data);
+			DoBusinessLogicOnTypes();
+		}
+		
+		public void InitializeStatusTypes()
+		{
+			var data = DAL.Repositories.ConfigurationSelection.GetStatus();
+
+			if (data.IsNullOrEmpty())
+				return;
+
+			this.FromDB(data);
+			DoBusinessLogicOnStatusTypes();
+		}
+
+		private void DoBusinessLogicOnTypes()
+		{
+			foreach (var item in Dropdown)
+			{
+				item.Text = "Richard";
+			}
+		}
+
+		private void DoBusinessLogicOnStatusTypes()
+		{
+			foreach (var item in Dropdown)
+			{
+				item.Text = "Richard";
+			}
+		}
+
+	}
+}
