@@ -5,6 +5,9 @@
 //Id and Name
 @Html.DropDownListFor(m => m.Helper.State, new SelectList(Model.SelectState, "Abbreviation", "Name"), "- Select One -", new { @class = "form-control" , Name = "State" })
 
+// Checkbox with BOOL
+<input type="checkbox" name="Active" id="Active" @(Model.Active ? "checked" : "") value="@Model.Active.ToStringOrDefault().ToLower()">
+
 // HTML 5 Date formate
 <input id="@field.Guid" name="@field.Guid" type="date" class="form-control" @(field.Required ? "required" : "") value="@string.Format("{0:yyyy-MM-ddyy}",data)"/>
                                    
