@@ -1,0 +1,13 @@
+$target = $PSScriptRoot + '\target\export.txt'
+$source = $PSScriptRoot + 'source\dataA.txt'
+$date = (Get-Date).AddDays(-1).ToString('MMddyyyy')
+
+
+##$sqlExec = 'EXEC testcenter.dbo.SponsorList'
+$sqlExec = 'Select top 100 CustomerID, LastName, FirstName, Addr1, Email from testcenter.dbo.Customer'
+$server = '-S XXX.XXX.100.108'
+
+$sql = 'BCP $sqlExec QUERYOUT $source $server -T /t"," -c'
+
+Invoke-Expression $sql
+
