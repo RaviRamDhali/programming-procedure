@@ -50,7 +50,7 @@ GUID:  (newid())
 	)
 
 
-	create table [dbo].[hr_app_employment](
+	create table [dbo].[Hr_app_employment](
 		[Id] [int] identity(1,1) primary key not null,
 		[Guid] [uniqueidentifier] not null default ((newid())),
 		[Name] [varchar](150) not null default ('0'),
@@ -66,7 +66,7 @@ GUID:  (newid())
 		[Active] [bit] not null default	
 	)
 ok
-	CREATE TABLE [dbo].[exceptionLog](
+	CREATE TABLE [dbo].[ExceptionLog](
 		[Id] [int] identity(1,1) not null primary key,
 		[ExceptionStack] [varchar](max) not null default ('0'),
 		[ErrorState] [varchar](50) not null default ('0'),
@@ -143,7 +143,7 @@ create table [dbo].[DiagramElement](
 		[Active] [bit] not null default	
 )
 
-CREATE TABLE [dbo].[product](
+CREATE TABLE [dbo].[Product](
 	[Id] [int] identity(1,1) primary key not null,
 	[Guid] [uniqueidentifier] not null default ((newid())),
 	[CategoryId] [int] not null default (0),
@@ -166,7 +166,7 @@ CREATE TABLE [dbo].[product](
 )
 
 
-create table [dbo].[image](
+create table [dbo].[Image](
 	[Id] [int] identity(1,1) primary key not null,
 	[Guid] [uniqueidentifier] not null default ((newid())),
 	[Name] [varchar](150) not null default ('0'),
@@ -183,7 +183,7 @@ create table [dbo].[image](
 	)
 
 
-create table [dbo].[notes](
+create table [dbo].[Notes](
 	[Id] [int] identity(1,1) primary key not null,
 	[Guid] [uniqueidentifier] not null default ((newid())),
 	[AccountId] [int] NOT NULL default (0),
@@ -195,7 +195,7 @@ create table [dbo].[notes](
 )
 
 
-	create table [dbo].[exceptionLog](
+	create table [dbo].[ExceptionLog](
 		[id] [int] identity(1,1) primary key not null,
 		[exceptionStack] [varchar](max) NOT NULL default ('0'),
 		[errorState] [varchar](50) NOT NULL default ('0'),
@@ -219,7 +219,7 @@ create table [dbo].[notes](
 		[Priority] [int] NOT NULL default (0),
 	)
 
-	create table [dbo].[roles](
+	create table [dbo].[Roles](
 		[id] [int] identity(1,1) primary key not null,
 		[guid] [uniqueidentifier] not null default ((newid())),
 		[Name] [varchar](150) NOT NULL default ('0'),
@@ -227,65 +227,65 @@ create table [dbo].[notes](
 		[active] [bit] NOT NULL default,
 		[alert] [bit] NOT NULL default ((0)),
 	)
-	create table [dbo].[account](
-		[id] [int] identity(1,1) primary key not null,
-		[guid] [uniqueidentifier] not null default ((newid())),
-		[lastName] [varchar](50) NOT NULL default ('0'),
-		[firstName] [varchar](50) NOT NULL default ('0'),
-		[email] [varchar] (200) not null default ('0'),
-		[password] [varchar] (max) not null default ('0'),
-		[passwordSalt] [varchar] (max) not null default ('0'),
-		[clientId] [int] NOT NULL default (0),
-		[administrator] [bit] NOT NULL default,
-		[lastLogin] [datetime] NULL,
-		[created] [datetime] not null default (getdate()),
-		[modified] [datetime] not null default (getdate()),
-		[active] [bit] NOT NULL default,
+	create table [dbo].[Account](
+		[Id] [int] identity(1,1) primary key not null,
+		[Guid] [uniqueidentifier] not null default ((newid())),
+		[LastName] [varchar](50) NOT NULL default ('0'),
+		[FirstName] [varchar](50) NOT NULL default ('0'),
+		[Email] [varchar] (200) not null default ('0'),
+		[Password] [varchar] (max) not null default ('0'),
+		[PasswordSalt] [varchar] (max) not null default ('0'),
+		[ClientId] [int] NOT NULL default (0),
+		[Administrator] [bit] NOT NULL default,
+		[LastLogin] [datetime] NULL,
+		[Created] [datetime] not null default (getdate()),
+		[Modified] [datetime] not null default (getdate()),
+		[Active] [bit] NOT NULL default,
 	)
 
-	create table [dbo].[account_role](
-		[id] [int] identity(1,1) primary key not null,
-		[clientId] [int] NOT NULL default (0),
-		[accountId] [int] NOT NULL default (0),
-		[roleId] [int] NOT NULL default (0),
-		[created] [datetime] NOT NULL default (getdate()),
-		[modified] [datetime] NOT NULL default (getdate()),
-		[active] [bit] NOT NULL default,
+	create table [dbo].[Account_role](
+		[Id] [int] identity(1,1) primary key not null,
+		[ClientId] [int] NOT NULL default (0),
+		[AccountId] [int] NOT NULL default (0),
+		[RoleId] [int] NOT NULL default (0),
+		[Created] [datetime] NOT NULL default (getdate()),
+		[Modified] [datetime] NOT NULL default (getdate()),
+		[Active] [bit] NOT NULL default,
 	)
 
 	//------------------------------------------------------------//
 
 	
-create table [dbo].[contact](
-	[id] [int] identity(1,1) primary key not null,
-	[guid] [uniqueidentifier] not null default ((newid())),
-	[clientId] [int] NOT NULL default (0),
-	[cemeteryId] [int] NOT NULL default (0),
-	[lastName] [varchar](50) NOT NULL default ('0'),
-	[firstName] [varchar](50) NOT NULL default ('0'),
-	[middleName] [varchar](50) NOT NULL default ('0'),
+create table [dbo].[Contact](
+	[Id] [int] identity(1,1) primary key not null,
+	[Guid] [uniqueidentifier] not null default ((newid())),
+	[ClientId] [int] NOT NULL default (0),
+	[CemeteryId] [int] NOT NULL default (0),
+	[LastName] [varchar](50) NOT NULL default ('0'),
+	[FirstName] [varchar](50) NOT NULL default ('0'),
+	[MiddleName] [varchar](50) NOT NULL default ('0'),
 
-	[address1] [varchar](150) NOT NULL default ('0'),
-	[address2] [varchar](150) NOT NULL default ('0'),
-	[city] [varchar](150) NOT NULL default ('0'),
-	[state] [varchar](2) NOT NULL default ('0'),
-	[zip] [varchar](10) NOT NULL default ('0'),
-	[phone] [varchar](10) NOT NULL default ('0'),
-	[cell] [varchar](10) NOT NULL default ('0'),
-	[email] [varchar](200) not null default ('0'),
+	[Address1] [varchar](150) NOT NULL default ('0'),
+	[Address2] [varchar](150) NOT NULL default ('0'),
+	[City] [varchar](150) NOT NULL default ('0'),
+	[State] [varchar](2) NOT NULL default ('0'),
+	[Zip] [varchar](10) NOT NULL default ('0'),
+	[Phone] [varchar](10) NOT NULL default ('0'),
+	[Cell] [varchar](10) NOT NULL default ('0'),
+	[Email] [varchar](200) not null default ('0'),
 	
-	[created] [datetime] NOT NULL default (getdate()),
-	[modified] [datetime] NOT NULL default (getdate()),
-	[active] [bit] NOT NULL default,
+	[Created] [datetime] NOT NULL default (getdate()),
+	[Modified] [datetime] NOT NULL default (getdate()),
+	[Active] [bit] NOT NULL default,
 )
 
-create table [dbo].[contact_type](
-		[id] [int] identity(1,1) primary key not null,
-		[contactId] [int] NOT NULL default (0),
-		[contactTypeId] [int] NOT NULL default (0),
-		[created] [datetime] NOT NULL default (getdate()),
-		[modified] [datetime] NOT NULL default (getdate()),
-		[active] [bit] NOT NULL default,
+create table [dbo].[Contact_type](
+		[Id] [int] identity(1,1) primary key not null,
+		[ContactId] [int] NOT NULL default (0),
+		[ContactTypeId] [int] NOT NULL default (0),
+		[Created] [datetime] NOT NULL default (getdate()),
+		[Modified] [datetime] NOT NULL default (getdate()),
+		[Active] [bit] NOT NULL default,
 	)
 
 create table [dbo].[ConfigurationTypes](
@@ -299,46 +299,46 @@ create table [dbo].[ConfigurationTypes](
 
 
 
-	create table [dbo].[owner](
-	[id] [int] identity(1,1) primary key not null,
-	[guid] [uniqueidentifier] not null default ((newid())),
-	[clientId] [int] NOT NULL default (0),
-	[lastName] [varchar](50) NOT NULL default ('0'),
-	[firstName] [varchar](50) NOT NULL default ('0'),
-	[middleName] [varchar](50) NOT NULL default ('0'),
+	create table [dbo].[Owner](
+	[Id] [int] identity(1,1) primary key not null,
+	[Guid] [uniqueidentifier] not null default ((newid())),
+	[ClientId] [int] NOT NULL default (0),
+	[LastName] [varchar](50) NOT NULL default ('0'),
+	[FirstName] [varchar](50) NOT NULL default ('0'),
+	[MiddleName] [varchar](50) NOT NULL default ('0'),
 
-	[address1] [varchar](150) NOT NULL default ('0'),
-	[address2] [varchar](150) NOT NULL default ('0'),
-	[city] [varchar](150) NOT NULL default ('0'),
-	[state] [varchar](2) NOT NULL default ('0'),
-	[zip] [varchar](10) NOT NULL default ('0'),
-	[phone] [varchar](10) NOT NULL default ('0'),
-	[cell] [varchar](10) NOT NULL default ('0'),
-	[email] [varchar](200) not null default ('0'),
+	[Address1] [varchar](150) NOT NULL default ('0'),
+	[Address2] [varchar](150) NOT NULL default ('0'),
+	[City] [varchar](150) NOT NULL default ('0'),
+	[State] [varchar](2) NOT NULL default ('0'),
+	[Zip] [varchar](10) NOT NULL default ('0'),
+	[Phone] [varchar](10) NOT NULL default ('0'),
+	[Cell] [varchar](10) NOT NULL default ('0'),
+	[Email] [varchar](200) not null default ('0'),
 	
-	[created] [datetime] NOT NULL default (getdate()),
-	[modified] [datetime] NOT NULL default (getdate()),
-	[active] [bit] NOT NULL default,
+	[Created] [datetime] NOT NULL default (getdate()),
+	[Modified] [datetime] NOT NULL default (getdate()),
+	[Active] [bit] NOT NULL default,
 )
 
 create table [dbo].[EmailQueue](
-	[id] [int] identity(1,1) primary key not null,
-	[batchId] [int] NOT NULL default (0),
-	[created] [datetime] not null default (getdate()),
-	[toEmail] [varchar](200) not null default ('0'),
-	[fromEmail] [varchar](200) not null default ('0'),
-	[completed] [bit] not null default
+	[Id] [int] identity(1,1) primary key not null,
+	[BatchId] [int] NOT NULL default (0),
+	[Created] [datetime] not null default (getdate()),
+	[ToEmail] [varchar](200) not null default ('0'),
+	[FromEmail] [varchar](200) not null default ('0'),
+	[Completed] [bit] not null default
 )
 
 
 create table [dbo].[EmailQueueBody](
-	[id] [int] identity(1,1) primary key not null,
-	[batchId] [int] NOT NULL default (0),
-	[created] [datetime] not null default (getdate()),
-	[body] [varchar](max) NOT NULL default ('0'),
-	[subject] [varchar] (150) not null default ('0'),
-	[attachment1] [varchar](200) null,
-	[attachment2] [varchar](200) null,
+	[Id] [int] identity(1,1) primary key not null,
+	[BatchId] [int] NOT NULL default (0),
+	[Created] [datetime] not null default (getdate()),
+	[Body] [varchar](max) NOT NULL default ('0'),
+	[Subject] [varchar] (150) not null default ('0'),
+	[Attachment1] [varchar](200) null,
+	[Attachment2] [varchar](200) null,
 	)
 
 
