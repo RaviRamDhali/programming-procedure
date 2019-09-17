@@ -1,7 +1,7 @@
-$target = $PSScriptRoot + '\target\export.txt'
-$source = $PSScriptRoot + 'source\dataA.txt'
 $date = (Get-Date).AddDays(-1).ToString('MMddyyyy')
-
+$strDateTime = (((get-date)).ToString("yyyyMMddhhmmss"))
+$target = $PSScriptRoot + '\target\export.txt'
+$source = $PSScriptRoot + 'source\data-' + $strDateTime + '.txt'
 
 ##$sqlExec = 'EXEC testcenter.dbo.SponsorList'
 $sqlExec = 'Select top 100 CustomerID, LastName, FirstName, Addr1, Email from dbanme.dbo.Customer'
