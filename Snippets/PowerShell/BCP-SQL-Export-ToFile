@@ -3,7 +3,6 @@ $strDateTime = (((get-date)).ToString("yyyyMMddhhmmss"))
 $target = $PSScriptRoot + '\target\export.txt'
 $source = $PSScriptRoot + 'source\data-' + $strDateTime + '.txt'
 
-##$sqlExec = 'EXEC testcenter.dbo.SponsorList'
 $sqlExec = 'Select top 100 CustomerID, LastName, FirstName, Addr1, Email from dbanme.dbo.Customer'
 $server = '-S XXX.XXX.100.108'
 
