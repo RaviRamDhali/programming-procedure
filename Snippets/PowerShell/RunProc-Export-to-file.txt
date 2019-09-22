@@ -1,0 +1,50 @@
+$beginDate = (Get-Date -Hour 0 -Minute 00 -Second 00).AddDays(-1);
+$endDate = (Get-Date -Hour 0 -Minute 00 -Second 00);
+
+
+$date = $beginDate.ToString('MMddyyyy')
+$strDateTime = (((get-date)).ToString("yyyyMMddhhmmss"))
+$target = $PSScriptRoot + '\target\export.txt'
+$source_raw = $PSScriptRoot + 'source\raw-' + $strDateTime + '.txt'
+$source_data = $PSScriptRoot + 'source\data-' + $strDateTime + '.txt'
+$server = '-S xxx.xxx.100.108'
+
+
+Write-Host 'Running CodeReport_Runner .....';
+push-location
+$sqlCodeRunner = "exec dbname.dbo.CodeReport_Runner '" + $beginDate + "','" + $endDate + "'"
+Import-Module Sqlps  -DisableNameChecking
+Write-Host 'Query:' -NoNewline
+Write-Host $sqlCodeRunner -NoNewline
+
+Invoke-Sqlcmd -query $sqlCodeRunner
+pop-location
+
+
+Write-Host 'Export data from ReportCode .....';
+$sqlExec = 'Select * from dbname.dbo.ReportCode'
+$sql = 'BCP $sqlExec QUERYOUT $source_raw $server -T /t"," -c'
+Invoke-Expression $sql
+
+
+Write-Host 'Create Code File .....';
+
+Write-Host 'Adding header .....';
+# Create file with header:
+$header = 'HDR.S26082.E00.CSSCE.S0000' + $date + 'PRODUCERTRAININGFILE     N001 *'
+$header | Set-Content $source_data
+
+
+Write-Host 'Adding data rows .....';
+# Add Rows and Remove NULLS:
+(Get-Content $source_raw) -replace "`0", "" | Add-Content $source_data
+
+
+Write-Host 'Adding footer .....';
+# Append to footer:
+$footer = 'END.S26082.E00.CSSCE.S0000'
+$footer | Add-Content $source_data
+
+
+# Clean up
+Remove-Item -Path $source_raw -Force
