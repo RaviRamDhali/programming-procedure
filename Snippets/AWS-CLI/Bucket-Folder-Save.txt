@@ -1,0 +1,8 @@
+SET today=%Date:~-10,2%%Date:~-7,2%%Date:~-4,4%
+
+SET "targetBucket=awsfolder-backup-sets"
+SET "targetFolder=awsfolder-production"
+
+SET "targetWebsiteFolder=awsfolder-production/xxxxxxx"
+
+aws s3 sync C:\WebSite\xxxxxxx s3://%targetBucket%/%targetWebsiteFolder%/%today%/
