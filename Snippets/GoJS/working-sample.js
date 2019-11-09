@@ -1,5 +1,4 @@
 // https://codepen.io/ravir_dhali/full/xxxzRJa
-
 var data = getData();
 var objs = JSON.parse(data);
 console.log(objs);
@@ -292,30 +291,36 @@ let data3 = {"key":57,"loc":"550 40","name":"Puppy Dog","assignedTo":"Piper","wm
 
 $(".add1").click( function(e){
   $(this).hide();
-  // with whatever properties your node's model data needs
-  myDiagram.model.addNodeData(data1);
-  var node = myDiagram.findNodeForData(data1); 
-  var selectedNode = node;  
-  node.move(selectedNode.location);   
+  var node = addNodeFromData(data1)
+  addNodeDataColor(node);
 });
 
 $(".add2").click( function(e){
-  
   $(this).hide();
-  // with whatever properties your node's model data needs
-  myDiagram.model.addNodeData(data2);
-  var node = myDiagram.findNodeForData(data2); 
-  var selectedNode = node;  
-  node.move(selectedNode.location);  
+  var node = addNodeFromData(data2)
+  addNodeDataColor(node);
 });
 
 
 $(".add3").click( function(e){ 
-
   $(this).hide();
-  // with whatever properties your node's model data needs
-  myDiagram.model.addNodeData(data3);
-  var node = myDiagram.findNodeForData(data3); 
-  var selectedNode = node;  
-  node.move(selectedNode.location);  
+  var node = addNodeFromData(data3)
+  addNodeDataColor(node); 
 });
+
+
+function addNodeFromData(arrNodeData){
+  myDiagram.model.addNodeData(arrNodeData);
+  var node = myDiagram.findNodeForData(arrNodeData); 
+  var selectedNode = node;  
+  node.move(selectedNode.location);
+  return node;
+}
+
+function addNodeDataColor(node){
+  var shape = node.part.findObject("RoundedRectangle");
+  if(shape){
+      shape.stroke = "darkkhaki";
+      shape.fill = "lightgreen";
+    }
+}
