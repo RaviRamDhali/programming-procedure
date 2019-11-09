@@ -291,40 +291,31 @@ let data3 = {"key":57,"loc":"550 40","name":"Puppy Dog","assignedTo":"Piper","wm
 
 
 $(".add1").click( function(e){
-  
   $(this).hide();
-  
-      // with whatever properties your node's model data needs
-    myDiagram.model.addNodeData(data1);
-    var node = myDiagram.findNodeForData(data1);
-    node.move(new go.Point(12, 34));  
+  // with whatever properties your node's model data needs
+  myDiagram.model.addNodeData(data1);
+  var node = myDiagram.findNodeForData(data1); 
+  var selectedNode = node;  
+  node.move(selectedNode.location);   
 });
 
 $(".add2").click( function(e){
   
   $(this).hide();
-  
-      // with whatever properties your node's model data needs
-    myDiagram.model.addNodeData(data2);
-    var node = myDiagram.findNodeForData(data2);
-    node.move(new go.Point(12, 34));  
+  // with whatever properties your node's model data needs
+  myDiagram.model.addNodeData(data2);
+  var node = myDiagram.findNodeForData(data2); 
+  var selectedNode = node;  
+  node.move(selectedNode.location);  
 });
 
 
-$(".add3").click( function(e){
-  
+$(".add3").click( function(e){ 
+
   $(this).hide();
-  
-      // with whatever properties your node's model data needs
-    myDiagram.model.addNodeData(data3);
-    var node = myDiagram.findNodeForData(data3); 
-    var selectedNode = node;
-    console.log("selectedNode",selectedNode);
-    console.log("selectedNodeKey",selectedNode.key);
-    console.log("selectedNode", selectedNode.location.toString());
-    console.log("selectedNode-x", selectedNode.location.x);
-    console.log("selectedNode-y", selectedNode.location.y);
-    console.log("locationObject", selectedNode.locationObject);
-  
-    node.move(selectedNode.location);  
+  // with whatever properties your node's model data needs
+  myDiagram.model.addNodeData(data3);
+  var node = myDiagram.findNodeForData(data3); 
+  var selectedNode = node;  
+  node.move(selectedNode.location);  
 });
