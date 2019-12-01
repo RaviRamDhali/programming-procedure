@@ -1,84 +1,84 @@
-								<table data-toggle="table" class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline">
-									<thead>
-										<tr>
-										<th></th>
-										<th>Active</th>
-											<th>Name</th>
-											<th>Vendor</th>
-											<th>Manufacturer</th>
-											<th>Model</th>
+<table data-toggle="table" class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline">
+	<thead>
+		<tr>
+		<th></th>
+		<th>Active</th>
+			<th>Name</th>
+			<th>Vendor</th>
+			<th>Manufacturer</th>
+			<th>Model</th>
 
-											<th>IpAddress</th>
-											<th>WMI_Name</th>
-											<th>AssignedTo</th>
+			<th>IpAddress</th>
+			<th>WMI_Name</th>
+			<th>AssignedTo</th>
 
-											<th>TypeTitle</th>
-											<th>TypeImage</th>
+			<th>TypeTitle</th>
+			<th>TypeImage</th>
 
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-
-
-									<template v-for="item in configurations">
-										<tr v-bind:data-id='item.guid'>
-											<td><img v-bind:src="item.imgSrc" alt=""></td>
-											<td>
-												{{item.imgSrc}}
-											</td>
-											<td>
-											<a href="/Configuration/Detail/{{item.guid}}">{{item.name}}</a><br>
-											<small>{{item.description}}</small>
-
-											</td>
-											<td>{{item.vendor}}</td>
-											<td>{{item.manufacturer}}</td>
-											<td>{{item.model}}</td>
-
-											<td>{{item.ipAddress}}</td>
-											<td>{{item.wmI_Name}}</td>
-											<td>{{item.assignedTo}}</td>
-
-											<td>{{item.typeTitle}}</td>
-											<td>{{item.typeImage}}</td>
-
-											<td>
-											<a href="/Configuration/Detail/{{item.guid}}">Details</a>
-											</td>
-											</tr>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
 
 
-										</tr>
-									</template>
+	<template v-for="item in configurations">
+		<tr v-bind:data-id='item.guid'>
+			<td><img v-bind:src="item.imgSrc" alt=""></td>
+			<td>
+				{{item.imgSrc}}
+			</td>
+			<td>
+			<a href="/Configuration/Detail/{{item.guid}}">{{item.name}}</a><br>
+			<small>{{item.description}}</small>
+
+			</td>
+			<td>{{item.vendor}}</td>
+			<td>{{item.manufacturer}}</td>
+			<td>{{item.model}}</td>
+
+			<td>{{item.ipAddress}}</td>
+			<td>{{item.wmI_Name}}</td>
+			<td>{{item.assignedTo}}</td>
+
+			<td>{{item.typeTitle}}</td>
+			<td>{{item.typeImage}}</td>
+
+			<td>
+			<a href="/Configuration/Detail/{{item.guid}}">Details</a>
+			</td>
+			</tr>
 
 
-									<tr data-id="7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">
-										<td><img src="https://xxxxxxxxx.cloudfront.net/assets/images/components/7.jpg" alt=""></td>
-										<td>
-											<span class="badge badge-success">Ms.</span>
-										</td>
-										<td>
-											<a href="/Configuration/Detail/7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">LaserJet Pro 400 Color MFP M475dn</a><br>
-											<small>PowerEdge Server - 8GB Memory Module</small>
-
-										</td>
-										<td>Microsoft</td>
-										<td>Microsoft</td>
-										<td>Thrufropor</td>
-
-										<td>10.2.7.13</td>
-										<td>OEL4-0387</td>
-										<td>Joel4</td>
-
-										<td>SaaS</td>
-										<td>7.jpg</td>
-
-										<td>
-											<a href="/Configuration/Detail/7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">Details</a>
-										</td>
-									</tr>
+		</tr>
+	</template>
 
 
-									</tbody>
-								</table>
+	<tr data-id="7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">
+		<td><img src="https://xxxxxxxxx.cloudfront.net/assets/images/components/7.jpg" alt=""></td>
+		<td>
+			<span class="badge badge-success">Ms.</span>
+		</td>
+		<td>
+			<a href="/Configuration/Detail/7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">LaserJet Pro 400 Color MFP M475dn</a><br>
+			<small>PowerEdge Server - 8GB Memory Module</small>
+
+		</td>
+		<td>Microsoft</td>
+		<td>Microsoft</td>
+		<td>Thrufropor</td>
+
+		<td>10.2.7.13</td>
+		<td>OEL4-0387</td>
+		<td>Joel4</td>
+
+		<td>SaaS</td>
+		<td>7.jpg</td>
+
+		<td>
+			<a href="/Configuration/Detail/7e6f397d-f5a6-fad2-3e58-7d5966d6d2aa">Details</a>
+		</td>
+	</tr>
+
+
+	</tbody>
+</table>
