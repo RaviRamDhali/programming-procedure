@@ -23,7 +23,9 @@
 
 	<template v-for="item in configurations">
 		<tr v-bind:data-id='item.guid'>
-			<td><img v-bind:src="item.imgSrc" alt=""></td>
+			<td v-bind:data-sort="item.guid">
+				<img v-bind:src="item.imgSrc" alt="">
+			</td>
 			<td>
 				{{item.imgSrc}}
 			</td>
