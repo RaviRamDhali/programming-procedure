@@ -4,7 +4,7 @@
 Convert c# Datetime to HTML-5 Date value
 <input type="date" value="<%= ActivityDate.ToString("yyyy-MM-dd")%>"/>
 OR Nullable Datetime?
-<input type="date"value="<%@Model.Notified?.ToString("yyyy-MM-dd")%>">
+<input type="date" class="form-control" value="@(ActivityDate?.ToString("yyyy-MM-dd"))">
 
 Search Fields for Date range (need to have string in view)
 <input type="date" name="start" id="start" placeholder="start" value="<%=FormCollection.StartString%>"/> to
