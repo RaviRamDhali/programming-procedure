@@ -25,6 +25,8 @@ designer
 base
 editor
 
+## Data Transfer Objects (DTO) ##
+
 ##Dispatcher-worker Models##
 POST > Dispatcher > Worker
 
