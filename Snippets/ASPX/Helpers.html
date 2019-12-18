@@ -1,3 +1,10 @@
+** Get page and method calling function ** 
+var stack = new StackFrame(1).GetMethod();
+HttpContext.Current.Response.Write("<li>StackFrame:" + stack.Name + "</li>");
+HttpContext.Current.Response.Write("<li>StackFrame:" + stack.ReflectedType.Name + "</li>");
+
+
+
 *** Random code snippets for Webforms-ASPX pages
  // foreach snippet
  <% foreach (var VARIABLE in COLLECTION){ %>
