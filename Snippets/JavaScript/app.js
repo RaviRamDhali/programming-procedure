@@ -3,6 +3,8 @@ $(document).ready(function () {
     
 $(this).attr("data-id") // will return the string "123"
 $(this).data("id") // will return the number 123
+$('[data-id=' + item_id + ']') // By data-id
+
     
     
     //---------------------------------------
