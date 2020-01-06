@@ -1,3 +1,8 @@
+Singular - Classes naming: singular or plural
+Service > Company  not  Services.Companies  not 
+Service.Company  not  Services.Companies  not 
+https://softwareengineering.stackexchange.com/questions/103720/classes-naming-singular-or-plural
+
 Commanly used verbs:
 https://gist.github.com/maxtruxa/b2ca551e42d3aead2b3d
 
