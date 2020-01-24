@@ -46,7 +46,7 @@ GUID:  (newid())
 		[LastLogin] [datetime] NULL,
 		[Created] [datetime] not null default (getdate()),
 		[Modified] [datetime] not null default (getdate()),
-		[Active] [bit] not null default	
+		[Active] [bit] not null  default ((1)),
 	)
 	
 	create table [dbo].[Roles](
