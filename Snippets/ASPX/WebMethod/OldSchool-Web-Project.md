@@ -28,12 +28,10 @@ public partial class _Default : System.Web.UI.Page {
     }
 
     [System.Web.Services.WebMethod]
-    public static object GetUsers (string id) {
+    public static object GetUsers (NameValueCollection formCollection) {
         var cadmin = new Customer();
         var AdminCustomers = cadmin.GetCustomers("");
         string json = JsonConvert.SerializeObject(AdminCustomers);
-        // HttpContext.Current.Response.Clear();
-        // HttpContext.Current.Response.ContentType = "application/json; charset=utf-8";
         return AdminCustomers;
     }
     
