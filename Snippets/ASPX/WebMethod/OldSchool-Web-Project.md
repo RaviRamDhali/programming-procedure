@@ -28,6 +28,16 @@ public partial class _Default : System.Web.UI.Page {
     }
 
     [System.Web.Services.WebMethod]
+    public static object GetUsers (string id) {
+        var cadmin = new Customer();
+        var AdminCustomers = cadmin.GetCustomers("");
+        string json = JsonConvert.SerializeObject(AdminCustomers);
+        // HttpContext.Current.Response.Clear();
+        // HttpContext.Current.Response.ContentType = "application/json; charset=utf-8";
+        return AdminCustomers;
+    }
+    
+    [System.Web.Services.WebMethod]
     public static string UpdateDraft (string id, string name) {
         return (id + DateTime.Now.ToShortDateString ());
     }
