@@ -46,6 +46,8 @@ public partial class _Default : System.Web.UI.Page {
     }
 }
 
+![alt text](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/ASPX/WebMethod/WebMethod-POST-Man-REST.jpg)
+
 
 ![alt text](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/ASPX/WebMethod/WebMethod-REST.jpg)
 
