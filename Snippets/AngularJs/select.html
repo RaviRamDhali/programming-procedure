@@ -1,0 +1,8 @@
+  <div class="col-sm-3">
+      <select class="form-control"
+      data-placeholder="User Type"
+      ng-model="userCtl.userType"
+      ng-change="gridFilter()"
+      ng-options="item as item.name for item in userCtl.userTypes track by item.value">
+      </select>
+  </div>
