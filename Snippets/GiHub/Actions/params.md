@@ -1,5 +1,6 @@
 You can use github context for such purpose. Example:
 
+```
 jobs:
   build:
     name: Build
@@ -10,6 +11,8 @@ jobs:
         run: ./runMickeyScripts.sh
       - if: ${{ github.actor != "MickeyMouse" }}
         run: ./runNotMickeyScripts.sh
+```
+
 
 Resource:
 
