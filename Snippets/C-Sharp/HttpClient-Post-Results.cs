@@ -13,7 +13,7 @@ public async Task Main(string[] args)
 
           string url = "https://api.com/test";
 
-          var response = await client.PostAsync(url, data);
+          var response = await client.PostAsync(url, data).ConfigureAwait(false);
           string jsonString = response.Content.ReadAsStringAsync().Result;
 
           Console.WriteLine(response.StatusCode);
