@@ -28,7 +28,7 @@ public async Task<RawJson> getApi(Models.ExternalApplication.Escape.Post.Data po
 
           string url = "https://api.com/Search";
 
-          var response = await httpClient.PostAsync(url, data);
+          var response = await httpClient.PostAsync(url, data).ConfigureAwait(false);
           var jsonString = await response.Content.ReadAsStringAsync();
 
           // Escape API sends $id which is an internal escape and is not needed
