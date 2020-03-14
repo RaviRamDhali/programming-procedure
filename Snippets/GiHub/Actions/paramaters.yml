@@ -1,0 +1,17 @@
+on: push
+name: IF Publish Website
+jobs:
+  main:
+    name: WhoCommit
+    runs-on: ubuntu-latest
+  
+    steps:
+      - run: echo Committed by ${{github.actor}}
+      - run: echo Repository Path ${{github.repository}}
+      - run: echo Repository Name ${{ github.event.repository.name }} 
+        
+      - run: echo Is RaviRamDhali
+        if: github.actor == 'RaviRamDhali'
+      
+      - run: echo Is Not RaviRamDhali
+        if: github.actor != 'RaviRamDhali'
