@@ -23,12 +23,13 @@ using System.Web.UI.WebControls.WebParts;
 public partial class _Default : System.Web.UI.Page {
 
     protected void Page_Load (object sender, EventArgs e) {
-        HttpContext.Current.Response.Write ("{\"domain\":\"api running"}");
-
+        Response.ContentType = "text/json";
+        HttpContext.Current.Response.Write ("{\"domain\":\"api running successce.com customer\"}");
     }
 
     [System.Web.Services.WebMethod]
     public static object GetUsers (NameValueCollection formCollection) {
+        Response.ContentType = "text/json";
         var cadmin = new Customer();
         var AdminCustomers = cadmin.GetCustomers("");
         string json = JsonConvert.SerializeObject(AdminCustomers);
@@ -37,11 +38,13 @@ public partial class _Default : System.Web.UI.Page {
     
     [System.Web.Services.WebMethod]
     public static string UpdateDraft (string id, string name) {
+        Response.ContentType = "text/json";
         return (id + DateTime.Now.ToShortDateString ());
     }
 
     [System.Web.Services.WebMethod]
     public static string AddDraft (string id) {
+        Response.ContentType = "text/json";
         return (DateTime.Now.ToShortDateString () + id);
     }
 }
