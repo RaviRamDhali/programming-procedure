@@ -1,0 +1,21 @@
+    <script type="text/javascript">
+
+        new Vue({
+            el: "#app",
+            data: {
+            courses :[],
+            },
+            mounted() {
+
+            },
+            created() {
+                var vdata = this
+                axios.post('/api/customer/default.aspx/GetCourses',{customerid : 1016776})
+                .then(function (response) {
+                    vdata.courses = JSON.parse(response.data.d);
+                    console.log('courses ', vdata.courses);
+                })
+            }
+        });
+
+    </script>
