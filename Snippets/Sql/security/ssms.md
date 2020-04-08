@@ -3,20 +3,23 @@ https://www.mssqltips.com/sqlservertip/2995/how-to-hide-sql-server-user-database
 https://subhrosaha.wordpress.com/2012/04/26/sql-server-error-the-proposed-new-database-owner-is-already-a-user-or-aliased-in-the-database/
 
 -- Database owners by running: 
-sp_helpdb
+```sp_helpdb```
 
 -- Lockdown database from SSMS 
-USE MASTER
+```USE MASTER
 GO
 DENY VIEW ANY DATABASE TO PUBLIC
 GO
+```
 
 -- Remove any residual user role
-USE Anaxi
+```USE DBName
 GO
-SP_DROPUSER anaxisoft --
+SP_DROPUSER myuser
+```
 
 -- Add dbowner
-USE Anaxi
+```USE DBName
 GO
-SP_CHANGEDBOWNER anaxisoft
+SP_CHANGEDBOWNER myuser
+```
