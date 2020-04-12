@@ -1,5 +1,18 @@
 $beginDate = (Get-Date -Hour 0 -Minute 00 -Second 00).AddDays(-1);
 $endDate = (Get-Date -Hour 0 -Minute 00 -Second 00);
+# --------------------------------------------
+    Write-Host 'Running Remove SQL Report_Runner StoredProc .....';
+    $sqlDTCCRunner = "exec Report_Runner '" + $beginDate + "','" + $endDate + "'"
+    $SqlCommand = $SqlConnection.CreateCommand();
+    $SqlCommand.CommandText = $sqlDTCCRunner;
+    $SqlCommand.ExecuteNonQuery();
+    $SQLConnection.Close()
+# --------------------------------------------
+
+
+
+$beginDate = (Get-Date -Hour 0 -Minute 00 -Second 00).AddDays(-1);
+$endDate = (Get-Date -Hour 0 -Minute 00 -Second 00);
 
 
 $date = $beginDate.ToString('MMddyyyy')
