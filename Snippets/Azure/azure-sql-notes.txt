@@ -1,0 +1,18 @@
+--------------------------
+MASTER
+--------------------------
+CREATE LOGIN ##username## WITH password='pHpH7@Az8Prave!7u'
+GO
+ 
+CREATE USER ##username## FOR LOGIN ##username## WITH DEFAULT_SCHEMA=[dbo]
+GO
+
+
+--------------------------------
+DATABASE
+--------------------------------
+CREATE USER ##username## FOR LOGIN ##username## WITH DEFAULT_SCHEMA=[dbo]
+GO
+ 
+EXEC sp_addrolemember 'db_owner', '##username##';
+GO
