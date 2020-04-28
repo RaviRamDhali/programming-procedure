@@ -1,10 +1,8 @@
 declare @TableName sysname = 'Case'
-declare @Result varchar(max) = 'public class ' + @TableName + '
-{'
+declare @Result varchar(max) = 'public class ' + @TableName + '{'
 
 select @Result = @Result + '
-    public ' + ColumnType + NullableSign + ' ' + ColumnName + ' { get; set; }
-'
+public ' + ColumnType + NullableSign + ' ' + ColumnName + ' { get; set; }'
 from
 (
     select 
