@@ -1,6 +1,16 @@
+https://stackoverflow.com/questions/2998455/asp-net-webmethod-returns-json-wrapped-in-quotes
+
 -------------------------------------------------------
 [System.Web.Services.WebMethod]
+public static object <--- OBJECT not string 
 -------------------------------------------------------
+
+[WebMethod]
+public static object getData(Dictionary<string, string> d) {
+    var response = new { firstname = "John", lastname="Smith" };
+    return response;
+}
+
 
 [System.Web.Services.WebMethod]
 public static string UpdateFieldTask(string command, Guid id, string userInput)
