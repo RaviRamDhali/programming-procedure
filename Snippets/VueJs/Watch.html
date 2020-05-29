@@ -1,0 +1,81 @@
+<div class="col-md-6 offset-sm-3">
+
+    <div class="card b">
+        <div class="card-body text-center">
+            <h3 class="m-0 text-bold">Redeem Your Voucher</h3>
+            <p>
+                Your Voucher or Credit Card Coupon will be applied at checkout.
+            </p>
+        </div>
+
+        <div class="card-body">
+
+            <form action="" method="POST">
+
+                <div class="form-group">
+                    <label for="vouchercode">Enter your Voucher</label>
+
+                    <div class="input-group with-focus">
+                        <input class="form-control" v-model="vouchercode" id="vouchercode"
+                            name="vouchercode" type="text" autofocus>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning text-center" v-if="invalidVoucher">
+                    <small>{{message}}</small>
+                </div>
+
+                <button type="submit" class="btn btn-success mx-auto d-block"
+                    :disabled="invalidVoucher">Submit</button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+                        
+
+<script type="text/javascript">
+
+        new Vue({
+            el: "#app",
+            data: {
+                error: false,
+                customerid: customerId,
+                vouchercode: '<%=VoucherCode%>',
+                invalidVouchers: JSON.parse('<%=strInvalidVouchers%>'),
+                invalidVoucher: false,
+                message: ''
+            },
+            created: function() {},
+            mounted: function () {
+                var vdata = this;
+                console.log('vdata.invalidVouchers :', vdata.invalidVouchers)
+            },
+            methods: {
+                actionClick: function () {
+                }
+            },
+            watch: {
+                'vouchercode': function(val, oldVal){
+
+                    this.invalidVoucher = false;
+                    this.invalidVouchers.filter(item => {
+
+                        if(item.toLowerCase().trim() == val.toLowerCase().trim()){
+                            this.message = 'The codes are not valid due to special Unlimited Package pricing (all the online courses/hours needed for renewal for one LOW price)';
+                            this.invalidVoucher = true;
+                        }
+
+                    })
+                }
+                    
+             },
+            filters: {},
+            computed: {}
+        });
+
+        Vue.config.devtools = true;
+
+    </script>
