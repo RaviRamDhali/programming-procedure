@@ -26,11 +26,10 @@ function DowloadWordpressDeleteOldVersion
      $Items = Get-ChildItem $location
      Foreach($t in $Items)
      {
-         Write-Host "Deleting Old WP Version"
+         WriteLog "Deleting Old WP Version"
          Remove-Item -Path ($location + "\" + $t) -Recurse
      }
    
-     Write-Host "Waiting to delete Old Version" -BackgroundColor DarkRed -ForegroundColor Cyan
      WriteLog "Waiting to delete Old Version" -BackgroundColor DarkRed -ForegroundColor Cyan
 
      Start-Sleep -Milliseconds 10000
@@ -39,8 +38,8 @@ function DowloadWordpressDeleteOldVersion
     $file = "http://wordpress.org/latest.zip"
     $wp = $location + "\wordpress.zip"
 
-    Write-Host "Starting Download"
     WriteLog "Starting Download"
+    
 
     $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($file,$wp)
@@ -48,8 +47,8 @@ function DowloadWordpressDeleteOldVersion
     ## unzip wp file
 
 
-    Write-Host "Unzipping"
     WriteLog "Unzipping"
+    
 
 
     $shellApp = New-Object -com shell.application
@@ -57,7 +56,7 @@ function DowloadWordpressDeleteOldVersion
     $dir = $shellApp.NameSpace((Get-Location).Path)
 
     foreach($item  in $zip.items()){ 
-    Write-Host $item
+    WriteLog $item
     
         $shellApp.NameSpace($dir).CopyHere($item)
        
@@ -77,7 +76,7 @@ function DowloadWordpressDeleteOldVersion
     }
     else
     {
-        Write-Host "Terminating - NO CONTENT FOLDER (DowloadWordpressDeleteOldVersion)"
+        WriteLog "Terminating - NO CONTENT FOLDER (DowloadWordpressDeleteOldVersion)"
         exit
     }
 
@@ -96,13 +95,13 @@ function DeleteContentFolder ($wpDir) {
         if($t -match "wp-content")
         {
         #If not deleted previously the folder will be deleted and ricky will be fired
-             Write-Host "Deleting Content"
+             WriteLog "Deleting Content"
              Remove-Item -Path ($wpDir + '\wp-content') -Recurse
              return $true
         }
      }
      #If already deleted it will return false
-     Write-Host "No Content"
+     WriteLog "No Content"
      return $false
 }
 
@@ -135,7 +134,7 @@ function DeleteExcessItems ($currentFolder) {
         }
      }
 
-     Write-Host "Waiting to delete wp-admin and wp-includes" -BackgroundColor DarkRed -ForegroundColor Cyan
+     WriteLog "Waiting to delete wp-admin and wp-includes" -BackgroundColor DarkRed -ForegroundColor Cyan
      Start-Sleep -Milliseconds 10000
  
 }
@@ -148,10 +147,10 @@ function CopyFilesToFolder ($source, $target) {
  
     if($target -Match "-redirect")
     {
-        Write-Host "Redirect (Skipping)" -ForegroundColor DarkGreen 
+        WriteLog "Redirect (Skipping)" -ForegroundColor DarkGreen 
         return;
     }
-    #Write-Host "No Redirect" -ForegroundColor DarkGray
+    #WriteLog "No Redirect" -ForegroundColor DarkGray
 
     DeleteExcessItems $target
 
@@ -201,11 +200,11 @@ function CopyFilesToFolder ($source, $target) {
            
         }
 
-        #Write-Host "sleep @ " $t -BackgroundColor DarkRed -ForegroundColor Cyan
+        #WriteLog "sleep @ " $t -BackgroundColor DarkRed -ForegroundColor Cyan
         Start-Sleep -Milliseconds 500
     }
 
-    Write-Host "Finished " $target
+    WriteLog "Finished " $target
 }
 
 #End of Functions beggining core script below
@@ -217,11 +216,12 @@ WriteLog "***********************************************"
 WriteLog "DEV Server Core Update $now"
 WriteLog "***********************************************"
 
+
 $sourceDir = DowloadWordpressDeleteOldVersion
 
-Write-Host $sourceDir
+WriteLog $sourceDir
 
-Write-Host "DONE WITH DOWNLOAD"
+WriteLog "DONE WITH DOWNLOAD"
 
 
 
@@ -234,7 +234,7 @@ $targetParent = 'C:\websites-wp'
 
 #Stop IIS
 iisreset /stop
-Write-Host "Stopping IIS"
+WriteLog "Stopping IIS"
 
 
 
@@ -243,27 +243,30 @@ $content = (DeleteContentFolder $sourceDir)
 #If deleted by method then terminates the program
 if($content)
 {
-    Write-Host "Terminating"
+    WriteLog "Terminating"
     exit
 }
 
 #Gets a list of all the website folders
 $targets = Get-ChildItem $targetParent
+$targetsCount = ($targets| Measure-Object ).Count;
 
-Write-Host "Copying Files!"
+WriteLog "$targetsCount Website Folders Found"
+WriteLog "Copying Files!"
+
 
 $count = 0
 #Iterates through all the website folders
 Foreach($target in $targets)
 {
-    Write-host $count -ForegroundColor DarkYellow
+    WriteLog $count -ForegroundColor DarkYellow
     #Gets the complete directory to pass into the method
     if($count -gt 100)
     {
         break
     }
     $completeDir = $targetParent + "\" + $target
-    Write-Host "Copying to " + $completeDir  -BackgroundColor DarkBlue
+    WriteLog "Copying to $completeDir"  -BackgroundColor DarkBlue
 
 
     #Calls the copy files method on the current website folder
@@ -273,7 +276,7 @@ Foreach($target in $targets)
     }
     catch [Exception]
     {
-        Write-Host "And Error Occurred Terminating Program" -ForegroundColor red -BackgroundColor white
+        WriteLog "And Error Occurred Terminating Program" -ForegroundColor red -BackgroundColor white
         echo $_.Exception|format-list -force
         exit
     }
@@ -283,8 +286,8 @@ Foreach($target in $targets)
     $count ++
 }
 
-Write-Host "Finished " + $count + " sites"
+WriteLog "Finished " + $count + " sites"
 
 #Start IIS
 iisreset /start
-Write-Host "Starting IIS"
+WriteLog "Starting IIS"
