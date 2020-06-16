@@ -204,6 +204,13 @@ Write-Host "DONE WITH DOWNLOAD"
 #This is the folder containin all the websites to be updated
 $targetParent = 'C:\websites-wp'
 
+
+#Stop IIS
+iisreset /stop
+Write-Host "Stopping IIS"
+
+
+
 #Checks if the content folder is deleted or already deleted
 $content = (DeleteContentFolder $sourceDir)
 #If deleted by method then terminates the program
@@ -250,4 +257,8 @@ Foreach($target in $targets)
 }
 
 Write-Host "Finished " + $count + " sites"
+
+#Start IIS
+iisreset /start
+Write-Host "Starting IIS"
 
