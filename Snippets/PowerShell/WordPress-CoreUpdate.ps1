@@ -1,3 +1,20 @@
+function WriteLog
+{
+    Param ([string]$LogString)
+
+    $DateTimeStamp = (Get-Date).toString("yyyyMMdd")
+    $DateTime = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
+    $LogFile = "C:\ServerScripts\WordPressCore\log\" + $DateTimeStamp + ".txt"
+       
+    $LogMessage = "$Datetime $LogString"
+
+    Write-Host $LogMessage
+    
+    Add-content $LogFile -value $LogMessage
+}
+
+
+
 #Download Latest Version of Wordpress to the Wordpress-Download Folder
 function DowloadWordpressDeleteOldVersion
 {
@@ -14,6 +31,8 @@ function DowloadWordpressDeleteOldVersion
      }
    
      Write-Host "Waiting to delete Old Version" -BackgroundColor DarkRed -ForegroundColor Cyan
+     WriteLog "Waiting to delete Old Version" -BackgroundColor DarkRed -ForegroundColor Cyan
+
      Start-Sleep -Milliseconds 10000
 
     ## download latest version of wp
@@ -21,6 +40,7 @@ function DowloadWordpressDeleteOldVersion
     $wp = $location + "\wordpress.zip"
 
     Write-Host "Starting Download"
+    WriteLog "Starting Download"
 
     $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($file,$wp)
@@ -29,6 +49,8 @@ function DowloadWordpressDeleteOldVersion
 
 
     Write-Host "Unzipping"
+    WriteLog "Unzipping"
+
 
     $shellApp = New-Object -com shell.application
     $zip = $shellApp.NameSpace($wp)
@@ -186,9 +208,14 @@ function CopyFilesToFolder ($source, $target) {
     Write-Host "Finished " $target
 }
 
-
-
 #End of Functions beggining core script below
+
+
+$now = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
+
+WriteLog "***********************************************"
+WriteLog "DEV Server Core Update $now"
+WriteLog "***********************************************"
 
 $sourceDir = DowloadWordpressDeleteOldVersion
 
@@ -261,4 +288,3 @@ Write-Host "Finished " + $count + " sites"
 #Start IIS
 iisreset /start
 Write-Host "Starting IIS"
-
