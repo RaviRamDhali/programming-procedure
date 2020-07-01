@@ -53,6 +53,8 @@ public partial class customer_report : System.Web.UI.Page {
                 }
 
             } //using datareader
+      
+          conn.Close();
 
         } // using sqlconn
 
