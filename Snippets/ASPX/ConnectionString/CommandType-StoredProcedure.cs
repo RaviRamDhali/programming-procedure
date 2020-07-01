@@ -17,23 +17,16 @@ public partial class customer_report : System.Web.UI.Page {
     string connectionString = WebConfigurationManager.ConnectionStrings["devDB"].ConnectionString;
        
     List<Customer> customers = new List<Customer>();
-    string stateabbr = "ca";
+     int customerId = 1601;
 
     using (SqlConnection conn = new SqlConnection(connectionString))
         {
-            string strSql = "SELECT TOP 10 c.CustomerID as Id" +
-            ", c.FirstName" +
-            ", c.LastName" +
-            ", c.Email" +
-            " FROM Customer AS c" +
-            //" WHERE c.StateAbbr = @stateabbr" +
-            " WHERE c.StateAbbr = 'CA'" +
-            " ORDER BY c.LastName" ;
+            string strSProc = "GetCustomer";
 
-            SqlCommand cmd = new SqlCommand(strSql, conn);
-            cmd.CommandType = CommandType.Text;
-            cmd.Parameters.Add("@stateabbr", stateabbr);
-            
+            SqlCommand cmd = new SqlCommand(strSProc, conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@CustomerId", customerId);
+
             conn.Open();
 
             using (SqlDataReader reader = cmd.ExecuteReader())
