@@ -1,3 +1,10 @@
+Get Year : 20-xxxx
+moment().format('YY') + '-',
+
+Get HTML5:
+moment().format(moment.HTML5_FMT.DATE),
+
+
 <script type="text/javascript">
 	
 	var recuring = 'n';
