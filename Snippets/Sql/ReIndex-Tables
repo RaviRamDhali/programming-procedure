@@ -1,9 +1,54 @@
+-- Rebuild eve Index for every Table in the Database.
+-- Resource: http://blog.sqlauthority.com/2009/01/30/sql-server-2008-2005-rebuild-every-index-of-all-tables-of-database-rebuild-index-with-fillfactor/
+USE testcenterEthHack
+GO
+
+-- Show Fragmentation sample on YourTable Index.
+select avg_fragmentation_in_percent, avg_fragment_size_in_pages, fragment_count, avg_page_space_used_in_percent
+from sys.dm_db_index_physical_stats (DB_ID(), object_id('[dbo].[YourTableName]'), NULL, NULL, 'DETAILED')
+
+-- Cursor going over each table and rebuilding every index of database.
+DECLARE @TableName VARCHAR(255)
+DECLARE @sql NVARCHAR(500)
+DECLARE @fillfactor INT
+SET @fillfactor = 80
+DECLARE TableCursor CURSOR FOR
+SELECT OBJECT_SCHEMA_NAME([object_id])+'.[' + name + ']' AS TableName
+FROM sys.tables
+OPEN TableCursor
+FETCH NEXT FROM TableCursor INTO @TableName
+WHILE @@FETCH_STATUS = 0
+BEGIN
+SET @sql = 'ALTER INDEX ALL ON ' + @TableName + ' REBUILD WITH (FILLFACTOR = ' + CONVERT(VARCHAR(3),@fillfactor) + ')'
+EXEC (@sql)
+FETCH NEXT FROM TableCursor INTO @TableName
+END
+CLOSE TableCursor
+DEALLOCATE TableCursor
+GO
+
+Here is the syntax of the ALTER INDEX Rebuilding index.
+1) ALTER INDEX IndexName ON TableName REBUILD;
+2) ALTER INDEX IndexName ON TableName REORGANIZE;
+
+
+-- Query Optimizer Trace Flag 4199 - Increase performance
+DBCC TRACEON (4199, -1)    -- Turn on the trace flag globally (for all sessions)
+
+-- Clear the cache because we don’t want any old, inefficient execution plans hanging around.
+CHECKPOINT;
+GO
+DBCC DROPCLEANBUFFERS;
+GO
+DBCC FREEPROCCACHE
+GO 
+
+-- DBREINDEX has been deprecated
+
 DBCC DBREINDEX (Offers)
 DBCC SHOWCONTIG (Offers)
 
-
 DBCC SHRINKDATABASE (ICMS2_DEV, 10, TRUNCATEONLY)
-
 
 USE ABCStore
 GO
@@ -12,12 +57,4 @@ GO
 EXEC sp_updatestats
 GO
 
--- Query Optimizer Trace Flag 4199 - Increase performance
-DBCC TRACEON (4199, -1)    -- Turn on the trace flag globally (for all sessions)
--- Clear the cache because we don’t want any old, inefficient execution plans hanging around.
-CHECKPOINT;
-GO
-DBCC DROPCLEANBUFFERS;
-GO
-DBCC FREEPROCCACHE
-GO 
+
