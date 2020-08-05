@@ -1,3 +1,10 @@
+Exec sp_msforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER INDEX ALL ON ? REBUILD'
+GO
+
+GO  
+EXEC sp_updatestats;  
+
+
 -- Rebuild eve Index for every Table in the Database.
 -- Resource: http://blog.sqlauthority.com/2009/01/30/sql-server-2008-2005-rebuild-every-index-of-all-tables-of-database-rebuild-index-with-fillfactor/
 USE testDb
