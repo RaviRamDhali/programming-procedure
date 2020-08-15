@@ -8,6 +8,9 @@
            users: [],
            postData: [{"affiliate":"","companyid":""}]
        },
+       mounted: function () {
+
+       },
        methods: {
            fetchData() {
                var vdata = this;
