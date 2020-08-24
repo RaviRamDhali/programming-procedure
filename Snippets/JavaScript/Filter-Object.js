@@ -1,3 +1,7 @@
+function FilterArray(array, term) {
+    return array.filter(item => item.Text.toLowerCase().indexOf(term.toLowerCase()) > -1);
+}
+
 var sidekicks = [
     { name: "Robin",     hero: "Batman"   },
     { name: "Supergirl", hero: "Superman" },
