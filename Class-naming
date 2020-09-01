@@ -32,6 +32,11 @@ editor
 
 ## Data Transfer Objects (DTO) ##
 
+##Reactors## (event sourcing)
+Reactor > Task > NotifyCompleted
+Reactor > Task > DiaryEntry
+
+
 ##Dispatcher-worker Models##
 POST > Dispatcher > Worker
 
