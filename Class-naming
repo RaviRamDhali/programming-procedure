@@ -3,6 +3,23 @@ Service > Company  not  Services.Companies  not
 Service.Company  not  Services.Companies  not 
 https://softwareengineering.stackexchange.com/questions/103720/classes-naming-singular-or-plural
 
+Service > SaveMember (not Create or Update)
+var srvMember = new Service.Member()
+srvMember.Save(data)
+Save : Save doesn't imply anything about the state, so they overlap.
+
+Service > Save Function would have 2 paths
+1) Update ()
+2) Insert ()
+
+DAL > Update
+DAL > Insert 
+
+Using : Insert would imply that the item doesn't already exists, i.e. an insert.
+Using : Update implies that the item already exists
+
+
+
 Commanly used verbs:
 https://gist.github.com/maxtruxa/b2ca551e42d3aead2b3d
 
