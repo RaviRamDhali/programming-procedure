@@ -1,3 +1,19 @@
+
+
+// Even if the storedproc does not return anything,
+// the below will Execute and return 0
+var dynamicParameters = new DynamicParameters();
+dynamicParameters.Add("CustomerID", customerId);
+dynamicParameters.Add("ExpirationDate", DateTime.Now.AddYears(2));
+
+WithConnection(connection =>
+{
+    return connection.Query<int>("spOrderCreate", dynamicParameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+
+});
+
+
+
 var spName = "[dbo].[InsertLogAndReturnID]";
 
  using (SqlConnection objConnection = new SqlConnection(Util.ConnectionString))
