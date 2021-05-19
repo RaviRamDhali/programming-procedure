@@ -26,7 +26,7 @@ guid = exteral use for querystrings, api calls
 ** Dont use MONEY ***
 [FaceValue] DECIMAL(19,4) NOT NULL DEFAULT ((0)),
 
-** Using NVARCHAR now**
+** Using NVARCHAR now 05/2021 **
 allowing characters from languages and emoji
 
 ** Changed my mind for using varchar - DO NOT USE **
