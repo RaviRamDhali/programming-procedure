@@ -22,6 +22,20 @@ clickDirectoryEnrollmentRemove : function (index) {
 // Add new object into existing array object
 // Here I am added a new object error into product array
 Vue.set(item, 'error', response.data);
+// Usage
+beforeUpdate: function () {
+        this.setNewErrorObjectForEachDiscountCode()
+},
+   
+setNewErrorObjectForEachDiscountCode: function () {
+            var vdata = this;
+            for (i = 0; i < vdata.discountCodes.length; i++) {
+                var item = vdata.discountCodes[i];
+                Vue.set(item, 'error', null);
+            }
+        }
+// -----------------------------------------------
+// -----------------------------------------------
 
         
 <select size="11" class="form-control" v-model="directory"
