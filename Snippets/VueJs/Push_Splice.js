@@ -19,6 +19,10 @@ clickDirectoryEnrollmentRemove : function (index) {
     vdata.directoryEnrollment.splice(index, 1);
 }
 
+// Add new object into existing array object
+// Here I am added a new object error into product array
+Vue.set(item, 'error', response.data);
+
         
 <select size="11" class="form-control" v-model="directory"
  v-on:change="clickDirectoryEnrollment()"
