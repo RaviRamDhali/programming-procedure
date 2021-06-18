@@ -22,6 +22,16 @@
 		],
 		"description": "Output to console"
 	},
+			"Console Log Color": {
+			"prefix": "clogc",
+			"body": [
+				"console.log('%c ${CLIPBOARD}','background: black; color: yellow', ${CLIPBOARD});"
+				// console.log('%c SumCertificateFeesTotal ', 'background: black; color: yellow');
+				// console.log('%c SumCertificateFeesTotal ', 'background: red; color: white');
+				// console.log('%c SumCertificateFeesTotal ', 'background: orange; color: blue');
+			],
+			"description": "Output to console"
+		},
 	"Response Write": {
 		"prefix": "rw",
 		"body": [
