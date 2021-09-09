@@ -1,1 +1,43 @@
 
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+  displayName: NuGet - Installer
+
+- task: NuGetCommand@2
+  displayName: NuGet - Restore
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  displayName: VS Build Legacy App publishproj 
+  inputs:
+    solution: '**\*.publishproj'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+
+- task: AzureRmWebAppDeployment@4
+  displayName: Azure WebApp Publish
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure WebApp'
+    appType: 'webApp'
+    WebAppName: 'XXXXXXXX'
+    packageForLinux: '$(build.artifactStagingDirectory)/**/*.zip'
