@@ -1,4 +1,3 @@
-
 # ASP.NET
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
@@ -32,12 +31,25 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-
-- task: AzureRmWebAppDeployment@4
-  displayName: Azure WebApp Publish
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact for Release (drop)'
   inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure WebApp'
-    appType: 'webApp'
-    WebAppName: 'XXXXXXXX'
-    packageForLinux: '$(build.artifactStagingDirectory)/**/*.zip'
+    PathtoPublish: '$(build.artifactStagingDirectory)'
+
+
+# - task: ArchiveFiles@2
+#   inputs:
+#     rootFolderOrFile: '$(Build.BinariesDirectory)'
+#     includeRootFolder: false
+#     archiveType: 'zip'
+#     archiveFile: '$(Build.artifactStagingDirectory)/$(Build.BuildId).zip'
+#     replaceExistingArchive: true
+
+# - task: AzureRmWebAppDeployment@4
+#   displayName: Azure WebApp Publish
+#   inputs:
+#     ConnectionType: 'AzureRM'
+#     azureSubscription: 'Azure WebApp'
+#     appType: 'webApp'
+#     WebAppName: 'AugustaAdminSCE'
+#     packageForLinux: '$(build.artifactStagingDirectory)/**/*.zip'
