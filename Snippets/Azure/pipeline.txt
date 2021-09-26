@@ -1,0 +1,5 @@
+
+Pipeline > Deploy Azure App Service
+
+Package or folder
+$(System.DefaultWorkingDirectory)/**/**/*.zip
