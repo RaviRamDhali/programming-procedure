@@ -17,3 +17,8 @@ Azure Notes:
 
 Home > Subscriptions > Microsoft Azure (xxxxxxxx) | Access control (IAM)
 Make sure you have ROLE in the Subscription so you can attach it to Azure
+
+
+Pipeline
+**Package or folder**
+$(System.DefaultWorkingDirectory)/**/**/*.zip
