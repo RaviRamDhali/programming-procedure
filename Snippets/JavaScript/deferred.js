@@ -25,7 +25,6 @@ function SignUp(customer, password, userIp) {
     return result.promise();
 }
 
-
 // Axios POST with return promise
 function PostSignUp(customer, password, userIp) {
 
@@ -36,5 +35,4 @@ function PostSignUp(customer, password, userIp) {
         password: password,
         userIp: userIp
     }).then(response => response.data.d);
-
 }
