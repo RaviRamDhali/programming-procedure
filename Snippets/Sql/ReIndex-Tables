@@ -1,3 +1,17 @@
+ALTER INDEX CaseDiary_Modified_CaseDiaryGuid
+ON CaseDiary
+REORGANIZE ;
+GO
+
+
+ALTER INDEX ALL ON dbo.CaseEvent
+REORGANIZE ;
+GO
+
+
+
+
+
 Exec sp_msforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER INDEX ALL ON ? REBUILD'
 GO
 
