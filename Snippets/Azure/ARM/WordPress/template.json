@@ -1,0 +1,119 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "type": "securestring"
+        },
+        "name": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "serverFarmResourceGroup": {
+            "type": "string"
+        },
+        "alwaysOn": {
+            "type": "bool"
+        },
+        "linuxFxVersion": {
+            "type": "string"
+        },
+        "dbHost": {
+            "type": "securestring"
+        },
+        "dbUsername": {
+            "type": "securestring"
+        },
+        "dbPassword": {
+            "type": "securestring"
+        },
+        "dbServerName": {
+            "type": "string"
+        },
+        "dbCharset": {
+            "type": "string"
+        },
+        "dbCollation": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "location": "[parameters('location')]",
+            "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+            "apiVersion": "2021-05-01",
+            "name": "[concat(parameters('dbServerName'),'/',parameters('name'))]",
+            "properties": {
+                "charset": "[parameters('dbCharset')]",
+                "collation": "[parameters('dbCollation')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-02-01",
+            "name": "[parameters('name')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Project": "WordPress",
+                "Environment": "Basic"
+            },
+            "dependsOn": [],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "DATABASE_HOST",
+                            "value": "[parameters('dbHost')]",
+                            "slotSetting": false
+                        },
+                        {
+                            "name": "DATABASE_NAME",
+                            "value": "[parameters('name')]",
+                            "slotSetting": false
+                        },
+                        {
+                            "name": "DATABASE_PASSWORD",
+                            "value": "[parameters('dbPassword')]" ,
+                            "slotSetting": false
+                        },
+                        {
+                            "name": "DATABASE_USERNAME",
+                            "value": "[parameters('dbUsername')]",
+                            "slotSetting": false
+                        },
+                        {
+                            "name": "PHPMYADMIN_EXTENSION_VERSION",
+                            "value": "latest",
+                            "slotSetting": false
+                        }
+                    ],
+                    "linuxFxVersion": "[parameters('linuxFxVersion')]",
+                    "alwaysOn": "[parameters('alwaysOn')]"
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": false
+            },
+            "resources": [
+                {
+                    "type": "sourcecontrols",
+                    "apiVersion": "2021-02-01",
+                    "name": "web",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "https://github.com/dhali-web/infojacket.com",
+                        "branch": "main",
+                        "IsManualIntegration": true
+                    }
+                }
+            ]
+        }
+    ]
+}
