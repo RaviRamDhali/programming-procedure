@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "site600"
+        },
+        "dbHost": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/29a13cdf-18c2-4464-a608-fca2e0c9d11b/resourceGroups/WP1/providers/Microsoft.KeyVault/vaults/keyvault-wp1"
+                },
+                "secretName": "dbHost"
+            }
+        },
+        "dbUsername": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/29a13cdf-18c2-4464-a608-fca2e0c9d11b/resourceGroups/WP1/providers/Microsoft.KeyVault/vaults/keyvault-wp1"
+                },
+                "secretName": "dbUsername"
+            }
+        },
+        "dbPassword": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/29a13cdf-18c2-4464-a608-fca2e0c9d11b/resourceGroups/WP1/providers/Microsoft.KeyVault/vaults/keyvault-wp1"
+                },
+                "secretName": "dbPassword"
+            }
+        },
+        "subscriptionId": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/29a13cdf-18c2-4464-a608-fca2e0c9d11b/resourceGroups/WP1/providers/Microsoft.KeyVault/vaults/keyvault-wp1"
+                },
+                "secretName": "subscriptionId"
+            }
+        },
+        "serverFarmResourceGroup": {
+            "value": "WP1"
+        },
+        "dbServerName": {
+            "value": "db-wp1"
+        },
+
+        "location": {
+            "value": "West US"
+        },
+        "hostingPlanName": {
+            "value": "AppService-Low"
+        },
+        "alwaysOn": {
+            "value": false
+        },
+        "linuxFxVersion": {
+            "value": "PHP|7.4"
+        },
+        "dbCharset": {
+            "value": "utf8"
+        },
+        "dbCollation": {
+            "value": "utf8_general_ci"
+        }
+    }
+}
