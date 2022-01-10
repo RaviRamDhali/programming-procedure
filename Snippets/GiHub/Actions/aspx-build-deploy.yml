@@ -1,0 +1,59 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP app to Azure Web App
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup MSBuild path
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: Create Build Directory
+        run: mkdir ${env:GITHUB_WORKSPACE}\_build\
+        
+      - name: Show build files (before)
+        run: ls ${{github.workspace}}\_build\
+
+      - name: Restore NuGet packages
+        run: nuget restore -verbosity quiet
+
+      - name: Build app for release
+        run: msbuild Website\Website.csproj -verbosity:minimal -t:rebuild -property:Configuration=Release /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:PublishUrl="../_build"
+
+      - name: Show build files (after)
+        run: ls ${{github.workspace}}\_build\
+                         
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+         name: webapp
+         path: ${{github.workspace}}\_build\
+         
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: webapp
+          path: ${{github.workspace}}\_build\
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'sb1-xxxxxxxxx'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_870B244FE13D49B18D7D847737590585 }}
+          # package: .
+          package: ${{github.workspace}}\_build\
