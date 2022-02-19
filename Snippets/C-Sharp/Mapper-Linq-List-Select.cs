@@ -4,14 +4,14 @@ public List<BLL.ViewModel.Customer> CustomerFromDb(List<DAL.ModelDb.Customer> cu
     return customer.Select(CustomerFromDb).ToList();
     
     // #2 Foreach into Linq expression
-    return customerPSTAdmins.Select(data => CustomerPSTAdminFromDb(data)).ToList();
+    return customer.Select(data => CustomerFromDb(data)).ToList();
     
     // #3 Foreach
-    var list = new List<BLL.ViewModel.CustomerPSTAdmin>();
+    var list = new List<BLL.ViewModel.Customer>();
 
-            foreach (var data in customerPSTAdmins)
+            foreach (var data in customer)
             {
-                list.Add(CustomerPSTAdminFromDb(data));
+                list.Add(Customer(data));
             }
 
     return list;
