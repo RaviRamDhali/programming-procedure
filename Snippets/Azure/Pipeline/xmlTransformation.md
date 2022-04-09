@@ -1,27 +1,44 @@
+### Website > Webforms ASPX Project > Azure CI/CD
 
 
+While building Pipeline to upload files to Remote IIS server, the XML Transformation where not working as expected.
 
-DROP file
+Comparing DROP files from a known good Pipeline XML Transformation showed that website.SetParameters.xml was different.
+
+#### DROP file
 
 ![image](https://user-images.githubusercontent.com/1455413/162583810-863e1bf4-54df-4d79-b139-83e59ade131c.png)
 
 
-
-
-
 Check the  website.SetParameters.xml (should be clean). 
 
-Bad Example
+#### Bad Example
 
 ![image](https://user-images.githubusercontent.com/1455413/162583688-f9d7b1ac-a41f-49de-86a8-5f11057d5855.png)
 
-Good Example
+#### Good Example
 
 ![image](https://user-images.githubusercontent.com/1455413/162583736-4eb00056-b7db-45f3-a9e8-33158554bccc.png)
 
 
+Update the YML task as follows using  /p:AutoParameterizationWebConfigConnectionStrings=False
 
-/p:AutoParameterizationWebConfigConnectionStrings=False
+```
+- task: MSBuild@1
+    displayName: Build solution **/*.publishproj
+    inputs:
+      solution: '**/*.publishproj'
+      platform: $(BuildPlatform)
+      configuration: $(BuildConfiguration)
+      msbuildArguments: /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\" /p:AutoParameterizationWebConfigConnectionStrings=False
+```
+
+#### Troubleshooting Notes found in Log Files
+
+Using YML Task:
+- task: VSBuild@1  or
+- task: MSBuild@1 
+
 
 ```
 2022-04-09T14:32:47.0474605Z Compressed: 3281956
