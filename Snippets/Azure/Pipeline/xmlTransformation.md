@@ -1,4 +1,17 @@
 
+
+Check the  website.SetParameters.xml (should be clean). 
+
+Bad Example
+
+![image](https://user-images.githubusercontent.com/1455413/162583688-f9d7b1ac-a41f-49de-86a8-5f11057d5855.png)
+
+Good Example
+
+![image](https://user-images.githubusercontent.com/1455413/162583736-4eb00056-b7db-45f3-a9e8-33158554bccc.png)
+
+
+
 /p:AutoParameterizationWebConfigConnectionStrings=False
 
 ```
