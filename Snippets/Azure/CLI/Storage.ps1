@@ -25,8 +25,10 @@ $env:AZURE_STORAGE_CONNECTION_STRING = $connectionString
 
 #Delete a folder
 az storage fs directory delete -n xxxxxx -f private-test
-
 az storage fs delete -n private-test
 
-
 #az storage fs directory upload -f intranet -s "D:\_temp\" --recursive
+
+#Move a file
+az storage fs file move --new-path sql/web.bak -p web.bak -f newcontainer
+
