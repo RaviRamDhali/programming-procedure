@@ -18,6 +18,10 @@ Azure Notes:
 Home > Subscriptions > Microsoft Azure (xxxxxxxx) | Access control (IAM)
 Make sure you have ROLE in the Subscription so you can attach it to Azure
 
+Select the Azure Active Directory service from Azure Portal
+At the left sidebar, under the Manage section, choose Properties. 
+Then in Directory Properties choose a new name
+
 
 Pipeline
 **Package or folder**
