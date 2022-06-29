@@ -23,6 +23,11 @@ Select the Azure Active Directory service from Azure Portal
 At the left sidebar, under the Manage section, choose Properties. 
 Then in Directory Properties choose a new name
 
+Azure Projects > Add User to Organization
+Organization setting -> Policy to check if the Security policies >
+Turn on "External Guest Access"
+
+
 
 Pipeline
 **Package or folder**
