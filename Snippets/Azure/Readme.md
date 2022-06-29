@@ -17,6 +17,7 @@ Azure Notes:
 
 Home > Subscriptions > Microsoft Azure (xxxxxxxx) | Access control (IAM)
 Make sure you have ROLE in the Subscription so you can attach it to Azure
+All Service > Azure Active Directory > Users > New user
 
 Select the Azure Active Directory service from Azure Portal
 At the left sidebar, under the Manage section, choose Properties. 
