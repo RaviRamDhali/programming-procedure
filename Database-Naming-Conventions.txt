@@ -47,7 +47,6 @@ GUID:  (newid())
 		[Email] [nvarchar](200) ,
 		[Password] [nvarchar](max) NOT NULL,
 		[PasswordSalt] [nvarchar](max) NOT NULL,
-		[Administrator] [bit] not null default ((0)),
 		[LastLogin] [datetime] NULL,
 		[Created] [datetime] not null default (getdate()),
 		[Modified] [datetime] not null default (getdate()),
