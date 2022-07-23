@@ -37,7 +37,9 @@ DateTime:   (getdate())
 GUID:  (newid())
 
 
-	CREATE TABLE [dbo].[User](
+	*** CREATE TABLE [dbo].[User] -- USER is a reserved word. ***
+
+	CREATE TABLE [dbo].[Users](
 		[Id] [int] identity(1,1) primary key not null,
 		[Guid] [uniqueidentifier] not null default ((newid())),
 		[LastName] [nvarchar](50) ,
