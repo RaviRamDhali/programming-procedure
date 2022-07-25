@@ -11,7 +11,7 @@ jobs:
     name: Build
     runs-on: windows-latest
     steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
 
         - name: Setup MSBuild path
           uses: microsoft/setup-msbuild@v1.1
@@ -22,8 +22,8 @@ jobs:
         - name: Create Build Directory
           run: mkdir ${{github.workspace}}\_build\
 
-        - name: Show build files (before)
-          run: ls ${{github.workspace}}\_build\
+        # - name: Show build files (before)
+        #   run: ls ${{github.workspace}}\_build\
 
         - name: Restore NuGet packages
           run: nuget restore -verbosity quiet
@@ -31,8 +31,8 @@ jobs:
         - name: Build app for release
           run: msbuild Website\Website.csproj -verbosity:minimal -t:rebuild -property:Configuration=Release /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:PublishUrl="../_build"
 
-        - name: Show build files (after)
-          run: ls ${{github.workspace}}\_build\
+        # - name: Show build files (after)
+        #   run: ls ${{github.workspace}}\_build\
 
         - uses: actions/upload-artifact@v3
           with:
@@ -41,14 +41,21 @@ jobs:
 
   deploy:
     needs: Build
-    name: Copy
+    name: Copy WebPublish files to remote server
     runs-on: self-hosted
     steps:
-      # - uses: actions/checkout@v2
       - uses: actions/download-artifact@master
         with:
           name: my-artifact
           path: ${{github.workspace}}\_build\
 
-      - name: Show build files (before)
-        run: ls ${{github.workspace}}\_build\
+      # - name: Show build files (before)
+      #   run: ls ${{github.workspace}}\_build\
+
+      - name: Run PowerShell Hello World script
+        run: Write-Output 'Hello World!'
+
+      - name: Run a multi-line PowerShell script
+        run: |
+            $psversiontable;
+            Copy-Item -Path ${{github.workspace}}\_build\* c:/websites-wp/dev.${{github.event.repository.name}} -Recurse -Force
