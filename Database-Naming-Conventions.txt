@@ -41,7 +41,7 @@ GUID:  (newid())
 
 	CREATE TABLE [dbo].[Users](
 		[Id] [int] identity(1,1) primary key not null,
-		[Guid] [uniqueidentifier] not null default ((newid())),
+		[Guid] [uniqueidentifier] NOT NULL DEFAULT ((NEWID())),
 		[LastName] [nvarchar](50) ,
 		[FirstName] [nvarchar](50) ,
 		[Email] [nvarchar](200) ,
