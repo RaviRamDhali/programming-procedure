@@ -1,0 +1,59 @@
+name: Development Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+        - uses: actions/checkout@v3
+
+        - uses: microsoft/variable-substitution@v1 
+          with:
+            files: './Website/cnfgConnection.config'
+          env:
+            connectionString: "somstring"
+          
+        - name: Setup MSBuild path
+          uses: microsoft/setup-msbuild@v1.1
+
+        - name: Setup NuGet
+          uses: NuGet/setup-nuget@v1.0.5
+
+        - name: Create Build Directory
+          run: mkdir ${{github.workspace}}\_build\
+
+        - name: Restore NuGet packages
+          run: nuget restore -verbosity quiet
+
+        - name: Build app for release
+          run: msbuild Website\Website.csproj -verbosity:minimal -t:rebuild -property:Configuration=Release /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:PublishUrl="../_build"
+
+        - uses: actions/upload-artifact@v3
+          with:
+            name: my-artifact
+            path: ${{github.workspace}}\_build\
+
+  deploy:
+    needs: Build
+    name: Copy WebPublish files to remote server
+    runs-on: self-hosted
+    steps:
+
+      - name: Run PowerShell Remove-Item 
+        run: Remove-Item ${{github.workspace}}\ -Force -Recurse
+
+      - uses: actions/download-artifact@master
+        with:
+          name: my-artifact
+          path: ${{github.workspace}}\_build\
+
+      - name: Run PowerShell Copy-Item
+        run: |
+            $psversiontable;
+            Copy-Item -Path ${{github.workspace}}\_build\* c:/websites-wp/dev.${{github.event.repository.name}} -Recurse -Force
