@@ -7,18 +7,30 @@ on:
       - main
 
 jobs:
+
+  prep:    
+    name: Delete WebPublish files on remote server
+    runs-on: self-hosted
+    steps:
+
+      - name: Run PowerShell Remove-Item 
+        run: Remove-Item ${{github.workspace}}\_build\ -Force -Recurse
+
   build:
     name: Build
     runs-on: windows-latest
     steps:
         - uses: actions/checkout@v3
+          
+          env: 
+            connstring_dev: ${{ secrets.CONNSTRING_DEV }}
 
         - uses: microsoft/variable-substitution@v1 
           with:
             files: './Website/cnfgConnection.config'
           env:
-            connectionString: "somstring"
-          
+            connectionString: ${{ secrets.CONNSTRING_DEV }}
+        
         - name: Setup MSBuild path
           uses: microsoft/setup-msbuild@v1.1
 
@@ -45,8 +57,8 @@ jobs:
     runs-on: self-hosted
     steps:
 
-      - name: Run PowerShell Remove-Item 
-        run: Remove-Item ${{github.workspace}}\ -Force -Recurse
+      # - name: Run PowerShell Remove-Item 
+      #   run: Remove-Item ${{github.workspace}}\ -Force -Recurse
 
       - uses: actions/download-artifact@master
         with:
