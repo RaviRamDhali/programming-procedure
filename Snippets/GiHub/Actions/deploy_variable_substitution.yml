@@ -13,8 +13,14 @@ jobs:
     runs-on: self-hosted
     steps:
 
-      - name: Run PowerShell Remove-Item 
-        run: Remove-Item ${{github.workspace}}\_build\ -Force -Recurse
+      - name: Run PowerShell Copy-Item
+        run: |
+          if (Test-Path ${{github.workspace}}\_build\) {
+              Remove-Item ${{github.workspace}}\_build\ -Force -Recurse
+            }
+
+      # - name: Run PowerShell Remove-Item 
+      #   run: Remove-Item ${{github.workspace}}\_build\ -Force -Recurse
 
   build:
     name: Build
@@ -57,9 +63,6 @@ jobs:
     runs-on: self-hosted
     steps:
 
-      # - name: Run PowerShell Remove-Item 
-      #   run: Remove-Item ${{github.workspace}}\ -Force -Recurse
-
       - uses: actions/download-artifact@master
         with:
           name: my-artifact
@@ -67,5 +70,4 @@ jobs:
 
       - name: Run PowerShell Copy-Item
         run: |
-            $psversiontable;
             Copy-Item -Path ${{github.workspace}}\_build\* c:/websites-wp/dev.${{github.event.repository.name}} -Recurse -Force
