@@ -5,6 +5,9 @@ Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI
 ```
 
 Make sure you restart the powershell instance, then run 
-```Install-Module -Name Az -AllowClobber -Scope CurrentUser```
+
+```
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+```
 
 
