@@ -9,5 +9,9 @@ Make sure you restart the powershell instance, then run
 ```
 Install-Module -Name Az -AllowClobber -Scope CurrentUser
 ```
+Connecto Azure (Browser Signin appears)
+
+```Connect-AzAccount```
+
 
 
