@@ -14,4 +14,7 @@ Connecto Azure (Browser Signin appears)
 ```Connect-AzAccount```
 
 
+Select Azure Subscription use Set-AzContext
+```Set-AzContext -Subscription "29a123abcd-xxxx-xxxx-xxxx-xxxx"```
+
 
