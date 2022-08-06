@@ -5,8 +5,8 @@ Running azure-deploy.ps1 will
 3. Create a MYSql database entry
 
 ### Prerequisite
-To use the .ps1, you will need to install and setup Azure CLI
-The directions are at:
+To use the .ps1, you will need to install and setup Azure CLI. The directions are at:
+
 https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/CLI/readme.md
 
 
