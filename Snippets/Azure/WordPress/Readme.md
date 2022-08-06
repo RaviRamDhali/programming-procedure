@@ -1,5 +1,8 @@
-The following files will setup a new Resource in Azure
-to run a WordPress website and create a MYSql database entry.
+Running azure-deploy.ps1 will
+
+1. Create new Resource in Azure (PHP Website)
+2. Copy WordPress files into new Website
+3. Create a MYSql database entry
 
 To use the .ps1, you will need to install and setup Azure CLI
 
