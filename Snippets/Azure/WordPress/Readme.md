@@ -12,7 +12,7 @@ https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure
 
 ### Files
 
-```azure-deploy.ps1```
+```azure-deploy.ps1``` 
 Runs Azure CLI to create the WP Website and MSQL Db entry
 
 ```parameters.json```
