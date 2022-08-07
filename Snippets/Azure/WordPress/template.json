@@ -5,7 +5,7 @@
         "subscriptionId": {
             "type": "securestring"
         },
-        "name": {
+        "resource_name": {
             "type": "string"
         },
         "location": {
@@ -44,10 +44,10 @@
     },
     "resources": [
         {
-            "location": "[parameters('location')]",
             "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+            "location": "[parameters('location')]",
             "apiVersion": "2021-05-01",
-            "name": "[concat(parameters('dbServerName'),'/',parameters('name'))]",
+            "name": "[concat(parameters('dbServerName'),'/',parameters('resource_name'))]",
             "properties": {
                 "charset": "[parameters('dbCharset')]",
                 "collation": "[parameters('dbCollation')]"
@@ -55,16 +55,16 @@
         },
         {
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2021-02-01",
-            "name": "[parameters('name')]",
             "location": "[parameters('location')]",
+            "apiVersion": "2021-02-01",
+            "name": "[parameters('resource_name')]",
             "tags": {
                 "Project": "WordPress",
                 "Environment": "Basic"
             },
             "dependsOn": [],
             "properties": {
-                "name": "[parameters('name')]",
+                "name": "[parameters('resource_name')]",
                 "siteConfig": {
                     "appSettings": [
                         {
@@ -74,7 +74,7 @@
                         },
                         {
                             "name": "DATABASE_NAME",
-                            "value": "[parameters('name')]",
+                            "value": "[parameters('resource_name')]",
                             "slotSetting": false
                         },
                         {
@@ -105,7 +105,7 @@
                     "apiVersion": "2021-02-01",
                     "name": "web",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
+                        "[resourceId('Microsoft.Web/Sites', parameters('resource_name'))]"
                     ],
                     "properties": {
                         "RepoUrl": "https://github.com/dhali-web/infojacket.com",
