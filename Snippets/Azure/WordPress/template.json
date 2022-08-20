@@ -108,7 +108,7 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('resource_name'))]"
                     ],
                     "properties": {
-                        "RepoUrl": "https://github.com/dhali-web/infojacket.com",
+                        "RepoUrl": "https://github.com/dhali-web/dh-wordpress-default",
                         "branch": "main",
                         "IsManualIntegration": true
                     }
