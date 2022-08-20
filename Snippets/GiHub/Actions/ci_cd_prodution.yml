@@ -1,0 +1,74 @@
+name: Production Pipeline
+
+on:
+  [workflow_dispatch]
+
+jobs:
+
+  prep:    
+    name: Prepare remote server
+    runs-on: [self-hosted, dh-web]
+    steps:
+
+      - name: Clean _build folder on remote server
+        run: |
+          if (Test-Path ${{github.workspace}}\_build\) {
+              Remove-Item ${{github.workspace}}\_build\ -Force -Recurse
+            }
+
+      - name: Backup production files on remote server
+        run: |
+          New-Item -ItemType Directory -Force -Path C:/_backups/2022/app.${{github.event.repository.name}}/${{ github.run_id }}-${{ github.run_number }}
+          Copy-Item -Path c:/websites/app.${{github.event.repository.name}}/* C:/_backups/2022/app.${{github.event.repository.name}}/${{ github.run_id }}-${{ github.run_number }} -Recurse -Force
+
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+        - uses: actions/checkout@v3
+        
+        - run: echo "Variable Substitution"
+        - uses: microsoft/variable-substitution@v1 
+          with:
+            files: './Website/cnfgConnection.config'
+          env:
+            connectionString: ${{ secrets.CONNSTRING_PROD }}
+        
+        - name: Setup MSBuild path
+          uses: microsoft/setup-msbuild@v1.1
+
+        - name: Setup NuGet
+          uses: NuGet/setup-nuget@v1.0.5
+
+        - name: Create Build Directory
+          run: mkdir ${{github.workspace}}\_build\
+
+        - name: Restore NuGet packages
+          run: nuget restore -verbosity quiet
+
+        - name: Build app for release
+          run: msbuild Website\Website.csproj -verbosity:minimal -t:rebuild -property:Configuration=Release /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:PublishUrl="../_build"
+
+        - uses: actions/upload-artifact@v3
+          with:
+            name: my-artifact
+            path: ${{github.workspace}}\_build\
+
+  deploy-dev:
+    needs: build
+    name: Copy WebPublish files to remote server
+    runs-on: [self-hosted, dh-web]
+    steps:
+
+      - uses: actions/download-artifact@master
+        with:
+          name: my-artifact
+          path: ${{github.workspace}}\_build\
+
+      - name: Delete production files from final destination
+        run: |
+            Remove-Item c:\websites\app.${{github.event.repository.name}}\* -Verbose -Recurse -Force
+            
+      - name: Copy production files from final destination
+        run: |
+            Copy-Item -Path ${{github.workspace}}\_build\* -Destination c:\websites\app.${{github.event.repository.name}} -Verbose -Recurse -Force
