@@ -54,7 +54,7 @@ jobs:
             name: my-artifact
             path: ${{github.workspace}}\_build\
 
-  upload-dev:
+  upload:
     needs: build
     name: Upload WebPublish files to remote server
     runs-on: [self-hosted, dh-web]
@@ -65,16 +65,16 @@ jobs:
           name: my-artifact
           path: ${{github.workspace}}\_build\
 
-  deploy-dev:
-    needs: upload-dev
+  deploy:
+    needs: upload
     name: Replace WebPublish files to remote server
     runs-on: [self-hosted, dh-web]
     steps:
     
-      - name: Remove production files from final destination
+      - name: Remove files from final destination
         run: |
             Remove-Item c:\websites\app.${{github.event.repository.name}}\* -Verbose -Recurse -Force
             
-      - name: Replace production files from final destination
+      - name: Replace files from final destination
         run: |
             Copy-Item -Path ${{github.workspace}}\_build\* -Destination c:\websites\app.${{github.event.repository.name}} -Verbose -Recurse -Force
