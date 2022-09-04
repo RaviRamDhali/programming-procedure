@@ -29,22 +29,18 @@ public partial class _Default : System.Web.UI.Page {
 
     [System.Web.Services.WebMethod]
     public static object GetUsers (NameValueCollection formCollection) {
-        Response.ContentType = "text/json";
         var cadmin = new Customer();
         var AdminCustomers = cadmin.GetCustomers("");
-        string json = JsonConvert.SerializeObject(AdminCustomers);
         return AdminCustomers;
     }
     
     [System.Web.Services.WebMethod]
-    public static string UpdateDraft (string id, string name) {
-        Response.ContentType = "text/json";
+    public static object UpdateDraft (string id, string name) {
         return (id + DateTime.Now.ToShortDateString ());
     }
 
     [System.Web.Services.WebMethod]
-    public static string AddDraft (string id) {
-        Response.ContentType = "text/json";
+    public static object AddDraft (string id) {
         return (DateTime.Now.ToShortDateString () + id);
     }
 }
