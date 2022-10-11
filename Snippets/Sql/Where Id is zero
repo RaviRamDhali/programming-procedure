@@ -1,4 +1,0 @@
-Get ALL or Get by Id
-
-SELECT * from Customer
-WHERE (@id = 0 OR id = @id)
