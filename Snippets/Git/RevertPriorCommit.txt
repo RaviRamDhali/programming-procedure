@@ -1,0 +1,5 @@
+Revert to prior commit losing all other comments DANGEROUS 
+git pull
+git checkout main
+git reset --hard 82a0xxxxxx
+git push --force origin 82a0xxxxxx:main
