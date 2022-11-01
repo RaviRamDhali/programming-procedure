@@ -1,3 +1,9 @@
+
+### [System.Web.Services.WebMethod]
+**public static object <--- OBJECT not string**
+
+****
+
 *\api\default.aspx*
 
 <%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default"%><head runat="server"/>
