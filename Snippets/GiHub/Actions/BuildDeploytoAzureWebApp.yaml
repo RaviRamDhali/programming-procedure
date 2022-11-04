@@ -1,0 +1,73 @@
+name: Build Deploy to Azure WebApp
+
+env:
+  AZURE_WEBAPP_NAME: sb1-project-name
+  
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+        - uses: actions/checkout@v3
+          env: 
+            connstring_dev: ${{ secrets.CONNSTRING_DEV }}
+        
+        - name: Variable Substitution
+          uses: microsoft/variable-substitution@v1 
+          with:
+            files: './Website/cnfgConnection.config'
+          env:
+            connectionString: ${{ secrets.CONNSTRING_DEV }}
+
+        - name: Setup MSBuild path
+          uses: microsoft/setup-msbuild@v1.1
+
+        - name: Setup NuGet
+          uses: NuGet/setup-nuget@v1.0.5
+
+        - name: Create Build Directory
+          run: mkdir ${{github.workspace}}\_build\
+
+        - name: Restore NuGet packages
+          run: nuget restore -verbosity quiet
+
+        - name: Build app for release
+          run: msbuild Website\Website.csproj -verbosity:minimal -t:rebuild -property:Configuration=Release /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:PublishUrl="../_build"
+
+        - name: Upload artifact for deployment job
+          uses: actions/upload-artifact@v3
+          with:
+            name: my-artifact
+            path: ${{github.workspace}}\_build\
+  deploy:
+    name: Deploy
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+          path: ${{github.workspace}}\_build\
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SB1 }}
+          package: ${{github.workspace}}\_build\
