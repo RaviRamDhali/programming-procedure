@@ -16,12 +16,14 @@ Write-Host "Time:" $minute -ForegroundColor Yellow;
 Write-Host "StrDate:" $strDate -ForegroundColor Yellow;
 
 $pathYear = "$rootPath$year"
+$pathBackup = "$pathYear\$strDate"
 
+Write-Host "pathBackup:" $pathBackup -ForegroundColor Yellow;
 Write-Host "PathYear:" $pathYear -ForegroundColor Green;
 
-If(!(test-path -PathType container $pathYear))
+If(!(test-path -PathType container $pathBackup))
 {
-      New-Item -ItemType Directory -Path $pathYear
+      New-Item -ItemType Directory -Path $pathBackup
 }
 
 
