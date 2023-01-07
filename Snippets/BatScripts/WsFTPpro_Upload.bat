@@ -1,3 +1,4 @@
+@REM PS ver https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/PowerShell/WsFTPpro_Upload.ps1
 @REM Automate WS_FTP 12 Upload using Connection Configuration settings
 @REM Connection Configuration name = "CJ PRODUCTION UPLOAD"
 @REM Remote Dir = "INTAKE.UP"
