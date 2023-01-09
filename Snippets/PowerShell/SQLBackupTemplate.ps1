@@ -5,7 +5,7 @@ $year = ($date).Year
 $month = ($date).ToString("MM")
 $day = ($date).ToString("dd")
 $minute = ($date).ToString("hhmmss")
-$strDate = "$day$month$year`_$minute"
+$strDate = "$month$day$year`_$minute"
 
 # Write-Host "Year:" $year -ForegroundColor DarkRed;
 # Write-Host "Month:" $month -ForegroundColor DarkRed;
