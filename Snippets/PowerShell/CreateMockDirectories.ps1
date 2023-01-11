@@ -30,12 +30,18 @@ foreach($i in $range){
     New-Item -ItemType Directory -Path $rootMockFolder$strDate | Out-Null
 }
 
-# December 2021 (1-31)
+
+Write-Host 'Creating mock folders for Dec 2022'
+# December 2022 (1-31)
 $rangeDec = 1..31
 foreach($i in $rangeDec){
+    
+    $rnumber = Get-Random -Minimum 100000 -Maximum 900000 | out-string
+    $rnMinute = $rnumber.PadLeft(7,'0').Trim()
+
     $day = "{0:D2}" -f $i
     # Write-Host $day
-    $strDate = "12$day$year`_$rnMinute"
+    $strDate = "12$day`2022_$rnMinute"
     # Write-Host $strDate
     Write-Host $rootMockFolder$strDate
     New-Item -ItemType Directory -Path $rootMockFolder$strDate | Out-Null
