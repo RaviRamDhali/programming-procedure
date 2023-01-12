@@ -26,13 +26,17 @@ $monthfirst = $previousMonth + "01" + $previousYear
 $monthfifteenth = $previousMonth + "15" + $previousYear
 
 $objPreviousMonthFolders = (Get-ChildItem -Path C:\_temp\mock-folders -Filter "$previousMonth*" -Recurse -Directory)
+$objPreviousMonthFolders.Count
 
 foreach ($objFolder in $objPreviousMonthFolders)
 {
-     if ($objFolder | Where-Object {$_.Name -match "$monthfirst`_*|$monthfifteenth`_*"} )
+    if ($objFolder | Where-Object {$_.Name -notmatch "$monthfirst`_*|$monthfifteenth`_*"})
     {
         $folderName = $objFolder.Name
-        $folderName
+        # $objFolder | Rename-Item -NewName { "delete_" + $_.Name };
+        $objFolder | Remove-Item
     }
-    
 }
+
+$objPreviousMonthFolders = (Get-ChildItem -Path C:\_temp\mock-folders -Filter "$previousMonth*" -Recurse -Directory)
+$objPreviousMonthFolders.Count
