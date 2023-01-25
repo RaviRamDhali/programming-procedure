@@ -2,6 +2,18 @@
 https://stackoverflow.com/questions/46846494/datatables-orderable-false-directly-on-table
 <th data-orderable="false"></th>
 
+
+Sorting on date vs displaying date
+https://datatables.net/reference/option/columns.type
+Use:  type:"date"
+
+{
+  data: "caseCreatedDate", title: "Created", type:"date" ,render: function (data, type, row) {
+  return moment(row.caseCreatedDate).format("MM/DD/YYYY")
+  }
+}
+
+
 https://datatables.net/examples/advanced_init/html5-data-attributes.html
 <td :data-order="item.LastLogin">{{item.LastLogin | formatDate}}</td>
 <td :data-order="item.Modified">{{item.Modified | formatDate}}</td>
