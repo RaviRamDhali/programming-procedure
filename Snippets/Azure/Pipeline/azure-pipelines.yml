@@ -41,6 +41,12 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact for Release (drop)'
+  inputs:
+    # PathtoPublish: '$(build.artifactStagingDirectory)\WebApplication.zip'
+    PathtoPublish: '$(build.artifactStagingDirectory)'
+    
 
 - task: VSBuild@1
   displayName: 'Build Project WebApi'
