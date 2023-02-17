@@ -29,6 +29,9 @@ guid = exteral use for querystrings, api calls
 ** Using NVARCHAR now 05/2021 **
 allowing characters from languages and emoji
 
+** Do not use TEXT. Replace with NVARCHAR **
+select * from Tracking where datalength(trackMemo) > 100
+
 ** Changed my mind for using varchar - DO NOT USE **
 allowing only simple char. not allowing characters from languages (needs nvarchar) **
 
