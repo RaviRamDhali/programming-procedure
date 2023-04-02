@@ -1,4 +1,16 @@
-
+[Serializable]
+public enum eUserRole
+{
+    Admin = 100,
+    Manager = 200,
+    Member = 300,
+    Guest = 400,
+    Contractor = 500,
+    Contact = 600,
+    Higher = Admin | Manager,
+    Lower = Guest | Contractor | Contact
+}
+    
 public enum InvoiceValidType
 {
     Review = 0,
