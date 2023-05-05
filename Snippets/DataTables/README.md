@@ -4,7 +4,7 @@ SOP for implamentation of https://datatables.net/
 2. Rendered table
 
 # Standard table
-Explain and have code samples here
+Explain and have code Snippets/DataTables/standard.html
 
 
 # Rendered table
