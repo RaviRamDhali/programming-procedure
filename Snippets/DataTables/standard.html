@@ -1,0 +1,20 @@
+<table id="table-purchase-order" class="table table-flush" v-show="!loading">
+    <thead class="thead-light">
+        <tr>
+            <th>PO#</th>
+            <th>PRODUCT</th>
+            <th>QUANTITY</th>
+            <th>QTY FULFILLED</th>
+            <th>QTY REMAINING</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="(item, index) in purchaseOrderData">
+            <td><a :href="'/PurchaseOrder/PurchaseOrderCreate?id=' + item.guid">{{item.number}}</a></td>
+            <td>{{item.productName}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.quantityFulfilled}}</td>
+            <td>{{item.quantityRemaining}}</td>
+        </tr>
+    </tbody>
+</table>
