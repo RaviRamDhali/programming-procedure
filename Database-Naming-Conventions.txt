@@ -377,3 +377,9 @@ Referential integrity > relationships
 ALTER TABLE memberContact ADD CONSTRAINT FK_memberContact_member
 FOREIGN KEY(memberId)
 REFERENCES Member(id)
+
+ADD Columns: 
+CreatedBy [int] NOT NULL default (0),
+Created [datetime] not null default (getdate()),
+ModifiedBy [int] NOT NULL default (0),
+Modified [datetime] not null default (getdate()),
