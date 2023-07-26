@@ -32,7 +32,13 @@ jobs:
           with:
             files: './Website/cnfgConnection.config'
           env:
-            connectionString: ${{ secrets.CONNSTRING_PROD }}
+            ConnectionStrings.DefaultConnection: ${{ secrets.PROD_CONNSTRING }}
+            AppSettings.AppEnv: ${{ vars.APPENV_PROD }}
+            AppSettings.AppURL: ${{ vars.APPURL_PROD }}
+            AppSettings.ApiURL: ${{ vars.APIURL_PROD }}
+            AppSettings.AccessTokenURL: ${{ vars.PAYPALACCESSTOKENURL_PROD }}
+            AppSettings.PayoutsURL: ${{ vars.PAYPALPAYOUTSURL_PROD }}
+            AppSettings.IntakeDeleteApiURL: ${{ vars.INTAKEDELETEAPIURL_PROD }}
         
         - name: Setup MSBuild path
           uses: microsoft/setup-msbuild@v1.1
