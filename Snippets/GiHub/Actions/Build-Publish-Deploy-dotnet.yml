@@ -1,0 +1,49 @@
+name: Build Publish and Deploy dotnet Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+
+      - name: Publish
+        run: dotnet publish WebApi/WebApi.csproj -c Release --property:PublishDir="${{github.workspace}}\_build\webapi\"
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapi
+          path: ${{github.workspace}}\_build\webapi\
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: webapi
+          path: ${{github.workspace}}\_build\webapi\
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPI_NAME }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A213E36AD765480E9E15E7AC13BE769A }}
+          package: ${{github.workspace}}\_build\webapi\
