@@ -45,5 +45,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPI_NAME }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A213E36AD765480E9E15E7AC13BE769A }}
+          publish-profile: ${{ secrets.AZURE_WEBAPI_PUBLISH_PROFILE }}
           package: ${{github.workspace}}\_build\webapi\
