@@ -1,0 +1,84 @@
+name: Build Publish and Deploy dotnet Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+
+      - name: Publish
+        run: dotnet publish WebApi/WebApi.csproj -c Release --property:PublishDir="${{github.workspace}}\_build\webapi\"
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapi
+          path: ${{github.workspace}}\_build\webapi\
+
+
+  build_react:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+    
+        - name: Set up Node.js
+          uses: actions/setup-node@v1
+          with:
+            node-version: 18.x
+    
+        - name: Npm Install dependencies
+          working-directory: ./WebApp
+          run: npm install
+
+        - name: Npm Run Build
+          working-directory: ./WebApp
+          run: npm run build
+
+        - name: Upload artifact for deployment job
+          uses: actions/upload-artifact@v3
+          with:
+            name: webreact
+            path: ./WebApp/dist/
+
+        - name: Deploy to Azure Web App
+          id: deploy-to-webapp
+          uses: azure/webapps-deploy@v2
+          with:
+            publish-profile: ${{ secrets.AZURE_WEBREACT_PUBLISH_PROFILE }}
+            package: ${{github.workspace}}/WebApp/dist/
+
+  
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: webapi
+          path: ${{github.workspace}}\_build\webapi\
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPI_APPSERVICE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPI_PUBLISH_PROFILE }}
+          package: ${{github.workspace}}\_build\webapi\
