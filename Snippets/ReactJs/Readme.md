@@ -1,14 +1,8 @@
 Summary
 
-npm install dotenv --save
+VITE_ENV = DEV
+VITE_API_URL = https://localhost:7096
 
-Next, add the following line to your app.
+var apiUrl = import.meta.env.VITE_API_URL;
+console.log('apiUrl',apiUrl);
 
-require('dotenv').config()
-
-Then create a .env file at the root directory of your application and add the variables to it.
-
-// contents of .env
-
-REACT_APP_API_KEY = 'my-secret-api-key'
-Finally, add .env to your .gitignore file so that Git ignores it and it never ends up on GitHub.
