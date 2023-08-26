@@ -30,39 +30,54 @@ jobs:
           name: webapi
           path: ${{github.workspace}}\_build\webapi\
 
-
   build_react:
-        runs-on: ubuntu-latest
-
-        steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+    runs-on: ubuntu-latest
     
-        - name: Set up Node.js
-          uses: actions/setup-node@v1
-          with:
-            node-version: 18.x
-    
-        - name: Npm Install dependencies
-          working-directory: ./WebApp
-          run: npm install
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-        - name: Npm Run Build
-          working-directory: ./WebApp
-          run: npm run build
+    # must prefix with envkey_ 
+    - name: Create .env file with Variables
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_VITE_ENV: PROD
+        envkey_VITE_API_URL: ${{ vars.APIURL_PROD }}
+        directory: ./WebApp/
+        
+    - name: READ .env file with Variables
+      id: package
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./WebApp/.env
+    - name: ECHO .env file with Variables
+      run: echo "${{ steps.package.outputs.content }}"
 
-        - name: Upload artifact for deployment job
-          uses: actions/upload-artifact@v3
-          with:
-            name: webreact
-            path: ./WebApp/dist/
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
 
-        - name: Deploy to Azure Web App
-          id: deploy-to-webapp
-          uses: azure/webapps-deploy@v2
-          with:
-            publish-profile: ${{ secrets.AZURE_WEBREACT_PUBLISH_PROFILE }}
-            package: ${{github.workspace}}/WebApp/dist/
+    - name: Npm Install dependencies
+      working-directory: ./WebApp
+      run: npm install
+
+    - name: Npm Run Build
+      working-directory: ./WebApp
+      run: npm run build
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v3
+      with:
+        name: webreact
+        path: ./WebApp/dist/
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        publish-profile: ${{ secrets.AZURE_WEBREACT_PUBLISH_PROFILE }}
+        package: ${{github.workspace}}/WebApp/dist/
 
   
   deploy:
