@@ -5,19 +5,15 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  ReactDir: ./WebApp/ClientApp/
+
 jobs:
   build_react:
-    if: true
     name: Build React
     runs-on: ubuntu-latest
 
-    env:
-      ReactDir: ./WebApp/ClientApp/
-
     steps:
-      - name: directory
-        run: echo $ReactDir
-
       - uses: actions/checkout@v4
 
       - name: Make ENV file with variable substitution
@@ -28,8 +24,11 @@ jobs:
           envkey_APIURL: ${{ vars.APIURL_DEV }}
           envkey_APPURL: ${{ vars.APPURL_DEV }}
           envkey_AZURE_WEBAPI_NAME: ${{ vars.AZURE_WEBAPI_NAME }}
-          directory: ./WebApp/ClientApp/
+          directory: ${{env.ReactDir}}
           file_name: .env
+
+      - name: "Echo file .env"
+        run: cat ${{env.ReactDir}}/.env
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -37,21 +36,21 @@ jobs:
           node-version: 18.x
 
       - name: Yarn install
-        working-directory: ./WebApp/ClientApp/
+        working-directory: ${{env.ReactDir}}
         run: yarn install
 
       - name: Yarn build
-        working-directory: ./WebApp/ClientApp/
+        working-directory: ${{env.ReactDir}}
         run: yarn build:prod
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: webreact
-          path: ./WebApp/ClientApp/build/
+          path: ${{env.ReactDir}}/build/
 
   deployment_react:
-    name: Deployment
+    name: Deployment React
     runs-on: ubuntu-latest
     needs: build_react
 
@@ -60,7 +59,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: webreact
-          path: ./WebApp/ClientApp/build/
+          path: ${{env.ReactDir}}/dist/
 
       - name: Deploy to Azure WebApp
         id: deploy-to-webapp
@@ -68,4 +67,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SB2 }}
-          package: ./WebApp/ClientApp/build/
+          package: ${{env.ReactDir}}/dist/
