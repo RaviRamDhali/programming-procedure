@@ -52,3 +52,27 @@ namespace Infrastructure.Repository
         }
     }
 }
+
+
+        public async Task<List<AffiliateViewModel>> GetAll()
+        {
+            try
+            {
+                var affiliates = await _repo.GetAll();
+
+                if (affiliates == null || affiliates.Count == 0)
+                {
+                    // Log a message indicating no affiliates were found.
+                    _logger.LogInformation("No affiliates were found in the database.");
+                    return new List<AffiliateViewModel>();
+                }
+
+                return _map.FromModel(affiliates);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and rethrow it for higher-level handling.
+                _logger.LogError(ex, "An error occurred while retrieving affiliates.");
+                throw;
+            }
+        }
