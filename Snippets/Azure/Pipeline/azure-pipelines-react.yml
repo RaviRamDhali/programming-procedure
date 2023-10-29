@@ -1,0 +1,38 @@
+# React - Build and Publish Build Artifacts
+
+trigger:
+- azure-pipelines
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  reactDir: './WebApp/ClientApp/'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Node Install'
+
+- script: yarn install
+  workingDirectory: $(reactDir)
+  displayName: Yarn Install
+
+- script: yarn run build:prod
+  workingDirectory: $(reactDir)
+  displayName: Yarn Build
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(reactDir)/build/'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Artifact WebApp Create'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact WebApp'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop_WebApp'
+    publishLocation: 'Container'
+  
