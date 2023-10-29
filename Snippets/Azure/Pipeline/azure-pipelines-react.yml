@@ -1,3 +1,15 @@
+
+  # UPDATE package.json
+  # "scripts": {
+  #   "start": "react-scripts start",
+  #   "test": "react-scripts test",
+  #   "eject": "react-scripts eject",
+  #   "build": "echo \"Please use build:dev or build:prod\" && exit 1",
+  #   "build:prod": "CI=false && react-scripts --max_old_space_size=4096 build"
+  # },
+
+
+
 # React - Build and Publish Build Artifacts
 
 trigger:
