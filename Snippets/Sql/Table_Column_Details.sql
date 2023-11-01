@@ -4,8 +4,9 @@ CREATE TABLE #TempSchema
     [TABLE_NAME] nvarchar(max),
     [COLUMN_NAME] nvarchar(max),
     [SQL_TYPE] nvarchar(max),
-    [NULLABLE] nvarchar(max),
-    [PRIMITIVE_TYPE] nvarchar(max),
+    [NULLABLE] nvarchar(5),
+    [CLASS_TYPE] nvarchar(max),
+    [PRIMARYKEY] nvarchar(5),
 );
 
 
@@ -24,9 +25,9 @@ BEGIN
 INSERT INTO #TempSchema
 SELECT TOP 100 PERCENT
         @tableName as 'TABLE',
-        COLUMN_NAME,
-        DATA_TYPE,
-        IS_NULLABLE,
+        c.COLUMN_NAME,
+        c.DATA_TYPE,
+        c.IS_NULLABLE,
         CASE 
 			WHEN DATA_TYPE = 'uniqueidentifier' THEN 'Guid'
 			WHEN DATA_TYPE = 'text' THEN 'string'
@@ -61,21 +62,30 @@ SELECT TOP 100 PERCENT
             WHEN DATA_TYPE = 'bit' AND IS_NULLABLE = 'NO' THEN 'bool'
             WHEN DATA_TYPE = 'bit' AND IS_NULLABLE = 'YES' THEN 'bool?'
             WHEN DATA_TYPE = 'xml' THEN 'string'
-        END AS NewType
+        END AS CLASS_TYPE
+        ,CASE WHEN pk.COLUMN_NAME IS NOT NULL THEN 'YES' ELSE '' END AS IS_PRIMARYKEY
+               
+        FROM INFORMATION_SCHEMA.COLUMNS as c
+        LEFT JOIN (
+            SELECT ku.TABLE_CATALOG,ku.TABLE_SCHEMA,ku.TABLE_NAME,ku.COLUMN_NAME
+            FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tc
+            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS ku
+                ON tc.CONSTRAINT_TYPE = 'PRIMARY KEY' 
+                AND tc.CONSTRAINT_NAME = ku.CONSTRAINT_NAME
+         ) pk
+         ON  c.TABLE_CATALOG = pk.TABLE_CATALOG
+            AND c.TABLE_SCHEMA = pk.TABLE_SCHEMA
+            AND c.TABLE_NAME = pk.TABLE_NAME
+            AND c.COLUMN_NAME = pk.COLUMN_NAME
 
-        -- Inserts data into the newly created table
-        
-
-        FROM INFORMATION_SCHEMA.COLUMNS 
-        WHERE TABLE_NAME = @tableName
-        ORDER BY COLUMN_NAME
+        WHERE c.TABLE_NAME = @tableName
+        ORDER BY c.COLUMN_NAME
 
      FETCH NEXT FROM curTable into @tableName
     
 END
 CLOSE curTable
 DEALLOCATE curTable
-
 
 Select * from #TempSchema
 DROP TABLE IF EXISTS #TempSchema
