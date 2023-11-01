@@ -51,12 +51,7 @@ BEGIN
             -- close row
             set @jsonRow = Left(@jsonRow,len(@jsonRow)-1)
             SET @jsonRow += CHAR(13)+CHAR(10)
-
-            -- clean-up row
-            -- SET @jsonRow = REPLACE(@jsonRow, '},],', '}],') 
-            
-
-            
+  
         -- add row to parent table
         
         SET @json += @jsonRow
@@ -67,7 +62,5 @@ END
 CLOSE curTable
 DEALLOCATE curTable
 
-    -- SET @json = REPLACE(@json, ',}', ']}')
     set @json = Left(@json,len(@json)-1)
-
     select @json
