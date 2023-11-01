@@ -1,3 +1,9 @@
+-- # Instructions
+-- Run the SQL to generate the csv file to parse in PowerShell<br>
+-- Save the results as:  \table_columns.csv
+-- DOT NET files to run Snippets/PowerShell/DotNetFiles
+        
+
 DECLARE @tableName nvarchar(max)
 
 declare @json nvarchar(max) = 'table,columns'
