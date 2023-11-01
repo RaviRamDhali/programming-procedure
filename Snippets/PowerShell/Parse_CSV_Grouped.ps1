@@ -1,3 +1,5 @@
+# Use to Generated file Snippets/Sql/Table_Column_Details.sql
+
 # Define the CSV file path
 $csvFilePath = $PSScriptRoot + "\table_column_details.csv"
 $csvData = Import-csv -Path $csvFilePath
