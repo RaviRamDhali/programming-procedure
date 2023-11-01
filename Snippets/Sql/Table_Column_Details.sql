@@ -1,3 +1,6 @@
+-- Use Powershell to parse csv
+-- Snippets/PowerShell/Parse_CSV_Grouped.ps1
+
 
 CREATE TABLE #TempSchema
 (
