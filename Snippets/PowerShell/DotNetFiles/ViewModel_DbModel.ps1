@@ -157,6 +157,7 @@ $csvFilePath = $PSScriptRoot + "\table_column_details.csv"
 ##--------------------------------------------------##
 
 # Define a hashtable named $enviroments to store environment information.
+# If you want to just run DbModel or ViewModel, remove object from here
 $enviroments = @{
     Infrastructure = @{
         class = 'DbModel'
