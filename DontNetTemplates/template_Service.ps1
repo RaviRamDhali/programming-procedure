@@ -15,7 +15,14 @@ Function CleanupPathDir($outputDirectory) {
 
 Function CreateFile($outputDirectory, $domain, $csCode) {
 
-    $csFilePath = Join-Path -Path $outputDirectory -ChildPath "$domain.cs"
+    $rootDomain = $csFilePath = Join-Path $outputDirectory "$domain"
+
+    # Check if the output directory exists; if not, create it
+    if (-not (Test-Path $rootDomain -PathType Container)) {
+        New-Item -Path $rootDomain -ItemType Directory
+    }
+    
+    $csFilePath = Join-Path $rootDomain "$domain.cs"
     $csCode | Set-Content -Path $csFilePath
     # Write-Host "Created $domain.cs"
 }
@@ -160,7 +167,7 @@ namespace Service.Domain.$domain
 return $csCode
 }
 # Define the output directory where .cs files will be created
-$outputDirectory = "C:\_temp\output\Service\"
+$outputDirectory = "C:\_temp\output\Service\Domain\"
 
 CleanupPathDir $outputDirectory
 
@@ -176,9 +183,9 @@ $groupedData = $csvData | Group-Object -Property TABLE_NAME
 # Loop through each row in the CSV and generate .cs files
 foreach ($group in $groupedData) {
     $domain = $group.Name
-    # Write-Host $domain
-
+    
     $csCode = BuildCSService $domain
 
     CreateFile $outputDirectory $domain $csCode
+
 }
