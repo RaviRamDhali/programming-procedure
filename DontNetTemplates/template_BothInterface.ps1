@@ -18,7 +18,26 @@ Function CreateFile($outputDirectory, $domain, $csCode) {
     # Write-Host "Created $domain.cs"
 }
 
-Function BuildEachRow($domain) {
+Function BuildIServiceRow($domain) {
+
+    $result = @"
+    public interface I$domain
+    {
+        Task<List<ViewModel.$domain>> GetAll();
+        Task<List<ViewModel.$domain>> GetByClientId(int value);
+        Task<ViewModel.$domain`?> GetSingle(int value);
+        Task<ViewModel.$domain`?> GetSingle(Guid value);
+
+        //Command
+        Task<int> Insert(ViewModel.$domain model);
+        Task<bool> Update(ViewModel.$domain model);
+        Task<bool> Delete(ViewModel.$domain model);
+"@
+    return $result
+
+}
+
+Function BuildIRepositoryRow($domain) {
 
     $result = @"
     public interface I$domain
@@ -62,6 +81,21 @@ Function BuildCSHeader($domain) {
     }
 
     return $csCode
+
+}
+
+Function BuildEachRow($domain) {
+    $propRow = ""
+
+    if ($class -eq "IService") {
+        $propRow = BuildIServiceRow $domain
+    }
+
+    if ($class -eq "IRepository") {
+        $propRow = BuildIRepositoryRow $domain
+    }
+
+    return $propRow
 
 }
 Function BuildCSFooter($propRow) {
