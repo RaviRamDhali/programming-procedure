@@ -27,7 +27,27 @@ Function CreateFile($outputDirectory, $domain, $csCode) {
     # Write-Host "Created $domain.cs"
 }
 
-Function BuildCSService($domain) {
+Function BuildCSService($domain, $groupItems) {
+
+    $table = $groupItems | Where-Object { $_.PRIMARYKEY -eq "Yes" -and $_.TABLE_NAME -eq $domain }
+
+    # $DOMAIN = $table.TABLE_NAME
+    # $TABLE_NAME = $table.TABLE_NAME
+    # $COLUMN_NAME = $table.COLUMN_NAME
+    # $SQL_TYPE = $table.SQL_TYPE
+    # $NULLABLE = $table.NULLABLE
+    # $CLASS_TYPE = $table.CLASS_TYPE
+    # $PRIMARYKEY = $table.PRIMARYKEY
+    $PRIMARYKEY_COLUMN_NAME = $table.COLUMN_NAME
+
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+    
+    # Write-Host "PRIMARYKEY_COLUMN_NAME: $PRIMARYKEY_COLUMN_NAME"
+
     $csCode = @"
 namespace Service.Domain.$domain
 {
@@ -61,7 +81,6 @@ namespace Service.Domain.$domain
                 return new List<ViewModel.$domain>();
             }
         }
-
         public async Task<List<ViewModel.$domain>> GetByClientId(int value)
         { 
             try
@@ -79,14 +98,13 @@ namespace Service.Domain.$domain
                 return new List<ViewModel.$domain>();
             }
         }
-
         public async Task<ViewModel.$domain`?> GetSingle(int value)
         { 
             try
             {
                 var data = await _repo.GetSingle(value);
 
-                if (data.IsNotNullOrEmpty())
+                if (data.IsNotNull())
                     return _map.FromDbModel(data);
 
                 return null;
@@ -97,15 +115,13 @@ namespace Service.Domain.$domain
                 return null;
             }
         }
-
-
         public async Task<ViewModel.$domain`?> GetSingle(Guid value)
         { 
             try
             {
                 var data = await _repo.GetSingle(value);
 
-                if (data.IsNotNullOrEmpty())
+                if (data.IsNotNull())
                     return _map.FromDbModel(data);
 
                 return null;
@@ -117,49 +133,70 @@ namespace Service.Domain.$domain
             }
         }
 
-        public async Task<ViewModel.$domain`?> Save(int value)
+
+        // CRUD Operations
+
+        public async Task<ViewModel.$domain`?> Save(ViewModel.$domain formData)
+        {
+            try
+            {
+                var dbModel = await _repo.GetSingle(formData.$PRIMARYKEY_COLUMN_NAME);
+
+                if (dbModel.IsNull())
+                {
+                    // Do Insert
+                    var model = _map.ToDbModel(formData);
+                    var newId = await _repo.Insert(model);
+
+                    if (newId == 0)
+                        throw new Exception($"{GetType().FullName}.Save.Insert() failed", new Exception(JsonSerializer.Serialize(formData)));
+
+                    _logger.LogInformation("$domain Insert");
+                    return await GetSingle(newId);
+                }
+                else
+                {
+                    // Do Update
+                    var model = _map.ToDbModel(formData);
+                    var updated = await _repo.Update(model);
+
+                    if (!updated)
+                        throw new Exception($"{GetType().FullName}.Save.Update() failed", new Exception(JsonSerializer.Serialize(formData)));
+
+                    _logger.LogInformation("$domain Update");
+                    return await GetSingle(model.$PRIMARYKEY_COLUMN_NAME);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "$domain.Save() error occurred while saving data");
+                return null;
+            }
+        }
+        public async Task<bool> Delete(int value)
         { 
             try
             {
-                var data = await _repo.Insert(DbModel.$domain);
-                var data = await _repo.Update(DbModel.$domain);
+                var dbModel = await _repo.GetSingle(value);
 
-                if (data.IsNotNullOrEmpty())
-                    return _map.FromDbModel(data);
+                if (dbModel.IsNull())
+                    throw new Exception($"{GetType().FullName}.Delete.GetSingle() failed", new Exception("Value: " + value));
 
-                return null;
+                var deleted = await _repo.Delete(dbModel);
+
+                if (!deleted)
+                    throw new Exception($"{GetType().FullName}.Delete failed", new Exception("Value: " + value));
+
+                _logger.LogInformation("$domain Delete");
+                return true; 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "$domain.GetSingle() error occurred while retrieving data");
-                return null;
+                _logger.LogError(ex, "$domain.Delete() error occurred while deleting data");
+                return false;
             }
         }
-
-        public async Task<ViewModel.$domain`?> Delete(int value)
-        { 
-            try
-            {
-                var data = await _repo.Delete(DbModel.$domain);
-                
-                if (data.IsNotNullOrEmpty())
-                    return _map.FromDbModel(data);
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "$domain.GetSingle() error occurred while retrieving data");
-                return null;
-            }
-        }
-
-        public async Task<ViewModel.$domain`?> Delete(Guid value)
-        { 
-            return Delete(value);
-        }
-
-
+        
     }
 }
 "@
@@ -183,8 +220,9 @@ $groupedData = $csvData | Group-Object -Property TABLE_NAME
 # Loop through each row in the CSV and generate .cs files
 foreach ($group in $groupedData) {
     $domain = $group.Name
+    $groupItems = $group.Group
     
-    $csCode = BuildCSService $domain
+    $csCode = BuildCSService $domain $groupItems
 
     CreateFile $outputDirectory $domain $csCode
 

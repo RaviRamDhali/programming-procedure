@@ -36,6 +36,16 @@ namespace Service.Mapper
                 $props
             };
         }
+
+        public Infrastructure.DbModel.$domain ToDbModel(ViewModel.$domain data)
+        {
+             if (data.IsNull())
+                return null;
+            
+            return new Infrastructure.DbModel.$domain{
+                $props
+            };
+        }
     }
 }
 "@
