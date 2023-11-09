@@ -66,12 +66,10 @@ namespace Infrastructure.Repository
         {
             return await WithConnectionAsync<int>(connection => connection.InsertAsync(data));
         }
-
         public async Task<bool> Update(DbModel.$domain data)
         {
             return await WithConnectionAsync<bool>(connection => connection.UpdateAsync(data));
         }
-
         public async Task<bool> Delete(DbModel.$domain data)
         {
             return await WithConnectionAsync<bool>(connection => connection.DeleteAsync(data));
