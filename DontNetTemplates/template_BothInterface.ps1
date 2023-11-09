@@ -28,7 +28,7 @@ Function BuildIServiceRow($domain) {
         Task<ViewModel.$domain`?> GetSingle(int value);
         Task<ViewModel.$domain`?> GetSingle(Guid value);
 
-        //Command
+        // Commands
         Task<ViewModel.$domain`?> Save(ViewModel.$domain model);
         Task<bool> Delete(int value);
 "@
@@ -46,7 +46,7 @@ Function BuildIRepositoryRow($domain) {
         Task<DbModel.$domain`?> GetSingle(int value);
         Task<DbModel.$domain`?> GetSingle(Guid value);
 
-        //Command
+        // Commands
         Task<int> Insert(DbModel.$domain model);
         Task<bool> Update(DbModel.$domain model);
         Task<bool> Delete(int value);

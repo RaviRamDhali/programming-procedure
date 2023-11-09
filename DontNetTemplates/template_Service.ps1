@@ -134,7 +134,7 @@ namespace Service.Domain.$domain
         }
 
 
-        // CRUD Operations
+        // Commands
 
         public async Task<ViewModel.$domain`?> Save(ViewModel.$domain formData)
         {

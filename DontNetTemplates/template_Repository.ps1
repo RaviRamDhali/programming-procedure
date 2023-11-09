@@ -60,7 +60,7 @@ namespace Infrastructure.Repository
         }
 
         
-        // CRUD Operations
+        // Commands
 
         public async Task<int> Insert(DbModel.$domain data)
         {
