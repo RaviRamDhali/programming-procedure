@@ -49,7 +49,7 @@ Function BuildIRepositoryRow($domain) {
         // Commands
         Task<int> Insert(DbModel.$domain model);
         Task<bool> Update(DbModel.$domain model);
-        Task<bool> Delete(int value);
+        Task<bool> Delete(DbModel.$domain model);
 "@
     return $result
 
