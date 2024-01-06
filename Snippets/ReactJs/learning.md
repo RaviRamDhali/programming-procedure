@@ -1,10 +1,8 @@
 # reducer.ts
 src\slices\auth\user\reducer.ts \
-Manage STATE \
-Does not contain business logic
+Reducers handle the synchronous aspects of **state** changes (does not contain business logic)
 
 # thunk.ts
 src\slices\auth\user\thunk.ts \
-API Calls \
-Some business logic
+Thunks are used to handle asynchronous logic and dispatch actions accordingly (API Calls and Business logic)
 
