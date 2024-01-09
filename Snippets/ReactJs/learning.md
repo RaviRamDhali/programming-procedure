@@ -1,6 +1,15 @@
 # reducer.ts
 src\slices\auth\user\reducer.ts \
 Reducers handle the synchronous aspects of **state** changes (does not contain business logic)
+```
+export const initialState = {
+    data: {} as User,
+    loading: false,
+    success: true,
+    message: null,
+    redirect: null,
+};
+```
 
 # thunk.ts
 src\slices\auth\user\thunk.ts \
