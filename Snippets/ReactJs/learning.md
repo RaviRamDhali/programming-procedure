@@ -6,8 +6,8 @@ export const initialState = {
     data: {} as User,
     loading: false,
     success: true,
-    message: null,
-    redirect: null,
+    message: '',
+    redirect: '',
 };
 ```
 
