@@ -10,22 +10,64 @@
 
 
 
-# React - Build and Publish Build Artifacts
+# React - Build and Publish Build Artifacts with ENV replacement
 
 trigger:
-- azure-pipelines
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
   reactDir: './WebApp/ClientApp/'
+  libraryFileENV: '.env.production'
 
 steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download $(libraryFileENV) file'
+  name: envFile
+  inputs:
+    secureFile: $(libraryFileENV)
+
+- powershell: |
+   $ourfilesdata = Get-Content $(Agent.TempDirectory)/$(libraryFileENV)
+   Write-Output $ourfilesdata 
+  displayName: 'Output $(libraryFileENV) file'
+
+- powershell: |
+   $ourfilesdata = Get-Content $(System.DefaultWorkingDirectory)/$(reactDir).env
+   Write-Output $ourfilesdata 
+  displayName: 'Output REPO .env file'
+
+- powershell: Rename-Item $(Agent.TempDirectory)/$(libraryFileENV) -NewName $(Agent.TempDirectory)/.env
+  displayName:  'Rename file from $(libraryFileENV) to .env'
+
+- task: CopyFiles@2
+  displayName: 'Copy updated .evn to reactDir'
+  inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: .env
+      TargetFolder: $(System.DefaultWorkingDirectory)/$(reactDir)
+      flattenFolders: false
+      overWrite: true
+
+- powershell: |
+   $ourfilesdata = Get-Content $(System.DefaultWorkingDirectory)/$(reactDir)".env"
+   Write-Output $ourfilesdata 
+  displayName: 'Output final reactDir ENV'
+
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
   displayName: 'Node Install'
+
+- bash: |
+    echo "Enabling Corepack"
+    corepack enable
+    yarn set version $(YARN_VERSION)
+    echo "Running Yarn $(yarn --version)"
+  displayName: 'Enable Corepack and setup yarn'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/'
 
 - script: yarn install
   workingDirectory: $(reactDir)
@@ -35,14 +77,15 @@ steps:
   workingDirectory: $(reactDir)
   displayName: Yarn Build
 
+
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(reactDir)/build/'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Artifact WebApp Create'
+  displayName: 'Create Artifact for WebApp'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact WebApp'
+  displayName: 'Publish Artifact for WebApp'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop_WebApp'
