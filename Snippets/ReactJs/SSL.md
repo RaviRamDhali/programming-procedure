@@ -40,8 +40,25 @@ P.S. - still in PowerShell (admin)
 
 13. in file explorer, open folder: {git-project-folder}\casejacket-app\WebApp\ClientApp\.cert (folder)
 	13.a. in .cert (folder) double click: server.crt
+    
+2. Select Current User
+3.  Select Place all Certificates in the following store, Browse
+4.  Trusted Root Certification Authorities
+5.  . Select Finish
 
-14. Go to Section: Certificate Installation, in the NEW Instructions link
+C:\Projects\casejacket-app\WebApp\ClientApp\package.json
+Updated npm start script
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "build": "echo \"Please use build:dev or build:prod \" && exit 1",
+    "build:prod": "CI=false && react-scripts --max_old_space_size=4096 build",
+    "build:local": "react-scripts build"
+  },
+  
+
+15. Go to Section: Certificate Installation, in the NEW Instructions link
 	14.a. follow step 1 - 5
 
-15. Run Project like normal... cross fingers
+16. Run Project like normal... cross fingers
