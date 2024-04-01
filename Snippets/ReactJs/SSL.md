@@ -57,8 +57,6 @@ Updated npm start script
     "build:local": "react-scripts build"
   },
   
-
-15. Go to Section: Certificate Installation, in the NEW Instructions link
-	14.a. follow step 1 - 5
-
 16. Run Project like normal... cross fingers
+
+17. You might need to copy the .cert folder to /ClientApp/
