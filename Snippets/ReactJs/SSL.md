@@ -60,3 +60,12 @@ Updated npm start script
 16. Run Project like normal... cross fingers
 
 17. You might need to copy the .cert folder to /ClientApp/
+
+# Degug Steps
+1. Delete server.crt file from C:\Projects\casejacket-app\WebApp\ClientApp\.cert
+1. Run as admin Powershell > C:\Projects\casejacket-app\WebApp\ClientApp\.cert\ssl.ps1
+1. In file explorer, open folder: {git-project-folder}\casejacket-app\WebApp\ClientApp.cert (folder) 13.a. in .cert (folder) double click: server.crt
+1. Select Current User
+1. Select Place all Certificates in the following store, Browse
+1. Trusted Root Certification Authorities
+1. Select Finish
