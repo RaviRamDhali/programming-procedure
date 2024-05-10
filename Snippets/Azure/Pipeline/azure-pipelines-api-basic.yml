@@ -1,0 +1,37 @@
+# .NET API - Build and Publish Build Artifacts
+
+trigger:
+  branches:
+    include:
+    - development
+    # - main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  reactDir: './WebApp/ClientApp/'
+
+steps:
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  displayName: 'Build Project WebApi'
+  inputs:
+    solution: '**/WebApi.csproj'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApi.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact WebApi'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\WebApi.zip'
+    ArtifactName: 'drop_WebApi'
+    publishLocation: 'Container'
