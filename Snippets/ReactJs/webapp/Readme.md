@@ -4,6 +4,8 @@ To get React project to run in VStudio
 1. Add folder and file WebApp\.vscode\launch.json
 2. Add config to launch.json to open browser
 
+
+Snippets/ReactJs/webapp/.vscode/launch.json
 ```
 {
     // Use IntelliSense to learn about possible attributes.
