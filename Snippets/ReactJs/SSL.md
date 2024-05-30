@@ -29,7 +29,7 @@ P.S. - still in PowerShell (admin)
 10. run: openssl version (will show version)
 	10.a. my version is: OpenSSL 3.1.1
 
-11. In the casejacket project navigate to: {git-project-folders}\casejacket-app\WebApp\ClientApp\.cert\ssl.ps1
+11. In the casejacket project navigate to: {git-project-folders}\web-app\WebApp\ClientApp\.cert\ssl.ps1
 	11.a. remove text { ./ClientApp/.cert/ } from lines 6, 8, 9
 
 12. Run the ssl.ps1 script
@@ -38,7 +38,7 @@ P.S. - still in PowerShell (admin)
 		- server.key
 		- ssl.ps1
 
-13. in file explorer, open folder: {git-project-folder}\casejacket-app\WebApp\ClientApp\.cert (folder)
+13. in file explorer, open folder: {git-project-folder}\web-app\WebApp\ClientApp\.cert (folder)
 	13.a. in .cert (folder) double click: server.crt
     
 2. Select Current User
@@ -46,7 +46,7 @@ P.S. - still in PowerShell (admin)
 4.  Trusted Root Certification Authorities
 5.  . Select Finish
 
-C:\Projects\casejacket-app\WebApp\ClientApp\package.json
+C:\Projects\web-app\WebApp\ClientApp\package.json
 Updated npm start script
   "scripts": {
     "start": "react-scripts start",
@@ -62,9 +62,9 @@ Updated npm start script
 17. You might need to copy the .cert folder to /ClientApp/
 
 # Degug Steps
-1. Delete server.crt file from C:\Projects\casejacket-app\WebApp\ClientApp\.cert
-1. Run as admin Powershell > C:\Projects\casejacket-app\WebApp\ClientApp\.cert\ssl.ps1
-1. In file explorer, open folder: {git-project-folder}\casejacket-app\WebApp\ClientApp.cert (folder) 13.a. in .cert (folder) double click: server.crt
+1. Delete server.crt file from C:\Projects\web-app\WebApp\ClientApp\.cert
+1. Run as admin Powershell > C:\Projects\web-app\WebApp\ClientApp\.cert\ssl.ps1
+1. In file explorer, open folder: {git-project-folder}\web-app\WebApp\ClientApp.cert (folder) 13.a. in .cert (folder) double click: server.crt
 1. Select Current User
 1. Select Place all Certificates in the following store, Browse
 1. Trusted Root Certification Authorities
