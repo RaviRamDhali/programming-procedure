@@ -5,6 +5,7 @@ Each object should adhere to the agreed structure, capturing details such as
 transaction date, total savings, total amount, payment method, and vendor information. 
 
 The JSON structure should be flattened as shown below:
+```
 {
   "vendor": "Vendor Name",
   "transaction_date": "MM/DD/YYYY",
@@ -12,3 +13,4 @@ The JSON structure should be flattened as shown below:
   "total_amount": 0.00,
   "payment_method": "Payment Method"
 }
+```
