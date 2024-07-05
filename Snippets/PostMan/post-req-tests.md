@@ -1,4 +1,5 @@
 This code extracts the response body from a Postman API response and searches for the occurrences of the 
+
 strings **"isValid":false** and **"isValid":true**, counting how many times each appears.
 
 It then logs the length of the response body and the counts of these occurrences to the console. 
