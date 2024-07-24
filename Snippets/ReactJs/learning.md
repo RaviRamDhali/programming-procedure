@@ -13,7 +13,8 @@ export const initialState = {
 
 # thunk.ts
 src\slices\auth\user\thunk.ts \
-Thunks are used to handle asynchronous logic and dispatch actions accordingly (API Calls and Business logic)
+Thunks are used to handle asynchronous logic and dispatch actions accordingly (API Calls and Business logic) </br>
+"a piece of code that does some delayed work"
 
 # interface vs class
 **Use "interface" to define an object** (javascript POJO Plain old Javascripy Object)\
