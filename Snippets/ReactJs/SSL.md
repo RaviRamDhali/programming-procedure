@@ -26,10 +26,13 @@ P.S. - still in PowerShell (admin)
 
 9. Restart Computer
 
+## Git for Windows Installation
+
+
 10. run: openssl version (will show version)
 	10.a. my version is: OpenSSL 3.1.1
 
-11. In the casejacket project navigate to: {git-project-folders}\web-app\WebApp\ClientApp\.cert\ssl.ps1
+11. In the project navigate to: {git-project-folders}\web-app\WebApp\ClientApp\.cert\ssl.ps1
 	11.a. remove text { ./ClientApp/.cert/ } from lines 6, 8, 9
 
 12. Run the ssl.ps1 script
