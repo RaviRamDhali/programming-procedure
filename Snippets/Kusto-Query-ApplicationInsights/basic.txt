@@ -1,0 +1,4 @@
+union traces, exceptions, requests, dependencies
+// | where timestamp >= ago(300min)
+| extend pstTimestamp = datetime_add('hour', -8, timestamp) // Convert UTC to PST
+| order by pstTimestamp desc
