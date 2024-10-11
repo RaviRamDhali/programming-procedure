@@ -39,3 +39,10 @@ Usage:
 var apiUrl = import.meta.env.VITE_API_URL;
 console.log('apiUrl',apiUrl);
 ```
+
+# Port in use
+The command will download the package kill-port
+
+run: ```npx kill-port 3000```
+
+
