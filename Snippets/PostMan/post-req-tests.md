@@ -1,3 +1,33 @@
+# Example 1 - Basic
+
+```
+pm.test("Status code is 401", function () {
+    pm.response.to.have.status(401);
+});
+```
+
+```
+pm.test("Body is correct", function () {
+    pm.expect(pm.response.json().success).to.equal(true)
+});
+```
+
+```
+pm.test("Verify payload",  () => {
+    pm.expect(pm.response.json().user.guid).to.equal('a801ac42-6e3b-43bb-8dc3-dd464bdc7ace')
+    pm.expect(pm.response.json().token.access_token).not.empty
+});
+```
+
+```
+pm.test("Body is correct", function () {
+    pm.expect(pm.response.text()).to.equal('Invalid token')
+});
+```
+
+
+
+# Example 2 - More details
 This code extracts the response body from a Postman API response and searches for the occurrences of the 
 
 strings **"isValid":false** and **"isValid":true**, counting how many times each appears.
