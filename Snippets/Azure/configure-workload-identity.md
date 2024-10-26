@@ -1,6 +1,8 @@
 # Adding Identity Service Connection
 When a pipleline failed to connect to Azure Resource 
 
+![image](https://github.com/user-attachments/assets/37db1c26-d270-492d-9832-e61d91487baf)
+
 ## Azure DevOps 
 1. Select Project Settings
 1. Select Pipelines > Service connections
@@ -10,8 +12,9 @@ When a pipleline failed to connect to Azure Resource
 1. Enter Subscription Id and Subscription Name (from Azure Resource)
 1. Click "Keep as Draft" (you will be getting the remaning data from 
 
+## Azure Reource
+1. 
 
-![image](https://github.com/user-attachments/assets/37db1c26-d270-492d-9832-e61d91487baf)
 
 1. Select the Resouce Group
 1. Select Access control (IAM)
