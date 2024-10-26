@@ -1,6 +1,16 @@
 # Adding Identity Service Connection
 When a pipleline failed to connect to Azure Resource 
 
+## Azure DevOps 
+1. Select Project Settings
+1. Select Pipelines > Service connections
+1. Delete all old Service connections
+1. Select identity type App registration or Managed identity (manual) the Workload identity federation credential.
+1. Connection name, enter "uamanagedidentity".
+1. Select Next.
+1. App registration details
+
+
 
 ![image](https://github.com/user-attachments/assets/37db1c26-d270-492d-9832-e61d91487baf)
 
