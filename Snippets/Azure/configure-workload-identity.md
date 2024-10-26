@@ -36,3 +36,12 @@ In Azure portal, go to the Azure resource that you want to grant permissions for
 .1 Select Review and assign.
 
 ![image](https://github.com/user-attachments/assets/ffe4f454-d0c5-45f6-87f2-00acf8414b2a)
+
+## Back to Azure Devops
+Finish up adding the Service Connection (which should have been left if Draft Mode)
+
+1. Select Project Settings
+1. Select Pipelines > Service connections
+![image](https://github.com/user-attachments/assets/6f8cf19c-bddc-43be-be56-a91224812c9c)
+1. 
+
