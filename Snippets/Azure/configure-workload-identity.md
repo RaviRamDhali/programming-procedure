@@ -64,5 +64,6 @@ Finish up adding the Service Connection (which should have been left if Draft Mo
 ```Client Id for connecting to the endpoint. Refer to Azure Service Principal link on how to create Azure Service Principal.```
 ![image](https://github.com/user-attachments/assets/4b8096ab-02dd-4afe-a2bd-5a6a90eca9de)
 
-![image](https://github.com/user-attachments/assets/909e54f4-2de5-49cc-b23d-4682e45dc5f1)
+![image](https://github.com/user-attachments/assets/869a2db6-7268-4f54-9971-36e4ff372c33)
+
 
