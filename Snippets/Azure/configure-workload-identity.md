@@ -13,9 +13,11 @@ When a pipleline failed to connect to Azure Resource
 1. Click "Keep as Draft" (you will be getting the remaning data from 
 
 ## Azure Reource
-1. 
+### Create Managed identity
+1. Test
+1. Test
 
-
+### Add Role Contributor
 1. Select the Resouce Group
 1. Select Access control (IAM)
 1. Select Grant access to this resource btn "Add role assignment"
