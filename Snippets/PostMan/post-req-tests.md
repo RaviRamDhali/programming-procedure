@@ -7,6 +7,13 @@ pm.test("Status code is 401", function () {
 ```
 
 ```
+pm.test("Verify payload",  () => {
+    pm.expect(pm.response.json().token.access_token).not.empty
+    pm.expect(pm.response.json().token.access_token).to.not.be.null;
+});
+```
+
+```
 pm.test("Body is correct", function () {
     pm.expect(pm.response.json().success).to.equal(true)
 });
