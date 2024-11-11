@@ -1,0 +1,41 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Before adding THEME
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  reactDir: 'WebApp/ClientApp'
+
+steps:
+- task: UseNode@1
+  inputs:
+    version: '18.x'
+ 
+- script: |
+    corepack enable
+    corepack use yarn@*
+  displayName: 'Enable Corepack'
+  workingDirectory: $(reactDir)
+
+- script: |
+    yarn build:prod
+  displayName: 'Build project'
+  workingDirectory: $(reactDir)
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to build source folder WebApp'
+  inputs:
+    sourceFolder: '$(reactDir)/build/'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact for WebApp'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop_WebApp'
+    publishLocation: 'Container'
