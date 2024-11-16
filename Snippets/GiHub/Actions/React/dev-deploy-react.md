@@ -66,8 +66,7 @@ jobs:
     name: Deploy React
     runs-on: ubuntu-latest
     needs: build_react
-    if: 1 == 2
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
