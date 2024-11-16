@@ -1,5 +1,9 @@
 # GitHub Actions with React CI/CD
 
+Make sure to commit the following (2) files otherwise the Yarn Build will fail
+```.yarnrc.yml``` |   ```yarn.lock```
+
+![image](https://github.com/user-attachments/assets/a9f1970a-401a-415c-b7ff-428565860daf)
 
 
 ```
