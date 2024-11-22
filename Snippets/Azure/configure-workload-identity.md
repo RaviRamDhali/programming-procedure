@@ -24,7 +24,8 @@ When a pipleline failed to connect to Azure Resource
 1. Click Review and Create 
 1. Go to Managed Identity > {{client-name}}-az-resource-conn (might take a few minutes to appear)
 ### Add Federated Credential
-1. Select Federated credentials > Add Federated Credential
+1. Select Managed Identity > {{client-name}}-az-resource-conn
+1. Select Settings > Federated credentials > Add Federated Credential
 1. Federated credential scenario: Select Other
 1. Go back to Azure DevOps > Project Settings > Service Connections > {{client-name}}-managedidentity
 1. Copy and Paste both Issuer and Subject identifier into Add Federated Credential screen
