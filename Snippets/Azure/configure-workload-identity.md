@@ -66,6 +66,7 @@ Finish up adding the Service Connection (which should have been left if Draft Mo
 
 1. Select Project Settings
 1. Select Pipelines > Service connections
+1. Select "Finish Setup"
 ![image](https://github.com/user-attachments/assets/6f8cf19c-bddc-43be-be56-a91224812c9c)
 1. The label _Service Principal Id_ is misleading, but if you read the description it does say 
 ```Client Id for connecting to the endpoint. Refer to Azure Service Principal link on how to create Azure Service Principal.```
