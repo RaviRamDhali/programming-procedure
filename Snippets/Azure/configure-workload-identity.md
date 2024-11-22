@@ -7,8 +7,10 @@ When a pipleline failed to connect to Azure Resource
 1. Select Project Settings
 1. Select Pipelines > Service connections
 1. Delete all old Service connections
-1. Select identity type App registration or Managed identity (manual) the Workload identity federation credential.
-1. Connection name, enter "{{client-name}}-managedidentity".
+1. Click "Create service connection"
+1. Select Azure Resource Manager
+1. Select Workload Identity federation (manual) type App registration or Managed identity (manual) the Workload identity federation credential.
+1. Connection name, enter "{{client-name}}-managedidentity", and description
 1. Enter Subscription Id and Subscription Name (from Azure Resource)
 1. Click "Keep as Draft" (you will be getting the remaning data from 
 
