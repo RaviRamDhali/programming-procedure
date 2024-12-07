@@ -5,11 +5,11 @@ Instruction to follow: https://chocolatey.org/install#individual
 2. run: Get-ExecutionPolicy (Should show your policy type)
 
 3. Confirm that Policy is: unrestricted
-	3.a. If policy is NOT unrestricted... run: Set-ExecutionPolicy AllSigned
-	3.b. run: Get-ExecutionPolicy... should be unrestricted now
+   1. If policy is NOT unrestricted... run: Set-ExecutionPolicy AllSigned
+   2. run: Get-ExecutionPolicy... should be unrestricted now
 
 4. run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-	4.a. just copy it from the instructions link above
+    1. just copy it from the instructions link above
 
 5. Let it run to completion
 
