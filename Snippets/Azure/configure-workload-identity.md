@@ -56,6 +56,7 @@ Grant permissions to the managed identity in Azure portal
 In Azure portal, go to the Azure resource that you want to grant permissions for (for example, a resource group).
 
 1. Select Access control (IAM).
+1. Select Grant access to this resource btn "Add role assignment"
 1. Screenshot that shows selecting Access control in the resource menu.
 1. Select Add role assignment. Assign the required role to your managed identity (for example, Contributor).
 .1 Select Review and assign.
