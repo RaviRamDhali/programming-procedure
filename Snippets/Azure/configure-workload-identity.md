@@ -42,7 +42,7 @@ When a pipleline failed to connect to Azure Resource
 1. Select tab "Privileged administrator roles"
 1. Select "Contributor"
 1. Select Next
-1. For "Assign access to" > "Managed identity"
+1. For "Assign access to" > "Managed identity" > Dropdown "User-assigned managed identity"
 1. Click on "Select members"
 1. Click on the Select member you added before
 1. Click "Select"
