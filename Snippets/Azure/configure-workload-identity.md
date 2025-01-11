@@ -60,7 +60,7 @@ In Azure portal, go to the Azure resource that you want to grant permissions for
 1. Select Tab "Privileged administrator roles"
 1. Screenshot that shows selecting Access control in the resource menu.
 1. Select Add role assignment. Assign the required role to your managed identity (for example, Contributor).
-.1 Select Review and assign.
+1. Select Review and assign.
 
 ![image](https://github.com/user-attachments/assets/ffe4f454-d0c5-45f6-87f2-00acf8414b2a)
 
