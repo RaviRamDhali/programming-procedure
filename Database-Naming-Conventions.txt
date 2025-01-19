@@ -95,6 +95,28 @@ ok
 	)
 	
 
+create table [dbo].[Notification]
+(
+    [Id] [int] identity(1,1) primary key not null,
+    [Guid] [uniqueidentifier] not null default ((newid())),
+    [Name] [nvarchar](150) not null,
+    [Description] [nvarchar](250),
+
+    TargetRoleList [nvarchar] (100),
+    TargetUserList [nvarchar] (100),
+
+    [IsPriority] [bit] not null default ((0)),
+    [IsSticky] [bit] not null default ((0)),
+
+    [DisplayStart] [datetime] not null default (getdate()),
+    [DisplayEnd] [datetime] not null DEFAULT DATEADD(DAY, 1, GETDATE()),
+
+    [CreatedBy] [int] NOT NULL default (0),
+    [Created] [datetime] not null default (getdate()),
+    [ModifiedBy] [int] NOT NULL default (0),
+    [Modified] [datetime] not null default (getdate()),
+    [Active] [bit] not null default ((1)),
+)
 
 create table [dbo].[Customer](
 	[Id] [int] identity(1,1) primary key not null,
