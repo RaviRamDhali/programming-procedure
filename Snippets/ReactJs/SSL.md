@@ -30,10 +30,14 @@ P.S. - still in PowerShell (admin)
 1. remove text `/ClientApp/.cert/` from lines 6, 8, 9
 
 1. Run the `ssl.ps1` script
-1. Loof for the following files:
+   1. Error: ssl.ps1 is not digitally signed
+   2. Set-ExecutionPolicy RemoteSigned
+1. Look for the following files:
+   ```
 		- server.crt
 		- server.key
 		- ssl.ps1
+```
 
 1. Open folder: {git-project-folder}\web-app\WebApp\ClientApp\.cert (folder)
 1. Double click: `server.crt`
