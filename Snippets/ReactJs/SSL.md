@@ -27,7 +27,7 @@ P.S. - still in PowerShell (admin)
 1. run: `openssl version` (will show version) my version is: OpenSSL 3.1.1
 
 1. In the project navigate to: {git-project-folders}\web-app\WebApp\ClientApp\.cert\ssl.ps1
- 	1 remove text `{ ./ClientApp/.cert/ }` from lines 6, 8, 9
+1. remove text `/ClientApp/.cert/` from lines 6, 8, 9
 
 1. Run the `ssl.ps1` script
 1. Loof for the following files:
