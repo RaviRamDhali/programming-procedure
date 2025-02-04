@@ -45,4 +45,10 @@ The command will download the package kill-port
 
 run: ```npx kill-port 3000```
 
+# Visual Studio error on build WebApp
+1. Delete all files in C:\Users\ravi\.nuget\packages\microsoft.visualstudio.javascript.sdk
+1. Update `npm install` with `yarn start` (see image below)
+
+![image](https://github.com/user-attachments/assets/0c0e6ce5-0375-48ec-9bf6-f239672a12b9)
+
 
