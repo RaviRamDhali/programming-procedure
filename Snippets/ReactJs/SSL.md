@@ -44,8 +44,9 @@ P.S. - still in PowerShell (admin)
 1. Select Finish
 
 ## Install YARN
-1. npm install -g corepack
+1. npm install -g corepack --force
 1. yarn install
+1. I was missing the .yarnrc.yml file
    
 ## Update package.json
 C:\Projects\web-app\WebApp\ClientApp\package.json
@@ -66,6 +67,7 @@ Updated npm start script:
 1. You might need to copy the .cert folder to /ClientApp/
 
 # Degug Steps
+## SSL Errpr
 1. Delete server.crt file from C:\Projects\web-app\WebApp\ClientApp\.cert
 1. Run as admin Powershell > C:\Projects\web-app\WebApp\ClientApp\.cert\ssl.ps1
 1. In file explorer, open folder: {git-project-folder}\web-app\WebApp\ClientApp.cert (folder) 13.a. in .cert (folder) double click: server.crt
@@ -73,3 +75,5 @@ Updated npm start script:
 1. Select Place all Certificates in the following store, Browse
 1. Trusted Root Certification Authorities
 1. Select Finish
+## Yarn Start Error
+1. Delete node_modules folder
