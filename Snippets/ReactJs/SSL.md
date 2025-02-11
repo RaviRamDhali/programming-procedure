@@ -26,15 +26,14 @@ P.S. - still in PowerShell (admin)
 ## Git for Windows Installation
 
 1. run: `openssl version` (will show version) my version is: OpenSSL 3.1.1
-
+1. Using Powershell (admin)
 1. In the project navigate to: `web-app\WebApp\ClientApp\.cert\ssl.ps1`
-1. remove text `/ClientApp/.cert/` from lines 6, 8, 9
+1. ~remove text `/ClientApp/.cert/` from lines 6, 8, 9~
 
 1. Run the `ssl.ps1` script
    1. Error: ssl.ps1 is not digitally signed
    2. Set-ExecutionPolicy RemoteSigned
 1. Look for the following files: `server.crt | server.key | ssl.ps1`
-
 
 1. Open folder: {git-project-folder}\web-app\WebApp\ClientApp\.cert (folder)
 1. Double click: `server.crt`
