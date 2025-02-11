@@ -44,7 +44,8 @@ P.S. - still in PowerShell (admin)
 1. Select Finish
 
 ## Install YARN
-1. npm install -g yarn
+1. npm install -g corepack
+1. yarn install
    
 ## Update package.json
 C:\Projects\web-app\WebApp\ClientApp\package.json
