@@ -46,6 +46,7 @@ P.S. - still in PowerShell (admin)
 ## Install YARN
 1. npm install -g corepack --force
 1. yarn install
+1. The node_modules where empty over and over again
 1. I was missing the .yarnrc.yml file
    
 ## Update package.json
