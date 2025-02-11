@@ -43,6 +43,9 @@ P.S. - still in PowerShell (admin)
 1. Trusted Root Certification Authorities
 1. Select Finish
 
+## Install YARN
+1. npm install -g yarn
+   
 ## Update package.json
 C:\Projects\web-app\WebApp\ClientApp\package.json
 Updated npm start script:
