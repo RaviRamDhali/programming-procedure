@@ -1,0 +1,42 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+
+trigger:
+    - main
+
+pool:
+    vmImage: "ubuntu-latest"
+
+variables:
+    reactDir: "WebApp/ClientApp"
+    libraryFileENV: ".env.production"
+    REACT_APP_TIMER_CONFIG: "ravi"
+
+steps:
+    - task: UseNode@1
+      inputs:
+          version: "18.x"
+
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+      name: replaceTokens
+      inputs:
+        sources: '$(System.DefaultWorkingDirectory)/WebApp/ClientApp/.env.production'
+        additionalVariables: |
+            - REACT_APP_APPLOGIN: $(libraryFileENV)
+            - REACT_APP_TIMER_CONFIG: $(REACT_APP_TIMER_CONFIG)
+        tokenPrefix: '#{' 
+        tokenSuffix: '}#'
+        ifNoFilesFound: 'error'
+        
+    - script: |
+        echo "defaults  : $(replaceTokens.defaults)"
+        echo "files     : $(replaceTokens.files)"
+        echo "replaced  : $(replaceTokens.replaced)"
+        echo "tokens    : $(replaceTokens.tokens)"
+        echo "transforms: $(replaceTokens.transforms)"    
+
+    # Then echo the contents of the file
+    - script: |
+        echo "Contents of .env.production file:"
+        cat $(System.DefaultWorkingDirectory)/WebApp/ClientApp/.env.production
+      displayName: 'Display .env.production contents'
