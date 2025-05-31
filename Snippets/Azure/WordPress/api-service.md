@@ -1,0 +1,14 @@
+## Azure API App Service
+Connecting to GitHub Actions > Actions secrets and variables | Repository secrets
+
+## Steps
+
+1. Click "Download publish profile"
+2. Message "Basic authentication is disabled."
+3. Settings > Configuration > SCM Basic Auth Publishih > Set to ON
+4. Overview > "Download publish profile"
+
+![image](https://github.com/user-attachments/assets/e37ba73e-42ca-4002-8772-4bb63b6e5c00)
+
+![image](https://github.com/user-attachments/assets/ac42495d-f89b-4b5f-8e0c-7133cc1238c6)
+
