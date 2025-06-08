@@ -27,7 +27,7 @@ Go to repo > Settings > Secrets and variables > Variable tab > Create new variab
 
 1. Add appSettings.json AppSettings > AllowedOrigins
 2. Update: [Program.cs](Program.cs)
-3. Add new file Helper class for CORS configuration-related operations: [CorsConfigHelper.cs](Helper/CorsConfigHelper.cs)
+3. Add new file Helper class for CORS configuration-related operations: [CorsConfigHelper.cs](Helpers/CorsConfigHelper.cs)
 
 ![image](https://github.com/user-attachments/assets/f7022e54-af9c-4b24-ae92-45c7d14556d8)
 
