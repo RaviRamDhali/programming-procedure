@@ -1,4 +1,6 @@
 Adding CORS policy to .NET API, GitHubAction and Azure DevOps.
+This code relies only on C# CORS and does not use the CORS options in Azure Resopurce WebApp
+
 
 ## Azure Resource 
 WebApp > Settings > CORS: Leave everything empty as #C API code will handle CORS  (see img below)
@@ -23,7 +25,14 @@ Go to repo > Settings > Secrets and variables > Variable tab > Create new variab
 
 ## C# Code
 
+1. Add appSettings.json AppSettings > AllowedOrigins
+2. Update: [Program.cs](Program.cs)
+3. Add new file Helper class for CORS configuration-related operations: [CorsConfigHelper.cs](Helper/CorsConfigHelper.cs)
+
+![image](https://github.com/user-attachments/assets/f7022e54-af9c-4b24-ae92-45c7d14556d8)
+
+
 
 ## Images
+![image](https://github.com/user-attachments/assets/0d0fce53-9e01-41d4-9e58-80ffc23fac7d)
 
-![image](https://github.com/user-attachments/assets/891e68a3-9bd1-4048-931f-1e018c167158)
