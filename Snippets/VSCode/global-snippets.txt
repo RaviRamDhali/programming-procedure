@@ -105,5 +105,35 @@
 			"}, [$1]);"
 		],
 		"description": "React useState hook paired with a useEffect for that state"
+	},
+	"React Redux Hook Template": {
+		"prefix": "rHookTemplate",
+		"body": [
+			"import { useSelector } from \"react-redux\";",
+			"import { createSelector } from \"reselect\";",
+			"import { ${1/(.*)/${1:/capitalize}/} } from \"Interfaces/$1\";",
+			"",
+			"// Selectors",
+			"const select${1/(.*)/${1:/capitalize}/} = (state: any) => state.${1/(.*)/${1:/capitalize}/};",
+			"",
+			"const select${1/(.*)/${1:/capitalize}/}Data = createSelector(",
+			"  select${1/(.*)/${1:/capitalize}/},",
+			"  ($1) => $1.data as ${1/(.*)/${1:/capitalize}/}",
+			");",
+			"",
+			"// Hooks",
+			"const use${1/(.*)/${1:/capitalize}/} = () => {",
+			"  const $1 = useSelector(select${1/(.*)/${1:/capitalize}/});",
+			"  return { $1 };",
+			"};",
+			"",
+			"const use${1/(.*)/${1:/capitalize}/}Data = () => {",
+			"  const $1 = useSelector(select${1/(.*)/${1:/capitalize}/}Data);",
+			"  return { $1 };",
+			"};",
+			"",
+			"export { use${1/(.*)/${1:/capitalize}/}, use${1/(.*)/${1:/capitalize}/}Data };"
+		],
+		"description": "Creates typed Redux selector and hook template for a specific store key"
 	}
 }
