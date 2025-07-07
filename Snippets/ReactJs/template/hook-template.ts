@@ -1,24 +1,36 @@
-import { useSelector } from "react-redux";
 import { createSelector } from "reselect";
-import { User } from "Interfaces/user";
+import { useSelector } from "react-redux";
+import { Student } from "Interfaces/student";
+import { AppRole } from "Interfaces/user";
 
-// Selectors
-const selectUser = (state: any) => state.User;
+// Type the Redux state
+interface RootState {
+	Student: {
+		data: Student;
+	};
+}
 
-const selectUserData = createSelector(
-	selectUser,
-	(user) => user.data as User
-);
+// Base selector
+const selectStudentState = (state: RootState) => state.Student;
 
-// Hooks
-const useUser = () => {
-	const user = useSelector(selectUser);
-	return { user };
+// Memoized selector
+export const selectStudentData = createSelector(selectStudentState, (student) => student.data);
+
+// Hook
+const useStudent = () => {
+	const data = useSelector(selectStudentData);
+	// console.log("retrieved from Redux State:", data);
+	return { data };
 };
 
-const useUserData = () => {
-	const user = useSelector(selectUserData);
-	return { user };
+// Hook for student roles
+const useStudentRoles = () => {
+	const data = useSelector(selectStudentData);
+
+	const isManager = data?.roles?.includes(AppRole.Manager) || false;
+	const isStudent = data?.roles?.includes(AppRole.Student) || false;
+
+	return { isManager, isStudent };
 };
 
-export { useUser, useUserData };
+export { useStudent, useStudentRoles };
