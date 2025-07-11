@@ -1,0 +1,15 @@
+Apply this pattern to any new components for consistency.
+
+interface {PageName}Props {
+  {prop1}: Type1;
+  {prop2}: Type2;
+  // ...
+}
+
+const {PageName} = ({
+  {prop1},
+  {prop2},
+  // ...
+}: {PageName}Props) => {
+  // component body
+};
