@@ -10,6 +10,9 @@ $projectConfigs = @(
     }
 )
 
+# Array to track projects not on target branch
+$projectsNotOnTargetBranch = @()
+
 # Loop through each project configuration
 foreach ($config in $projectConfigs) {
     Write-Host "------------------------------------------------------" -ForegroundColor DarkGray    
@@ -46,6 +49,14 @@ foreach ($config in $projectConfigs) {
                 }
                 else {
                     Write-Host "Not on $($config.Branch) branch (current: $branch) - skipping git operations" -ForegroundColor Yellow -BackgroundColor DarkRed
+                    
+                    # Track this project as not being on target branch
+                    $projectsNotOnTargetBranch += @{
+                        ProjectName = $folderName
+                        Path = $config.Path
+                        TargetBranch = $config.Branch
+                        CurrentBranch = $branch
+                    }
                 }
             }
             catch {
@@ -98,3 +109,24 @@ foreach ($config in $projectConfigs) {
 
     Write-Host "------------------------------------------------------" -ForegroundColor DarkGray    
 }
+
+# Display summary of projects not on target branch
+Write-Host "`n" -ForegroundColor White
+Write-Host "======================================================" -ForegroundColor Magenta
+Write-Host "SUMMARY: Projects Not On Target Branch" -ForegroundColor Magenta
+Write-Host "======================================================" -ForegroundColor Magenta
+
+if ($projectsNotOnTargetBranch.Count -gt 0) {
+    foreach ($project in $projectsNotOnTargetBranch) {
+        Write-Host "`nProject: $($project.ProjectName)" -ForegroundColor Red
+        Write-Host "  Path: $($project.Path)" -ForegroundColor Gray
+        Write-Host "  Target Branch: $($project.TargetBranch)" -ForegroundColor Gray
+        Write-Host "  Current Branch: $($project.CurrentBranch)" -ForegroundColor Yellow
+    }
+    Write-Host "`nTotal projects not on target branch: $($projectsNotOnTargetBranch.Count)" -ForegroundColor Red
+}
+else {
+    Write-Host "`nAll projects are on their target branches! ✓" -ForegroundColor Green
+}
+
+Write-Host "======================================================" -ForegroundColor Magenta
