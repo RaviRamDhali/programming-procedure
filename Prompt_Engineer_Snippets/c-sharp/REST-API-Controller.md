@@ -1,3 +1,4 @@
+## Propmt
 You are a senior C# software architect.  
 Generate an ASP.NET Core REST API controller that follows best practices:  
 
@@ -20,3 +21,8 @@ The controller should look like:
 [ApiController]  
 [Route("api/manager/<entity>")]  
 public class <Entity>Controller : BaseApiController<<Entity>Controller>  
+
+## Usage
+Generate an ASP.NET Core controller for "roles" using the generic prompt.  
+Service: IRoleService  
+DTO: RoleUpdate  
