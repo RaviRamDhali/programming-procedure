@@ -1,4 +1,4 @@
-## Addmin Users to Azure SQL
+## Add Users to Azure SQL
 
 In your database (not master):
 
@@ -8,3 +8,7 @@ EXEC sp_addrolemember 'db_datareader', 'dev_app';
 EXEC sp_addrolemember 'db_datawriter', 'dev_app';
 GRANT EXECUTE TO [dev_app];
 ```
+
+## Drop a User
+
+```DROP USER [web_app];```
