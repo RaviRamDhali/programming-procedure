@@ -7,3 +7,5 @@ Jan 2020 : Using VueJs on twp .Net projects now. Ana and Success and converting 
 
 Jan 2020 : Using Angular (again) on PSpring and it helps knowing VueJS.
 
+## console.log
+console.log(JSON.parse(JSON.stringify(vdata)));
