@@ -183,11 +183,18 @@ Carefully read the issue and think hard about a plan to solve it before coding.
 \- Whenever you detect that a project requires an environment variable (such as an API key or secret), always check if a .env file exists in the project root. If it does not exist, automatically create a .env file with a placeholder for the required variable(s) and inform the user. Do this proactively, without waiting for the user to request it.
 
 \- Follow best practices and coding standards for the specific programming language and framework being used.
+
 \- Junior-friendly: Choose simple, explicit patterns over clever or concise ones; favor clear intent, descriptive names, and straightforward flow so a junior developer can read and maintain the code confidently.
+
 \- Classes ≤ 200 lines (extract new classes to separate responsibilities).
+
 \- Methods ≤ 20 lines (extract helpers, use early returns, named locals).
+
 \- ≤ 4 parameters per method (no options objects counting as one; introduce coherent parameter objects or extract methods if needed).
+
 \- Controllers instantiate/expose only one primary object; views interact only with that instance (no nested chains); use ViewModels for composition.
+
+\- Use Guard clauses and returns or early exits, use initial if statements in a function to immediately return on invalid inputs, protecting the main logic.
 
 
 \## 7. Debugging
