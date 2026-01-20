@@ -1,5 +1,8 @@
 ## Testing SendGrid API Key
 
+
+This folder contains a code snippet demonstrating how to test the SendGrid email API using a cURL command to send a test email. The documented result shows that the test failed with a "Maximum credits exceeded" error, indicating the SendGrid account ran out of email sending credits.
+
 ```
 curl --request POST \
   --url https://api.sendgrid.com/v3/mail/send \
