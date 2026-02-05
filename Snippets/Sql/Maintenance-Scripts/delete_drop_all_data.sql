@@ -2,8 +2,8 @@
 -- Azure SQL Server Command
 -- This T-SQL script safely clears data from user tables while preserving specific tables (e.g. Security.Users).
 -- It:
---  1) Builds DROP scripts for all foreign keys,
---  2) Drops the FKs,
+--  1) Builds DROP scripts for all foreign keys (only for existing, accessible tables),
+--  2) Drops the FKs (with error handling),
 --  3) Truncates all tables except those listed in the exclusion list.
 -- Note: Step E (automatic re-creation of foreign keys) has been removed per request.
 -- ***************************************************
@@ -23,8 +23,23 @@ DECLARE @exclude TABLE (
 INSERT INTO @exclude (schema_name, table_name) VALUES
     ('Security', 'Users'); -- add more rows here if you want to exclude more tables
 
--- === Step A: Optionally build CREATE statements for FK recreation (saved for manual use) ===
--- This builds the CREATE statements but will NOT be executed by this script.
+-- === Step A: Get list of ACTUAL existing tables (exclude ledger history tables) ===
+DECLARE @existing_tables TABLE (
+    schema_name NVARCHAR(256),
+    table_name NVARCHAR(256),
+    object_id INT
+);
+
+INSERT INTO @existing_tables (schema_name, table_name, object_id)
+SELECT s.name, t.name, t.object_id
+FROM sys.tables t
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE t.is_ms_shipped = 0
+  AND t.temporal_type <> 1  -- Exclude history tables
+  AND t.name NOT LIKE 'xx_%' -- Exclude ledger dropped tables
+  AND OBJECTPROPERTY(t.object_id, 'TableHasIdentity') IS NOT NULL; -- Additional existence check
+
+-- === Step B: Build CREATE statements for FK recreation (for existing tables only) ===
 SELECT @createSql = (
     SELECT
         'ALTER TABLE ' + QUOTENAME(s.name) + '.' + QUOTENAME(t.name) +
@@ -51,78 +66,130 @@ SELECT @createSql = (
             ) +
         ');' + CHAR(13) + CHAR(10)
     FROM sys.foreign_keys fk
-    INNER JOIN sys.tables t ON fk.parent_object_id = t.object_id
-    INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-    INNER JOIN sys.tables t_ref ON fk.referenced_object_id = t_ref.object_id
-    INNER JOIN sys.schemas s_ref ON t_ref.schema_id = s_ref.schema_id
-    WHERE t.is_ms_shipped = 0
+    INNER JOIN @existing_tables et ON fk.parent_object_id = et.object_id
+    INNER JOIN sys.schemas s ON et.schema_name = s.name
+    INNER JOIN sys.tables t ON et.object_id = t.object_id
+    INNER JOIN @existing_tables et_ref ON fk.referenced_object_id = et_ref.object_id
+    INNER JOIN sys.schemas s_ref ON et_ref.schema_name = s_ref.name
+    INNER JOIN sys.tables t_ref ON et_ref.object_id = t_ref.object_id
     FOR XML PATH(''), TYPE
 ).value('.','NVARCHAR(MAX)');
 
 SET @createSql = ISNULL(@createSql, N'');
 
--- === Step B: Build and execute DROP scripts for foreign keys ===
-SELECT @dropSql = (
-    SELECT
-        'ALTER TABLE ' + QUOTENAME(s.name) + '.' + QUOTENAME(t.name) +
-        ' DROP CONSTRAINT ' + QUOTENAME(fk.name) + ';' + CHAR(13) + CHAR(10)
-    FROM sys.foreign_keys fk
-    INNER JOIN sys.tables t ON fk.parent_object_id = t.object_id
-    INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-    WHERE t.is_ms_shipped = 0
-    FOR XML PATH(''), TYPE
-).value('.','NVARCHAR(MAX)');
+-- === Step C: Drop foreign keys (ONLY for existing tables) ===
+PRINT 'Dropping foreign key constraints from existing tables...';
 
-SET @dropSql = ISNULL(@dropSql, N'');
+DECLARE @fkSchema NVARCHAR(256);
+DECLARE @fkTable NVARCHAR(256);
+DECLARE @fkName NVARCHAR(256);
+DECLARE @singleDropSql NVARCHAR(MAX);
+DECLARE @fkDropCount INT = 0;
+DECLARE @fkSkipCount INT = 0;
 
-IF LEN(@dropSql) > 0
+DECLARE fk_cursor CURSOR FOR
+SELECT s.name, t.name, fk.name
+FROM sys.foreign_keys fk
+INNER JOIN @existing_tables et ON fk.parent_object_id = et.object_id
+INNER JOIN sys.schemas s ON et.schema_name = s.name
+INNER JOIN sys.tables t ON et.object_id = t.object_id;
+
+OPEN fk_cursor;
+FETCH NEXT FROM fk_cursor INTO @fkSchema, @fkTable, @fkName;
+
+WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping foreign key constraints...';
-    EXEC sp_executesql @dropSql;
+    -- Double-check the table exists before attempting drop
+    IF OBJECT_ID(QUOTENAME(@fkSchema) + '.' + QUOTENAME(@fkTable), 'U') IS NOT NULL
+    BEGIN
+        SET @singleDropSql = 'ALTER TABLE ' + QUOTENAME(@fkSchema) + '.' + QUOTENAME(@fkTable) + 
+                             ' DROP CONSTRAINT ' + QUOTENAME(@fkName) + ';';
+        BEGIN TRY
+            EXEC sp_executesql @singleDropSql;
+            SET @fkDropCount += 1;
+        END TRY
+        BEGIN CATCH
+            PRINT 'Warning: Failed to drop ' + @fkName + ' on ' + @fkSchema + '.' + @fkTable + ': ' + ERROR_MESSAGE();
+        END CATCH
+    END
+    ELSE
+    BEGIN
+        SET @fkSkipCount += 1;
+    END
+    
+    FETCH NEXT FROM fk_cursor INTO @fkSchema, @fkTable, @fkName;
 END
-ELSE
-    PRINT 'No foreign key constraints found to drop.';
 
--- === Step C: Build ordered list of user tables excluding any in the exclusion list ===
-DECLARE @ordered_tables TABLE (id INT IDENTITY(1,1), schema_name NVARCHAR(256), table_name NVARCHAR(256));
+CLOSE fk_cursor;
+DEALLOCATE fk_cursor;
+
+PRINT 'Foreign keys dropped: ' + CAST(@fkDropCount AS VARCHAR(10));
+PRINT 'Foreign keys skipped (table not found): ' + CAST(@fkSkipCount AS VARCHAR(10));
+
+-- === Step D: Build ordered list of user tables to truncate (exclude non-existent and excluded tables) ===
+DECLARE @ordered_tables TABLE (
+    id INT IDENTITY(1,1), 
+    schema_name NVARCHAR(256), 
+    table_name NVARCHAR(256)
+);
 
 INSERT INTO @ordered_tables (schema_name, table_name)
-SELECT s.name, t.name
-FROM sys.tables t
-INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-WHERE t.is_ms_shipped = 0
-  AND NOT EXISTS (
-      SELECT 1 FROM @exclude e
-      WHERE e.schema_name = s.name AND e.table_name = t.name
-  )
-ORDER BY s.name, t.name; -- deterministic order; we'll truncate in reverse
+SELECT et.schema_name, et.table_name
+FROM @existing_tables et
+WHERE NOT EXISTS (
+    SELECT 1 FROM @exclude e
+    WHERE e.schema_name = et.schema_name AND e.table_name = et.table_name
+)
+ORDER BY et.schema_name, et.table_name;
 
--- === Step D: Truncate tables in reverse order (safe for dependencies) ===
-DECLARE @sql NVARCHAR(MAX) = N'';
+-- === Step E: Truncate tables in reverse order (with individual error handling) ===
+PRINT 'Truncating tables (excluded list applied)...';
+
 DECLARE @i INT = (SELECT COUNT(*) FROM @ordered_tables);
+DECLARE @sch NVARCHAR(256);
+DECLARE @tbl NVARCHAR(256);
+DECLARE @truncateSql NVARCHAR(MAX);
+DECLARE @truncateCount INT = 0;
+DECLARE @truncateFailCount INT = 0;
 
 WHILE @i > 0
 BEGIN
-    DECLARE @sch NVARCHAR(256) = (SELECT schema_name FROM @ordered_tables WHERE id = @i);
-    DECLARE @tbl NVARCHAR(256) = (SELECT table_name FROM @ordered_tables WHERE id = @i);
+    SELECT @sch = schema_name, @tbl = table_name 
+    FROM @ordered_tables 
+    WHERE id = @i;
 
-    -- Use QUOTENAME to avoid SQL injection / special names
-    SET @sql += N'TRUNCATE TABLE ' + QUOTENAME(@sch) + N'.' + QUOTENAME(@tbl) + N';' + CHAR(13) + CHAR(10);
+    -- Triple-check table exists and is accessible
+    IF OBJECT_ID(QUOTENAME(@sch) + '.' + QUOTENAME(@tbl), 'U') IS NOT NULL
+    BEGIN
+        SET @truncateSql = N'TRUNCATE TABLE ' + QUOTENAME(@sch) + N'.' + QUOTENAME(@tbl) + N';';
+        
+        BEGIN TRY
+            EXEC sp_executesql @truncateSql;
+            SET @truncateCount += 1;
+        END TRY
+        BEGIN CATCH
+            PRINT 'Warning: Failed to truncate ' + @sch + '.' + @tbl + ': ' + ERROR_MESSAGE();
+            SET @truncateFailCount += 1;
+        END CATCH
+    END
+    ELSE
+    BEGIN
+        PRINT 'Skipping ' + @sch + '.' + @tbl + ' (table not found or not accessible)';
+        SET @truncateFailCount += 1;
+    END
 
     SET @i -= 1;
 END;
 
-IF LEN(@sql) > 0
-BEGIN
-    PRINT 'Truncating tables (excluded list applied)...';
-    EXEC sp_executesql @sql;
-END
-ELSE
-    PRINT 'No tables to truncate (all user tables were excluded?).';
+PRINT 'Tables truncated: ' + CAST(@truncateCount AS VARCHAR(10));
+PRINT 'Tables skipped/failed: ' + CAST(@truncateFailCount AS VARCHAR(10));
 
--- Step E (automatic FK re-creation) intentionally removed.
--- If you want to re-create FKs later, the @createSql variable contains the CREATE statements
--- (inspect or save its contents before running the script).
-
-PRINT 'Completed. Excluded tables were not truncated:';
+-- Step F: Summary
+PRINT '';
+PRINT '=== COMPLETION SUMMARY ===';
+PRINT 'Excluded tables (not truncated):';
 SELECT schema_name, table_name FROM @exclude;
+
+PRINT '';
+PRINT 'If you need to recreate foreign keys, the CREATE statements are stored in @createSql variable.';
+PRINT 'Script completed successfully.';
