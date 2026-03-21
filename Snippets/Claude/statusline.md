@@ -1,3 +1,6 @@
+## Cool statusline
+
+<img width="881" height="130" alt="image" src="https://github.com/user-attachments/assets/cbababaf-402d-43c4-913a-a2aca8d4da07" />
 
 
 DIR : C:\Users\ravi\.claude 
