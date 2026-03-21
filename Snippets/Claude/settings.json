@@ -1,0 +1,14 @@
+{
+	"autoUpdatesChannel": "latest",
+	"spinnerVerbs": {
+		"mode": "replace",
+		"verbs": ["Working"]
+	},
+	"enabledPlugins": {
+		"superpowers@claude-plugins-official": true
+	},
+	"statusLine": {
+		"type": "command",
+		"command": "bash C:/Users/ravi/.claude/statusline-command.sh"
+	}
+}
