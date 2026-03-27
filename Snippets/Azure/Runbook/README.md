@@ -21,7 +21,7 @@ We will continue testing over the next few weeks as time allows to ensure everyt
 ## Setup Checklist for your Automation Account
 To make this script work, you need to create the following Variables in your Azure Automation Account:
 
-### Runbook Assets Variables
+### Runbook Assets Variables for Restores script
 
 | Variable Name        | Type    | Value Example      | Encrypted |
 |----------------------|---------|---------------------|-----------|
@@ -33,3 +33,16 @@ To make this script work, you need to create the following Variables in your Azu
 | Sql_TargetSize       | String  | samplesize          | No        |
 | Sql_TargetMaxSize    | Integer | samplenumber        | No        |
 | Sql_DevAppPassword   | String  | samplepassword      | Yes       |
+
+### Runbook Assets Variables for Recreates a SQL login
+
+
+| Variable Name        | Type                |
+|----------------------|---------------------|
+| Sql_AdminAccount     | Credential          |
+| Sql_ServerName       | String              |
+| Sql_TargetDB         | String              |
+| Sql_DevAppUserName   | String              |
+| Sql_DevAppPassword   | String (Encrypted)  |
+
+
