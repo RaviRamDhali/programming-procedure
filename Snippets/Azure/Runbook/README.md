@@ -25,11 +25,11 @@ To make this script work, you need to create the following Variables in your Azu
 
 | Variable Name        | Type    | Value Example      | Encrypted |
 |----------------------|---------|---------------------|-----------|
-| Sql Resourcegroup    | String  | sample group        | No        |
-| Sql Servername       | String  | sample server       | No        |
-| Sql Sourcedb         | String  | sample source       | No        |
-| Sql Targetdb         | String  | sample target       | No        |
-| Sql Targettier       | String  | sample tier         | No        |
-| Sql Targetsize       | String  | sample size         | No        |
-| Sql Targetmaxsize    | Integer | sample number       | No        |
-| Sql Devapppassword   | String  | sample password     | Yes       |
+| Sql_ResourceGroup    | String  | samplegroup         | No        |
+| Sql_ServerName       | String  | sampleserver        | No        |
+| Sql_SourceDB         | String  | samplesource        | No        |
+| Sql_TargetDB         | String  | sampletarget        | No        |
+| Sql_TargetTier       | String  | sampletier          | No        |
+| Sql_TargetSize       | String  | samplesize          | No        |
+| Sql_TargetMaxSize    | Integer | samplenumber        | No        |
+| Sql_DevAppPassword   | String  | samplepassword      | Yes       |
