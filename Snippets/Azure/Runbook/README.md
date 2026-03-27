@@ -22,6 +22,7 @@ We will continue testing over the next few weeks as time allows to ensure everyt
 To make this script work, you need to create the following Variables in your Azure Automation Account:
 
 ### Runbook Assets Variables for Restores script
+[DB Restores script](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Restore-SqlDatabase-Dev.ps1)
 
 | Variable Name        | Type    | Value Example      | Encrypted |
 |----------------------|---------|---------------------|-----------|
@@ -35,7 +36,7 @@ To make this script work, you need to create the following Variables in your Azu
 | Sql_DevAppPassword   | String  | samplepassword      | Yes       |
 
 ### Runbook Assets Variables for Recreates a SQL login
-https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Recreate-SqlUser.ps1
+[Recreates a SQL login](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Recreate-SqlUser.ps1)
 
 | Variable Name        | Type                |
 |----------------------|---------------------|
