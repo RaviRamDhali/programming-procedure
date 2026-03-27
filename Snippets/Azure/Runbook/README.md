@@ -35,7 +35,7 @@ To make this script work, you need to create the following Variables in your Azu
 | Sql_DevAppPassword   | String  | samplepassword      | Yes       |
 
 ### Runbook Assets Variables for Recreates a SQL login
-
+https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Recreate-SqlUser.ps1
 
 | Variable Name        | Type                |
 |----------------------|---------------------|
