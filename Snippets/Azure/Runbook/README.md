@@ -56,7 +56,6 @@ Click Create
 | Sql_TargetSize           | String              | samplesize          | No        |
 | Sql_TargetMaxSize        | Integer             | samplenumber        | No        |
 | Sql_AdminAccount         | Credential          | —                   | Yes       |
-| Sql_DevAppUserName       | String              | —                   | No        |
 | Sql_UserDevAppName       | String              | —                   | No        |
 | Sql_UserDevAppPassword   | Credential Asset    | —                   | Yes       |
 
@@ -79,7 +78,5 @@ Click Create
 | Sql_AdminAccount     | Credential          |
 | Sql_ServerName       | String              |
 | Sql_TargetDB         | String              |
-| Sql_DevAppUserName   | String              |
-| Sql_UserDevAppName   | String              |
 | Sql_UserDevAppName   | String              |
 | Sql_UserDevAppPassword   | Credential Asset    |
