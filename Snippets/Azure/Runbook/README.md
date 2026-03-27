@@ -1,4 +1,10 @@
 ## Azure Runbook
+
+### Create an Automation Account
+1. Go to Azure Portal
+2. Search for: “Automation Accounts” (Not “Runbook”, not “Automation”, but Automation Accounts)
+
+
 ### Development Database Refresh - New Automated Process
 
 Team just wanted to give you a quick heads up on something we have been improving to make our database refresh process more reliable and much faster
