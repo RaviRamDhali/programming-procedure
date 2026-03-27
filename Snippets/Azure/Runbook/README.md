@@ -27,6 +27,20 @@ We will continue testing over the next few weeks as time allows to ensure everyt
 ## Setup Checklist for your Automation Account
 To make this script work, you need to create the following Variables in your Azure Automation Account:
 
+## Azure Automation Variables Settings.
+
+1. Azure portal steps (Automation Variables)
+1. Go to Azure portal → Automation Accounts
+1. Select your Automation Account
+1. In the left menu, under Shared Resources, click Variables
+1. Click + Add a variable
+1. Fill in:
+Name (must match exactly what your script uses, e.g. Sql_ResourceGroup)
+Type (String / Integer / Boolean / DateTime, etc.)
+Value
+(Optional) Encrypted (turn this on for secrets if you’re using Variables for secrets)
+Click Create
+
 ### Runbook Assets Variables for Restores script
 [DB Restores script](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Restore-SqlDatabase-Dev.ps1)
 
