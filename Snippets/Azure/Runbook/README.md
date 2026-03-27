@@ -53,7 +53,6 @@ Click Create
 | Sql_TargetTier       | String  | sampletier          | No        |
 | Sql_TargetSize       | String  | samplesize          | No        |
 | Sql_TargetMaxSize    | Integer | samplenumber        | No        |
-| Sql_DevAppPassword   | String  | samplepassword      | Yes       |
 
 ### Runbook Assets Variables for Recreates a SQL login
 [Recreates a SQL login](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Recreate-SqlUser.ps1)
@@ -64,6 +63,8 @@ Click Create
 | Sql_ServerName       | String              |
 | Sql_TargetDB         | String              |
 | Sql_DevAppUserName   | String              |
-| Sql_DevAppPassword   | String (Encrypted)  |
+| Sql_UserDevAppName   | String              |
+| Sql_UserDevAppName   | String              |
+| Sql_UserDevAppPassword   | Credential Asset    |
 
 
