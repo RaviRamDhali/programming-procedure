@@ -44,6 +44,23 @@ Click Create
 ### Runbook Assets Variables for Restores script
 [DB Restores script](https://github.com/RaviRamDhali/programming-procedure/blob/master/Snippets/Azure/Runbook/Restore-SqlDatabase-Dev.ps1)
 
+### All Runbook Variable Table
+
+| Variable Name            | Type                | Value Example      | Encrypted |
+|--------------------------|---------------------|---------------------|-----------|
+| Sql_ResourceGroup        | String              | samplegroup         | No        |
+| Sql_ServerName           | String              | sampleserver        | No        |
+| Sql_SourceDB             | String              | samplesource        | No        |
+| Sql_TargetDB             | String              | sampletarget        | No        |
+| Sql_TargetTier           | String              | sampletier          | No        |
+| Sql_TargetSize           | String              | samplesize          | No        |
+| Sql_TargetMaxSize        | Integer             | samplenumber        | No        |
+| Sql_AdminAccount         | Credential          | —                   | Yes       |
+| Sql_DevAppUserName       | String              | —                   | No        |
+| Sql_UserDevAppName       | String              | —                   | No        |
+| Sql_UserDevAppPassword   | Credential Asset    | —                   | Yes       |
+
+
 | Variable Name        | Type    | Value Example      | Encrypted |
 |----------------------|---------|---------------------|-----------|
 | Sql_ResourceGroup    | String  | samplegroup         | No        |
@@ -66,5 +83,3 @@ Click Create
 | Sql_UserDevAppName   | String              |
 | Sql_UserDevAppName   | String              |
 | Sql_UserDevAppPassword   | Credential Asset    |
-
-
