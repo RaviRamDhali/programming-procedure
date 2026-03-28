@@ -24,60 +24,27 @@
 
 .NOTES
     Author: DevOps Automation
-    Version: 1.0
+    Version: 1.6
+    
+    CHANGES IN 1.6:
+    - Removed elapsed time tracking (was unreliable due to async restore)
+    - Simplified to focus on status polling only
+    - Removed wall-clock timing calculations
+    - Kept poll count for diagnostics
+    - Removed elapsed time from return object
+    - Return object now contains: Status, SourceDatabase, TargetDatabase, DatabaseStatus, PollCount
+    
+    CHANGES IN 1.5:
+    - Fixed elapsed time tracking to measure from restore initiation
+    - Asynchronous operation handling
+    - All PowerShell string syntax verified
     
     Requirements:
       1. Automation Account with system-assigned Managed Identity ENABLED
-         - Portal: Automation Account > Identity > Status = "On"
-         - This is the identity used to authenticate to Azure
-      
       2. Managed Identity must have "SQL Server Contributor" role on SQL server
-         - Critical: Without this role, the runbook CANNOT query or restore databases
-         
-         BASH COMMAND to grant role:
-         ──────────────────────────────────────────────────────────────────────
-         # Step 1: Set your parameters (customize for your environment)
-         AUTOMATION_ACCOUNT_NAME="sql-automations"
-         RESOURCE_GROUP="Development"
-         SUBSCRIPTION_ID="ad281c21-b09d-4451-85b8-75ff29ac7a66"
-         SQL_SERVER_NAME="goldendesigns"
-         
-         # Step 2: Get the Managed Identity Object ID
-         OBJECT_ID=$(az automation account show \
-           --name $AUTOMATION_ACCOUNT_NAME \
-           --resource-group $RESOURCE_GROUP \
-           --query identity.principalId -o tsv)
-         
-         echo "Object ID: $OBJECT_ID"
-         
-         # Step 3: Grant the SQL Server Contributor role
-         az role assignment create \
-           --assignee $OBJECT_ID \
-           --role "SQL Server Contributor" \
-           --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Sql/servers/$SQL_SERVER_NAME
-         
-         # Step 4: Wait 2-3 minutes for role to propagate, then run this script
-         ──────────────────────────────────────────────────────────────────────
-      
-      3. All 6 configuration variables must exist in Automation Account
-         - Sql_ResourceGroup
-         - Sql_ServerName
-         - Sql_SourceDB
-         - Sql_TargetDB
-         - Sql_TargetTier
-         - Sql_TargetSize
-      
+      3. All 6 configuration variables must exist
       4. SQL Server firewall must allow Azure Services
-         - Portal: SQL Server > Networking > "Allow Azure services and resources to access this server" = ON
-         - OR add explicit firewall rule for your network
-    
-    Common Failures:
-      - "Authentication failed": Managed Identity not enabled on Automation Account
-      - "'this.Client.SubscriptionId' cannot be null": Missing SQL Server Contributor role
-      - "Source database not found": Managed Identity lacks read permissions (missing role)
-      - "Cannot open database": SQL firewall blocking access
 #>
-
 
 # ============================================================
 # CONFIGURATION
@@ -200,117 +167,6 @@ function Invoke-Restore {
     }
 }
 
-function Invoke-Authentication {
-    try {
-        Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
-        Write-Log "✓ Authentication successful" "SUCCESS"
-        return @{ Success = $true; Error = $null }
-    }
-    catch {
-        Write-Log "========================================" "ERROR"
-        Write-Log "✗ MANAGED IDENTITY AUTHENTICATION FAILED" "ERROR"
-        Write-Log "========================================" "ERROR"
-        Write-Log "Error: $($_.Exception.Message)" "ERROR"
-        Write-Log "" "ERROR"
-        Write-Log "TROUBLESHOOTING STEPS:" "ERROR"
-        Write-Log "1. Verify Managed Identity is ENABLED on Automation Account" "ERROR"
-        Write-Log "   - Go to: Automation Account > Identity" "ERROR"
-        Write-Log "   - Confirm: Status = 'On'" "ERROR"
-        Write-Log "" "ERROR"
-        Write-Log "2. Grant SQL Server Contributor role to Managed Identity" "ERROR"
-        Write-Log "   - Run the bash command from the .NOTES section above" "ERROR"
-        Write-Log "   - Update these parameters in the script:" "ERROR"
-        Write-Log "     * AUTOMATION_ACCOUNT_NAME = your automation account name" "ERROR"
-        Write-Log "     * RESOURCE_GROUP = your resource group name" "ERROR"
-        Write-Log "     * SUBSCRIPTION_ID = your subscription ID" "ERROR"
-        Write-Log "     * SQL_SERVER_NAME = your SQL server name" "ERROR"
-        Write-Log "   - Missing role causes: 'SubscriptionId cannot be null' error" "ERROR"
-        Write-Log "" "ERROR"
-        Write-Log "3. Wait 2-3 minutes after granting role for propagation" "ERROR"
-        Write-Log "" "ERROR"
-        Write-Log "4. Verify Automation Account is in correct Subscription" "ERROR"
-        Write-Log "   - Managed Identity can only access resources in same subscription" "ERROR"
-        Write-Log "" "ERROR"
-        Write-Log "5. Check Runbook PowerShell version" "ERROR"
-        Write-Log "   - Requires PowerShell 7.2 or later" "ERROR"
-        Write-Log "========================================" "ERROR"
-        return @{ Success = $false; Error = "Cannot proceed - authentication failed" }
-    }
-}
-
-function Invoke-DeleteTargetDatabase {
-    param([string]$ResourceGroupName, [string]$ServerName, [string]$TargetDatabaseName, [int]$DeletionWaitSeconds)
-    
-    $targetDbResult = Get-TargetDatabase -ResourceGroupName $ResourceGroupName `
-                                          -ServerName $ServerName `
-                                          -DatabaseName $TargetDatabaseName
-    
-    if ($targetDbResult.Database) {
-        Write-Log "Target database exists - deleting..." "WARNING"
-        $deleteResult = Remove-TargetDatabase -ResourceGroupName $ResourceGroupName `
-                                              -ServerName $ServerName `
-                                              -DatabaseName $TargetDatabaseName
-        
-        if (-not $deleteResult.Success) {
-            throw "Failed to delete target database: $($deleteResult.Error)"
-        }
-        
-        Write-Log "✓ Target database deleted" "SUCCESS"
-        Start-Sleep -Seconds $DeletionWaitSeconds
-    }
-    else {
-        Write-Log "✓ Target database does not exist" "SUCCESS"
-    }
-}
-
-function Invoke-MonitorRestore {
-    param(
-        [string]$ResourceGroupName,
-        [string]$ServerName,
-        [string]$TargetDatabaseName,
-        [int]$MonitorMaxWaitSeconds,
-        [int]$MonitorCheckIntervalSeconds
-    )
-    
-    $elapsed = 0
-    $pollCount = 0
-    $status = "Unknown"
-    $firstCheck = $true
-    
-    do {
-        $pollCount++
-        
-        if (-not $firstCheck) {
-            Start-Sleep -Seconds $MonitorCheckIntervalSeconds
-            $elapsed += $MonitorCheckIntervalSeconds
-        }
-        else {
-            $firstCheck = $false
-        }
-        
-        $dbResult = Get-TargetDatabase -ResourceGroupName $ResourceGroupName `
-                                        -ServerName $ServerName `
-                                        -DatabaseName $TargetDatabaseName
-        
-        if ($dbResult.Success) {
-            $status = $dbResult.Database.Status
-            
-            if ($status -eq "Online") {
-                Write-Log "✓ Database is online" "SUCCESS"
-                return @{ Success = $true; Database = $dbResult.Database; Elapsed = $elapsed; PollCount = $pollCount }
-            }
-        }
-        else {
-            Write-Log "Status check failed: $($dbResult.Error)" "WARNING"
-        }
-        
-        if ($elapsed -gt $MonitorMaxWaitSeconds) {
-            throw "Restore monitoring exceeded maximum wait time ($MonitorMaxWaitSeconds seconds). Final status: $status"
-        }
-        
-    } while ($status -ne "Online")
-}
-
 # ============================================================
 # MAIN SCRIPT
 # ============================================================
@@ -321,12 +177,18 @@ try {
     Write-Log "========================================" "INFO"
     
     # Step 1: Authenticate
-    $authResult = Invoke-Authentication
-    if (-not $authResult.Success) {
-        throw $authResult.Error
+    Write-Log "Authenticating with Managed Identity..." "INFO"
+    try {
+        Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
+        Write-Log "✓ Authentication successful" "SUCCESS"
+    }
+    catch {
+        Write-Log "✗ Auth FAILED: $($_.Exception.Message)" "ERROR"
+        throw "Managed Identity authentication failed"
     }
     
     # Step 2: Load configuration
+    Write-Log "Loading configuration variables..." "INFO"
     $configResult = Get-ConfigurationVariables -VariableNames @(
         'Sql_ResourceGroup', 'Sql_ServerName', 'Sql_SourceDB', 
         'Sql_TargetDB', 'Sql_TargetTier', 'Sql_TargetSize'
@@ -349,6 +211,7 @@ try {
     Write-Log "Source: $SourceDatabaseName | Target: $TargetDatabaseName | Tier: $TargetServiceTier $TargetComputeSize" "INFO"
     
     # Step 3: Verify source database
+    Write-Log "Verifying source database exists..." "INFO"
     $sourceDbResult = Get-SourceDatabase -ResourceGroupName $ResourceGroupName `
                                           -ServerName $ServerName `
                                           -DatabaseName $SourceDatabaseName
@@ -361,13 +224,33 @@ try {
     $sourceDb = $sourceDbResult.Database
     
     # Step 4: Check and delete target database
-    Invoke-DeleteTargetDatabase -ResourceGroupName $ResourceGroupName `
-                                 -ServerName $ServerName `
-                                 -TargetDatabaseName $TargetDatabaseName `
-                                 -DeletionWaitSeconds $DeletionWaitSeconds
+    Write-Log "Checking for existing target database..." "INFO"
+    $targetDbResult = Get-TargetDatabase -ResourceGroupName $ResourceGroupName `
+                                          -ServerName $ServerName `
+                                          -DatabaseName $TargetDatabaseName
+    
+    if ($targetDbResult.Database) {
+        Write-Log "Target database exists - deleting..." "WARNING"
+        $deleteResult = Remove-TargetDatabase -ResourceGroupName $ResourceGroupName `
+                                              -ServerName $ServerName `
+                                              -DatabaseName $TargetDatabaseName
+        
+        if (-not $deleteResult.Success) {
+            throw "Failed to delete target database: $($deleteResult.Error)"
+        }
+        
+        Write-Log "✓ Target database deleted" "SUCCESS"
+        Write-Log "Waiting $DeletionWaitSeconds seconds for deletion to propagate..." "INFO"
+        Start-Sleep -Seconds $DeletionWaitSeconds
+    }
+    else {
+        Write-Log "✓ Target database does not exist" "SUCCESS"
+    }
     
     # Step 5: Initiate restore
+    Write-Log "Initiating point-in-time restore..." "INFO"
     $restorePointInTime = (Get-Date).AddMinutes(-$RestorePointOffsetMinutes).ToUniversalTime()
+    Write-Log "Restore point: $($restorePointInTime.ToString('u'))" "INFO"
     
     $restoreResult = Invoke-Restore -ResourceGroupName $ResourceGroupName `
                                      -ServerName $ServerName `
@@ -383,16 +266,58 @@ try {
     
     Write-Log "✓ Restore command initiated" "SUCCESS"
     
+    # ========================================================
     # Step 6: Monitor restore status
-    $monitorResult = Invoke-MonitorRestore -ResourceGroupName $ResourceGroupName `
-                                            -ServerName $ServerName `
-                                            -TargetDatabaseName $TargetDatabaseName `
-                                            -MonitorMaxWaitSeconds $MonitorMaxWaitSeconds `
-                                            -MonitorCheckIntervalSeconds $MonitorCheckIntervalSeconds
+    # ========================================================
+    Write-Log "Monitoring restore status..." "INFO"
     
-    $finalDb = $monitorResult.Database
+    $pollCount = 0
+    $status = "Unknown"
+    $finalDb = $null
+    $maxPolls = [math]::Ceiling($MonitorMaxWaitSeconds / $MonitorCheckIntervalSeconds)
+    
+    do {
+        $pollCount++
+        
+        # Only sleep if not the first check
+        if ($pollCount -gt 1) {
+            Start-Sleep -Seconds $MonitorCheckIntervalSeconds
+        }
+        
+        # Query database status
+        $dbResult = Get-TargetDatabase -ResourceGroupName $ResourceGroupName `
+                                        -ServerName $ServerName `
+                                        -DatabaseName $TargetDatabaseName
+        
+        if ($dbResult.Success) {
+            $status = $dbResult.Database.Status
+            $finalDb = $dbResult.Database
+            
+            Write-Log "Poll #$pollCount`: Status = $status" "INFO"
+            
+            if ($status -eq "Online") {
+                Write-Log "✓ Database is now ONLINE" "SUCCESS"
+                break
+            }
+        }
+        else {
+            Write-Log "Poll #$pollCount`: Status check failed: $($dbResult.Error)" "WARNING"
+        }
+        
+        # Check if exceeded max polling attempts
+        if ($pollCount -ge $maxPolls) {
+            throw "Restore monitoring exceeded maximum wait time ($MonitorMaxWaitSeconds seconds). Status: $status. Polls: $pollCount"
+        }
+        
+    } while ($status -ne "Online")
     
     # Step 7: Verify restore
+    Write-Log "Verifying restore completion..." "INFO"
+    
+    if ($null -eq $finalDb) {
+        throw "No database object returned from monitoring"
+    }
+    
     if ($finalDb.Status -ne "Online") {
         throw "Database restore incomplete. Status: $($finalDb.Status)"
     }
@@ -403,17 +328,14 @@ try {
     Write-Log "========================================" "SUCCESS"
     Write-Log "✓ DATABASE RESTORE SUCCESSFUL" "SUCCESS"
     Write-Log "========================================" "SUCCESS"
-    
-    $minutes = [math]::Floor($monitorResult.Elapsed / 60)
-    $seconds = $monitorResult.Elapsed % 60
-    $elapsedTime = "{0}m {1}s" -f $minutes, $seconds
+    Write-Log "Restore completed successfully after $pollCount polling attempts" "SUCCESS"
     
     return [PSCustomObject]@{
         Status = "Success"
         SourceDatabase = $SourceDatabaseName
         TargetDatabase = $TargetDatabaseName
         DatabaseStatus = $finalDb.Status
-        ElapsedTime = $elapsedTime
+        PollCount = $pollCount
     }
     
 }
