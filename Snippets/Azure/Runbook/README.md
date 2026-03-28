@@ -25,6 +25,27 @@ Automated runbook for **point-in-time restore** of Azure SQL databases with auto
 
 ---
 
+## Standalone User Provisioning (Optional)
+
+**Also included:** `New-SqlDatabaseUser.ps1` (v1.0.0)
+
+If you only need to create a SQL user **without** restoring a database, use this standalone script instead of the full runbook.
+
+**Use case:** Creating users on existing databases (no restore needed)
+
+**What it does:**
+- Create SQL login on master
+- Create user on target database
+- Grant permissions (db_datareader, db_datawriter, EXECUTE, VIEW DEFINITION)
+
+**Time:** ~2 seconds
+
+**Variables needed:** Same 4 configuration variables + 1 credential (see Setup section)
+
+✓ Optional - only use if you don't need the full restore workflow
+
+---
+
 ## Prerequisites
 
 ### Azure Resources
@@ -96,7 +117,7 @@ Use a dedicated SQL admin account with minimal required permissions.
 ### Via Azure Portal
 
 1. Go to **Automation Account → Runbooks**
-2. Select **Restore-SqlDatabase**
+2. Select **Restore-AzSqlDatabase** (or **New-SqlDatabaseUser** for standalone)
 3. Click **Start** (or **Test pane** for testing)
 4. Monitor output in real-time
 
@@ -106,7 +127,7 @@ Use a dedicated SQL admin account with minimal required permissions.
 $params = @{
     AutomationAccountName = "my-automation-account"
     ResourceGroupName = "my-resource-group"
-    RunbookName = "Restore-SqlDatabase"
+    RunbookName = "Restore-AzSqlDatabase"
 }
 Start-AzAutomationRunbook @params
 ```
@@ -269,7 +290,7 @@ WHERE member_principal_id = (SELECT principal_id FROM sys.database_principals WH
 ## Support & Logs
 
 ### View Runbook History
-**Automation Account → Runbooks → Restore-SqlDatabase → All Logs**
+**Automation Account → Runbooks → Restore-AzSqlDatabase → All Logs**
 
 Shows:
 - Job ID
@@ -291,6 +312,7 @@ Get-AzAutomationJobOutput -ResourceGroupName "my-resource-group" `
 | Version | Date | Changes |
 |---|---|---|
 | 2.0.0 | 2026-03-28 | Production release: restore + user provisioning combined. Verified with SSMS login test. |
+| 1.0.0 | 2026-03-28 | Standalone user provisioning script (optional). Use when only creating users without restore. |
 
 ---
 
