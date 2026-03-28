@@ -1,92 +1,187 @@
 <#
 .SYNOPSIS
-    Automated SQL user provisioning using Azure Automation Assets.
+    Create SQL Database User with Permissions
 .DESCRIPTION
-    Recreates a SQL login and user with specific permissions (Reader, Writer, Execute, View Definition)
-    using variables and credentials stored in Azure Automation.
+    Creates SQL login and user on target database with permissions.
+    Standalone user provisioning (no database restore).
+    
 .NOTES
-    Author: Jacket Software / DevOps Team
-    Date: 2026-03-27
+    Version: 1.0.0
+    Standalone user provisioning
+    Modular functions with error checking
 #>
 
-try {
-    # 1. Retrieve Configuration from Automation Variables
-    $ServerName       = Get-AutomationVariable -Name "Sql_ServerName"
-    $DatabaseName     = Get-AutomationVariable -Name "Sql_TargetDB"
-    $DevUserName      = Get-AutomationVariable -Name "Sql_DevAppUserName"
-    $DevAppPassword   = Get-AutomationVariable -Name "Sql_DevAppPassword"
-    
-    # 2. Retrieve Admin Credentials (Stored as a 'Credential' Asset)
-    $AdminCred = Get-AutomationPSCredential -Name "Sql_AdminAccount"
-    
-    Write-Output "--------------------------------------------------------"
-    Write-Output "Target Server:   $ServerName"
-    Write-Output "Target DB:       $DatabaseName"
-    Write-Output "Target User:     $DevUserName"
-    Write-Output "--------------------------------------------------------"
+# ============================================================
+# LOGGING
+# ============================================================
 
-    # 3. Ensure SqlServer Module is available
-    if (-not (Get-Module -ListAvailable -Name SqlServer)) {
-        Write-Output "SqlServer module not found. Installing..."
-        Install-Module -Name SqlServer -Force -AllowClobber -Scope CurrentUser
+function Write-Log {
+    param([string]$Message, [string]$Level = "INFO")
+    # Only output SUCCESS, WARNING, and ERROR - skip INFO
+    if ($Level -ne "INFO") {
+        Write-Output "[$((Get-Date).ToString('yyyy-MM-dd HH:mm:ss'))] [$Level] $Message"
     }
-    Import-Module SqlServer
+}
 
-    # 4. Create Login on Master Database
+# ============================================================
+# CONFIGURATION LOADING
+# ============================================================
+
+function Get-ConfigurationVariables {
+    param([string[]]$VariableNames)
+    try {
+        $config = @{}
+        foreach ($name in $VariableNames) {
+            $value = Get-AutomationVariable -Name $name -ErrorAction Stop
+            if ([string]::IsNullOrEmpty($value)) {
+                throw "Variable '$name' is empty"
+            }
+            $config[$name] = $value
+        }
+        return @{ Success = $true; Config = $config; Error = $null }
+    }
+    catch {
+        return @{ Success = $false; Config = $null; Error = $_.Exception.Message }
+    }
+}
+
+function Get-CredentialAsset {
+    param([string]$CredentialName)
+    try {
+        $cred = Get-AutomationPSCredential -Name $CredentialName -ErrorAction Stop
+        if ($null -eq $cred) {
+            throw "Credential '$CredentialName' not found"
+        }
+        return @{ Success = $true; Credential = $cred; Error = $null }
+    }
+    catch {
+        return @{ Success = $false; Credential = $null; Error = $_.Exception.Message }
+    }
+}
+
+# ============================================================
+# SQL FUNCTIONS
+# ============================================================
+
+function Invoke-SqlCommand {
+    param(
+        [string]$ServerName,
+        [string]$DatabaseName,
+        [string]$Query,
+        [System.Management.Automation.PSCredential]$Credential
+    )
+    
+    if ([string]::IsNullOrEmpty($ServerName)) {
+        throw "ServerName is empty"
+    }
+    if ([string]::IsNullOrEmpty($DatabaseName)) {
+        throw "DatabaseName is empty"
+    }
+    if ($null -eq $Credential) {
+        throw "Credential is null"
+    }
+    
+    $connectionString = "Server=tcp:$ServerName.database.windows.net,1433;Database=$DatabaseName;User Id=$($Credential.UserName);Password=$($Credential.GetNetworkCredential().Password);Encrypt=true;TrustServerCertificate=true;Connection Timeout=30;"
+    
+    if ([string]::IsNullOrEmpty($connectionString)) {
+        throw "Connection string is empty"
+    }
+    
+    $connection = New-Object System.Data.SqlClient.SqlConnection($connectionString)
+    
+    try {
+        $connection.Open()
+        $command = New-Object System.Data.SqlClient.SqlCommand($Query, $connection)
+        $command.CommandTimeout = 30
+        $command.ExecuteNonQuery() | Out-Null
+    }
+    finally {
+        $connection.Close()
+    }
+}
+
+# ============================================================
+# MAIN SCRIPT
+# ============================================================
+
+try {
+    Write-Log "========================================" "SUCCESS"
+    Write-Log "Create SQL database user" "SUCCESS"
+    Write-Log "========================================" "SUCCESS"
+    
+    # Load configuration variables
+    $configVars = Get-ConfigurationVariables -VariableNames @(
+        'Sql_ServerName', 'Sql_TargetDB', 'Sql_UserDevAppName', 'Sql_UserDevAppPassword'
+    )
+    
+    if (-not $configVars.Success) {
+        throw "Failed to load configuration: $($configVars.Error)"
+    }
+    Write-Log "✓ Configuration loaded" "SUCCESS"
+    
+    $ServerName = $configVars.Config['Sql_ServerName']
+    $TargetDatabaseName = $configVars.Config['Sql_TargetDB']
+    $DevUserName = $configVars.Config['Sql_UserDevAppName']
+    $DevAppPassword = $configVars.Config['Sql_UserDevAppPassword']
+    
+    # Load admin credentials
+    $credResult = Get-CredentialAsset -CredentialName "Sql_AdminAccount"
+    
+    if (-not $credResult.Success) {
+        throw "Failed to load credentials: $($credResult.Error)"
+    }
+    
+    $adminCredential = $credResult.Credential
+    
+    # Create SQL login on master
     $masterSql = @"
 IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name = '$DevUserName')
 BEGIN
     CREATE LOGIN [$DevUserName] WITH PASSWORD = '$DevAppPassword';
-    PRINT 'Login [$DevUserName] created on master.';
-END
-ELSE
-BEGIN
-    PRINT 'Login [$DevUserName] already exists on master.';
 END
 "@
-
-    Write-Output "Verifying SQL Login on master..."
-    Invoke-Sqlcmd -ServerInstance $ServerName `
-                  -Database "master" `
-                  -Credential $AdminCred `
-                  -Query $masterSql `
-                  -Encrypt Mandatory `
-                  -TrustServerCertificate
-
-    # 5. Create User and Grant Permissions on Target Database
+    
+    Invoke-SqlCommand -ServerName $ServerName -DatabaseName "master" -Query $masterSql -Credential $adminCredential
+    Write-Log "✓ SQL login created" "SUCCESS"
+    
+    # Create database user
     $dbSql = @"
--- Create user if it doesn't exist
 IF NOT EXISTS (SELECT name FROM sys.database_principals WHERE name = '$DevUserName')
 BEGIN
     CREATE USER [$DevUserName] FOR LOGIN [$DevUserName];
-    PRINT 'User [$DevUserName] created in database $DatabaseName.';
 END
 
--- Ensure role-based permissions
 IF IS_ROLEMEMBER('db_datareader', '$DevUserName') = 0
     ALTER ROLE db_datareader ADD MEMBER [$DevUserName];
-
+    
 IF IS_ROLEMEMBER('db_datawriter', '$DevUserName') = 0
     ALTER ROLE db_datawriter ADD MEMBER [$DevUserName];
 
--- Grant specialized permissions
 GRANT EXECUTE TO [$DevUserName];
 GRANT VIEW DEFINITION TO [$DevUserName];
-
-PRINT 'Permissions for [$DevUserName] verified/updated.';
 "@
+    
+    Invoke-SqlCommand -ServerName $ServerName -DatabaseName $TargetDatabaseName -Query $dbSql -Credential $adminCredential
+    Write-Log "✓ Database user created with permissions" "SUCCESS"
+    
+    # Success
+    Write-Log "========================================" "SUCCESS"
+    Write-Log "✓ COMPLETE" "SUCCESS"
+    Write-Log "========================================" "SUCCESS"
+    
+    return [PSCustomObject]@{
+        Status = "Success"
+        Database = $TargetDatabaseName
+        User = $DevUserName
+    }
 
-    Write-Output "Configuring permissions on $DatabaseName..."
-    Invoke-Sqlcmd -ServerInstance $ServerName `
-                  -Database $DatabaseName `
-                  -Credential $AdminCred `
-                  -Query $dbSql `
-                  -Encrypt Mandatory `
-                  -TrustServerCertificate
-
-    Write-Output "SUCCESS: SQL User Provisioning Complete."
-
-} catch {
-    Write-Error "Recreate-SQLUser failed: $($_.Exception.Message)"
+}
+catch {
+    Write-Log "========================================" "ERROR"
+    Write-Log "✗ FAILED" "ERROR"
+    Write-Log "========================================" "ERROR"
+    Write-Log "Error: $($_.Exception.Message)" "ERROR"
+    Write-Log "Line: $($_.InvocationInfo.ScriptLineNumber)" "ERROR"
+    Write-Log "========================================" "ERROR"
     throw
 }
