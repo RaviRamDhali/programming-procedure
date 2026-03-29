@@ -79,3 +79,9 @@ Finish up adding the Service Connection (which should have been left if Draft Mo
 ![image](https://github.com/user-attachments/assets/869a2db6-7268-4f54-9971-36e4ff372c33)
 
 
+### Error
+<img width="1231" height="120" alt="image" src="https://github.com/user-attachments/assets/03ef6f2e-988a-4042-99d1-7e29aa36cae4" />
+
+No hosted parallelism has been purchased or granted. To request a free parallelism grant, please fill out the following form https://aka.ms/azpipelines-parallelism-request
+When running Azure Pipelines
+I submitted the request.
