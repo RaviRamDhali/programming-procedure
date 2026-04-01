@@ -85,8 +85,6 @@ stages:
 
     - stage: Deploy_Production
       displayName: "Deploy WebApi Production"
-      dependsOn: Deploy_Staging
-      condition: succeeded()
       trigger: manual
       jobs:
           - deployment: DeployWebApi_Production
