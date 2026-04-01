@@ -1,0 +1,110 @@
+trigger:
+    branches:
+        include:
+            - main
+    paths:
+        include:
+            - ReactApp/**
+
+pool:
+    vmImage: "windows-latest"
+
+variables:
+    webAppName_Staging: "sb1-res"
+    webAppName_Production: "sb1-res-prod"
+    azureSubscription: "g-managedidentity"
+    artifactName: "drop_ReactApp"
+
+stages:
+    - stage: Build
+      displayName: "Build ReactApp"
+      jobs:
+          - job: Build
+            displayName: "Build Job"
+            steps:
+                - task: NodeTool@0
+                  displayName: "Use Node.js 20.x"
+                  inputs:
+                      versionSpec: "20.x"
+
+                - script: npm install
+                  displayName: "npm install"
+                  workingDirectory: "ReactApp"
+
+                - script: npm run build
+                  displayName: "npm run build (Vite)"
+                  workingDirectory: "ReactApp"
+
+                - task: ArchiveFiles@2
+                  displayName: "Zip dist folder"
+                  inputs:
+                      rootFolderOrFile: "ReactApp/dist"
+                      includeRootFolder: false
+                      archiveType: "zip"
+                      archiveFile: "$(Build.ArtifactStagingDirectory)/ReactApp.zip"
+                      replaceExistingArchive: true
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Artifact ReactApp"
+                  inputs:
+                      PathtoPublish: "$(Build.ArtifactStagingDirectory)/ReactApp.zip"
+                      ArtifactName: "$(artifactName)"
+                      publishLocation: "Container"
+
+    - stage: Deploy_Staging
+      displayName: "Deploy Stage - Staging"
+      dependsOn: Build
+      condition: succeeded()
+      jobs:
+          - deployment: DeployReactApp_Staging
+            displayName: "Deploy ReactApp Staging"
+            environment: "Staging"
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: DownloadBuildArtifacts@1
+                              displayName: "Download Artifact"
+                              inputs:
+                                  buildType: "current"
+                                  downloadType: "single"
+                                  artifactName: "$(artifactName)"
+                                  downloadPath: "$(System.ArtifactsDirectory)"
+
+                            - task: AzureRmWebAppDeployment@4
+                              displayName: "Deploy to $(webAppName_Staging)"
+                              inputs:
+                                  ConnectionType: "AzureRM"
+                                  azureSubscription: "$(azureSubscription)"
+                                  appType: "webApp"
+                                  WebAppName: "$(webAppName_Staging)"
+                                  packageForLinux: "$(System.ArtifactsDirectory)/$(artifactName)/ReactApp.zip"
+
+    - stage: Deploy_Production
+      displayName: "Deploy ReactApp Production"
+      dependsOn: Deploy_Staging
+      condition: succeeded()
+      jobs:
+          - deployment: DeployReactApp_Production
+            displayName: "Deploy to Production"
+            environment: "Production"
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: DownloadBuildArtifacts@1
+                              displayName: "Download Artifact"
+                              inputs:
+                                  buildType: "current"
+                                  downloadType: "single"
+                                  artifactName: "$(artifactName)"
+                                  downloadPath: "$(System.ArtifactsDirectory)"
+
+                            - task: AzureRmWebAppDeployment@4
+                              displayName: "Deploy to $(webAppName_Production)"
+                              inputs:
+                                  ConnectionType: "AzureRM"
+                                  azureSubscription: "$(azureSubscription)"
+                                  appType: "webApp"
+                                  WebAppName: "$(webAppName_Production)"
+                                  packageForLinux: "$(System.ArtifactsDirectory)/$(artifactName)/ReactApp.zip"
