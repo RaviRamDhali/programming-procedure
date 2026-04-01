@@ -1,0 +1,113 @@
+trigger:
+    branches:
+        include:
+            - main
+    paths:
+        include:
+            - WebApi/**
+
+pool:
+    vmImage: "windows-latest"
+
+variables:
+    buildConfiguration: "Release"
+    webAppName_Staging: "sb1-api-res"
+    webAppName_Production: "sb1-api-res-prod"
+    azureSubscription: "g-managedidentity"
+    artifactName: "drop_WebApi"
+
+stages:
+    - stage: Build
+      displayName: "Build WebApi"
+      jobs:
+          - job: Build
+            displayName: "Build Job"
+            steps:
+                - script: echo Hello, world!
+                  displayName: "Run a one-line script"
+
+                - task: UseDotNet@2
+                  displayName: "Use .NET 10 SDK"
+                  inputs:
+                      packageType: "sdk"
+                      version: "10.x"
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Restore NuGet packages"
+                  inputs:
+                      command: "restore"
+                      projects: "**/WebApi.csproj"
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Build Project WebApi"
+                  inputs:
+                      command: "publish"
+                      publishWebProjects: false
+                      projects: "**/WebApi.csproj"
+                      arguments: "--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
+                      zipAfterPublish: true
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Artifact WebApi"
+                  inputs:
+                      PathtoPublish: '$(Build.ArtifactStagingDirectory)\WebApi.zip'
+                      ArtifactName: "$(artifactName)"
+                      publishLocation: "Container"
+
+    - stage: Deploy_Staging
+      displayName: "Deploy WebApi Staging"
+      dependsOn: Build
+      condition: succeeded()
+      jobs:
+          - deployment: DeployWebApi_Staging
+            displayName: "Deploy to Staging"
+            environment: "Staging"
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: DownloadBuildArtifacts@1
+                              displayName: "Download Artifact"
+                              inputs:
+                                  buildType: "current"
+                                  downloadType: "single"
+                                  artifactName: "$(artifactName)"
+                                  downloadPath: "$(System.ArtifactsDirectory)"
+
+                            - task: AzureRmWebAppDeployment@4
+                              displayName: "Deploy to $(webAppName_Staging)"
+                              inputs:
+                                  ConnectionType: "AzureRM"
+                                  azureSubscription: "$(azureSubscription)"
+                                  appType: "webApp"
+                                  WebAppName: "$(webAppName_Staging)"
+                                  packageForLinux: "$(System.ArtifactsDirectory)/$(artifactName)/WebApi.zip"
+
+    - stage: Deploy_Production
+      displayName: "Deploy WebApi Production"
+      dependsOn: Deploy_Staging
+      condition: succeeded()
+      jobs:
+          - deployment: DeployWebApi_Production
+            displayName: "Deploy to Production"
+            environment: "Production"
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: DownloadBuildArtifacts@1
+                              displayName: "Download Artifact"
+                              inputs:
+                                  buildType: "current"
+                                  downloadType: "single"
+                                  artifactName: "$(artifactName)"
+                                  downloadPath: "$(System.ArtifactsDirectory)"
+
+                            - task: AzureRmWebAppDeployment@4
+                              displayName: "Deploy to $(webAppName_Production)"
+                              inputs:
+                                  ConnectionType: "AzureRM"
+                                  azureSubscription: "$(azureSubscription)"
+                                  appType: "webApp"
+                                  WebAppName: "$(webAppName_Production)"
+                                  packageForLinux: "$(System.ArtifactsDirectory)/$(artifactName)/WebApi.zip"
