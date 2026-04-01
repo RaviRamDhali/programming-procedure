@@ -82,8 +82,6 @@ stages:
 
     - stage: Deploy_Production
       displayName: "Deploy ReactApp Production"
-      dependsOn: Deploy_Staging
-      condition: succeeded()
       trigger: manual
       jobs:
           - deployment: DeployReactApp_Production
