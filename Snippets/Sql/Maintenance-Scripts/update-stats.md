@@ -14,7 +14,7 @@ INNER JOIN sys.partitions AS sp
     AND sp.index_id IN (0,1)
 WHERE t.type = 'U'  -- only user tables
 GROUP BY t.name, s.name, STATS_DATE(s.object_id, s.stats_id), sp.rows
-ORDER BY [LastUpdated] ASC, t.name;
+ORDER BY sp.rows DESC, t.name;
 ```
 ## RUN
 
