@@ -1,4 +1,5 @@
 -- LLM can use this JSON, and in fact this structure is ideal for an LLM to consume.
+-- db-schema.json
 
 ALTER PROCEDURE [dbo].[helper_CreatePocoFromTableName]    
     @tableName varchar(100) = NULL
