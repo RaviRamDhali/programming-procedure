@@ -1,3 +1,7 @@
+## RUN
+
+```EXEC sp_updatestats;```
+
 ## Maintenance command that updates all table and index statistics in the current database
 
 ```
@@ -16,6 +20,4 @@ WHERE t.type = 'U'  -- only user tables
 GROUP BY t.name, s.name, STATS_DATE(s.object_id, s.stats_id), sp.rows
 ORDER BY sp.rows DESC, t.name;
 ```
-## RUN
 
-```EXEC sp_updatestats;```
