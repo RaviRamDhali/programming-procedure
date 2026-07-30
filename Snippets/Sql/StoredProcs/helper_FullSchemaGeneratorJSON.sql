@@ -1,3 +1,4 @@
+-- ref:  Snippets/Sql/FullSchemaGeneratorJSON
 -- db-schema.json
 -- Added full SQL schema JSON generator for LLM to use:
 -- Included database name, server name, and generation timestamp in root
