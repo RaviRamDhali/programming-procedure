@@ -1,4 +1,4 @@
--- Added full SQL schema JSON generator for LLM to use:
+-- Added full SQL schema JSON generator for LLM to use as db-schema.json :
 -- Included database name, server name, and generation timestamp in root
 -- Added complete table + column metadata
 -- Added stored procedure list
