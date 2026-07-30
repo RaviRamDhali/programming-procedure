@@ -1,4 +1,4 @@
--- Taken from Snippets/Sql/GetAllTablesAndColumns.sql
+-- db-schema.json
 -- Added full SQL schema JSON generator for LLM to use:
 -- Included database name, server name, and generation timestamp in root
 -- Added complete table + column metadata
