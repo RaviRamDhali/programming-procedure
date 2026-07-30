@@ -1,3 +1,9 @@
+-- Added full SQL schema JSON generator for LLM to use:
+-- Included database name, server name, and generation timestamp in root
+-- Added complete table + column metadata
+-- Added stored procedure list
+-- Implemented chunked PRINT to avoid SSMS truncation
+    
 DECLARE @json nvarchar(max);
 DECLARE @dbName sysname      = DB_NAME();
 DECLARE @serverName sysname  = @@SERVERNAME;
