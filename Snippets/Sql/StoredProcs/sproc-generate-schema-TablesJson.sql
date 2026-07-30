@@ -1,17 +1,24 @@
--- LLM can use this JSON, and in fact this structure is ideal for an LLM to consume.
--- db-schema.json
+-- Taken from Snippets/Sql/GetAllTablesAndColumns.sql
+-- Added full SQL schema JSON generator for LLM to use:
+-- Included database name, server name, and generation timestamp in root
+-- Added complete table + column metadata
+-- Added stored procedure list
+-- Implemented chunked PRINT to avoid SSMS truncation
 
-ALTER PROCEDURE [dbo].[helper_CreatePocoFromTableName]    
-    @tableName varchar(100) = NULL
+CREATE OR ALTER PROCEDURE [dbo].[helper_FullSchemaGeneratorJSON]
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    DECLARE @json nvarchar(max);
+    DECLARE @dbName sysname      = DB_NAME();
+    DECLARE @serverName sysname  = @@SERVERNAME;
+    DECLARE @generatedAt nvarchar(30) = CONVERT(varchar(30), GETDATE(), 126); -- ISO8601
 
     ;WITH TableList AS (
         SELECT TABLE_NAME
         FROM INFORMATION_SCHEMA.TABLES
         WHERE TABLE_TYPE = 'BASE TABLE'
-          AND (@tableName IS NULL OR @tableName = '' OR TABLE_NAME = @tableName)
     ),
     ColumnData AS (
         SELECT 
@@ -42,19 +49,29 @@ BEGIN
             END AS NewType
         FROM INFORMATION_SCHEMA.COLUMNS c
         INNER JOIN TableList t ON c.TABLE_NAME = t.TABLE_NAME
+    ),
+    StoredProcs AS (
+        SELECT SPECIFIC_NAME AS ProcName
+        FROM INFORMATION_SCHEMA.ROUTINES
+        WHERE ROUTINE_TYPE = 'PROCEDURE'
     )
 
-    SELECT (
+    SELECT @json =
+    (
         SELECT 
-            'tables' AS [root],
+            @dbName      AS [dbName],
+            @serverName  AS [serverName],
+            @generatedAt AS [generatedAt],
+
+            -- TABLES
             (
                 SELECT 
                     t.TABLE_NAME AS [name],
                     (
                         SELECT 
                             COLUMN_NAME AS [name],
-                            NewType AS [csharpType],
-                            DATA_TYPE AS [sqlType],
+                            NewType     AS [csharpType],
+                            DATA_TYPE   AS [sqlType],
                             IS_NULLABLE AS [nullable]
                         FROM ColumnData c
                         WHERE c.TABLE_NAME = t.TABLE_NAME
@@ -64,8 +81,29 @@ BEGIN
                 FROM TableList t
                 ORDER BY t.TABLE_NAME
                 FOR JSON PATH
-            ) AS [tables]
-        FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-    ) AS JsonSchema;
+            ) AS [tables],
 
-END
+            -- STORED PROCS
+            (
+                SELECT 
+                    ProcName AS [name]
+                FROM StoredProcs
+                ORDER BY ProcName
+                FOR JSON PATH
+            ) AS [storedProcs]
+
+        FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+    );
+
+    -- Chunked PRINT to avoid truncation
+    DECLARE @pos int = 1;
+    DECLARE @chunkSize int = 4000;
+    DECLARE @len int = LEN(@json);
+
+    WHILE @pos <= @len
+    BEGIN
+        PRINT SUBSTRING(@json, @pos, @chunkSize);
+        SET @pos += @chunkSize;
+    END;
+END;
+GO
